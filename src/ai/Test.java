@@ -3,6 +3,7 @@ package ai;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 //
 import java.util.HashMap;
 
@@ -10,7 +11,8 @@ public class Test {
 
 	public static void main(String[] args) {
 		try {
-			test();
+//			test();
+			test2();
 		} 
 		catch (Exception e) {
 			System.out.println("Test.main()");
@@ -74,6 +76,20 @@ public class Test {
 			e.printStackTrace();
 			System.exit(-1);
 		}
+	}
+	
+	public static void test2()
+	{
+		int[] layers = new int[]{ 9, 5, 9};
+		double learningRate = 0.1;
+		MultiLayerPerceptron net = new MultiLayerPerceptron(layers, learningRate, new SigmoidalTransferFunction());
+
+		//TEST
+		double[] input = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+		double[] output = net.forwardPropagation(input);
+		
+		for(int i=0 ; i<output.length ; ++i)
+			System.out.println(output[i]);
 	}
 
 	//CHAMPS ...
