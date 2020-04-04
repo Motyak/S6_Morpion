@@ -5,7 +5,7 @@ enum Joueur {
 	O {
 		@Override
 		public Joueur next() {
-			return Joueur.X;
+			return Joueur.values()[0];
 		}
 	};
 	
