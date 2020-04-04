@@ -87,9 +87,7 @@ public class Ihm {
 			Button btn = (Button)event.getSource();
 			int btnId = Integer.valueOf(btn.getId().substring(btn.getId().length() - 1));
 			
-			Ihm.this.ctrl.writeCase(btnId);
-			
-			Ihm.this.ctrl.afficherGrille();	//debug
+			Ihm.this.ctrl.proposerCoup(btnId);
 		}
 	};
 }
