@@ -3,5 +3,10 @@ package morpion;
 enum Case {
 	X,
 	O,
-	VIDE
+	VIDE {
+		@Override
+		public String toString() {
+			return "";
+		}
+	}
 }

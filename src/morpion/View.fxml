@@ -32,56 +32,56 @@
                 <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="btnCase0_0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                  <Button fx:id="btnCase0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                      <font>
-                        <Font size="50.0" />
+                        <Font size="45.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCase1_0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="1">
+                  <Button fx:id="btnCase1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="1">
                      <font>
-                        <Font size="50.0" />
+                        <Font size="45.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCase2_0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="2">
+                  <Button fx:id="btnCase2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="2">
                      <font>
-                        <Font size="50.0" />
+                        <Font size="45.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCase0_1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.rowIndex="1">
+                  <Button fx:id="btnCase3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.rowIndex="1">
                      <font>
-                        <Font size="50.0" />
+                        <Font size="45.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCase1_1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Button fx:id="btnCase4" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <font>
-                        <Font size="50.0" />
+                        <Font size="45.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCase2_1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <Button fx:id="btnCase5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <font>
-                        <Font size="50.0" />
+                        <Font size="45.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCase0_2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.rowIndex="2">
+                  <Button fx:id="btnCase6" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.rowIndex="2">
                      <font>
-                        <Font size="50.0" />
+                        <Font size="45.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCase1_2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <Button fx:id="btnCase7" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <font>
-                        <Font size="50.0" />
+                        <Font size="45.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCase2_2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                  <Button fx:id="btnCase8" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <font>
-                        <Font size="50.0" />
+                        <Font size="45.0" />
                      </font>
                   </Button>
                </children>
             </GridPane>
             <HBox fx:id="panelTourJeu">
                <children>
-                  <Label fx:id="lblX" text="X">
+                  <Label fx:id="lblX" text="X" textFill="GREY">
                      <HBox.margin>
                         <Insets left="95.0" />
                      </HBox.margin>
@@ -89,7 +89,7 @@
                         <Font size="26.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblO" text="O" textFill="#0000007e">
+                  <Label fx:id="lblO" text="O" textFill="GREY">
                      <HBox.margin>
                         <Insets left="75.0" />
                      </HBox.margin>
