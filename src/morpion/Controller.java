@@ -3,6 +3,7 @@ package morpion;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Controller {
 	private Ihm ihm;
@@ -53,10 +54,11 @@ public class Controller {
 //	}
 	
 	public void proposerCoup(int id) {
-		Case c = this.ent.getGrille()[id];
-		if(c == Case.VIDE)
-		{
-			this.ent.getGrille()[id] = Case.valueOf(this.ent.getTourJeu().toString());
+		
+			Case c = this.ent.getGrille()[id];
+			if(c == Case.VIDE)
+				this.ent.getGrille()[id] = Case.valueOf(this.ent.getTourJeu().toString());
+			
 			this.incrementerTourDeJeu();
 			this.entToIhm();
 			this.afficherGrille();	//debug
@@ -72,8 +74,49 @@ public class Controller {
 				this.clearGrille();
 				this.ent.setTourJeu(Joueur.values()[0]);
 				this.entToIhm();
-			}				
-		}
+				return;
+			}
+			
+			
+			
+			if(this.ent.getMode() == Mode.P_VS_AI)
+			{
+				this.aiPlays();
+				this.incrementerTourDeJeu();
+				this.entToIhm();
+				this.afficherGrille();	//debug
+				vainqueur = this.finDePartie();
+				partieTerminee = (vainqueur != null) || this.grilleComplete();
+				if(partieTerminee)
+				{
+					if(vainqueur != null)
+						System.out.println("Le vainqueur est " + vainqueur.toString());
+					else
+						System.out.println("Aucun gagnant");
+					
+					this.clearGrille();
+					this.ent.setTourJeu(Joueur.values()[0]);
+					this.entToIhm();
+				}
+			}
+//		}
+			
+		
+			
+			
+		
+	}
+	
+	private void aiPlays()
+	{
+		Case[] grille = this.ent.getGrille();
+		int aleat;
+		do
+		{
+			Random r = new Random();
+			aleat = r.nextInt(8);
+		} while(grille[aleat] != Case.VIDE);
+		grille[aleat] = Case.O;
 	}
 	
 	private void incrementerTourDeJeu()
