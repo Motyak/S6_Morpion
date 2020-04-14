@@ -57,36 +57,13 @@ public class Controller {
 		
 			Case c = this.ent.getGrille()[id];
 			if(c == Case.VIDE)
+			{
 				this.ent.getGrille()[id] = Case.valueOf(this.ent.getTourJeu().toString());
-			
-			this.incrementerTourDeJeu();
-			this.entToIhm();
-			this.afficherGrille();	//debug
-			Joueur vainqueur = this.finDePartie();
-			boolean partieTerminee = (vainqueur != null) || this.grilleComplete();
-			if(partieTerminee)
-			{
-				if(vainqueur != null)
-					System.out.println("Le vainqueur est " + vainqueur.toString());
-				else
-					System.out.println("Aucun gagnant");
-				
-				this.clearGrille();
-				this.ent.setTourJeu(Joueur.values()[0]);
-				this.entToIhm();
-				return;
-			}
-			
-			
-			
-			if(this.ent.getMode() == Mode.P_VS_AI)
-			{
-				this.aiPlays();
 				this.incrementerTourDeJeu();
 				this.entToIhm();
 				this.afficherGrille();	//debug
-				vainqueur = this.finDePartie();
-				partieTerminee = (vainqueur != null) || this.grilleComplete();
+				Joueur vainqueur = this.finDePartie();
+				boolean partieTerminee = (vainqueur != null) || this.grilleComplete();
 				if(partieTerminee)
 				{
 					if(vainqueur != null)
@@ -97,14 +74,32 @@ public class Controller {
 					this.clearGrille();
 					this.ent.setTourJeu(Joueur.values()[0]);
 					this.entToIhm();
+					return;
 				}
-			}
-//		}
-			
-		
-			
-			
-		
+				
+				
+				
+				if(this.ent.getMode() == Mode.P_VS_AI)
+				{
+					this.aiPlays();
+					this.incrementerTourDeJeu();
+					this.entToIhm();
+					this.afficherGrille();	//debug
+					vainqueur = this.finDePartie();
+					partieTerminee = (vainqueur != null) || this.grilleComplete();
+					if(partieTerminee)
+					{
+						if(vainqueur != null)
+							System.out.println("Le vainqueur est " + vainqueur.toString());
+						else
+							System.out.println("Aucun gagnant");
+						
+						this.clearGrille();
+						this.ent.setTourJeu(Joueur.values()[0]);
+						this.entToIhm();
+					}
+				}
+			}	
 	}
 	
 	private void aiPlays()
