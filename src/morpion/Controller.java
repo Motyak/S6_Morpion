@@ -1,13 +1,28 @@
 package morpion;
 
+import Mk.TextFile;
+import ai.MultiLayerPerceptron;
+import ai.SigmoidalTransferFunction;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Controller {
 	private Ihm ihm;
 	private Ent ent;
+	
+	public final static String DATA_DIRPATH = 
+			System.getProperty("user.dir") + File.separator + "data" + File.separator;
+	
+	public final static String CONF_FILE_DEFCONTENT = 
+			"#mode facile\n1:3,0.1\n#mode normal\n2:6,0.75\n#mode difficile\n3:9,0.9\n";
+	
+	public final static String CONF_FILENAME = "difficulties.conf";
 	
 	Controller(Ihm ihm, Ent ent) {
 		this.ihm = ihm;
@@ -35,10 +50,7 @@ public class Controller {
 //		ctrl.afficherGrille();
 //		Joueur j = ctrl.finDePartie();
 //		if(j != null)
-//			System.out.println(j.toString());
-//		
-//	
-//		
+//			System.out.println(j.toString());	
 //	}
 	
 	public void entToIhm() {
@@ -49,9 +61,28 @@ public class Controller {
 		this.ihm.setTourDeJeu(this.ent.getTourJeu());
 	}
 	
-//	public void ihmToEnt() {
-//		
-//	}
+	public void initDataFiles() throws Exception {
+//		check any missing file, create them with default values if so
+		File dataDir = new File(Controller.DATA_DIRPATH);
+		if(!dataDir.exists())
+		{
+			dataDir.mkdir();
+			TextFile.stringToFile(Controller.CONF_FILE_DEFCONTENT, Controller.DATA_DIRPATH + Controller.CONF_FILENAME);
+
+			Matcher mat = Pattern.compile("\n.*?:(.*?)\n").matcher(Controller.CONF_FILE_DEFCONTENT);
+			while(mat.find())
+			{
+				Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
+				config.find();
+				int abstractionLevel = Integer.parseInt(config.group(1));
+				double learningRate = Double.parseDouble(config.group(2));
+				int[] layers = new int[]{Ent.TAILLE_GRILLE, abstractionLevel, Ent.TAILLE_GRILLE};
+				MultiLayerPerceptron net = new MultiLayerPerceptron(layers, learningRate, new SigmoidalTransferFunction());
+				if(!net.save(Controller.DATA_DIRPATH + abstractionLevel + "_" + learningRate + ".srl"))
+					throw new Exception("Error creating the file " + abstractionLevel + "_" + learningRate + ".srl");
+			}
+		}
+	}
 	
 	public void proposerCoup(int id) {
 		

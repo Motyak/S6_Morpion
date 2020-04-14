@@ -41,7 +41,7 @@ public class Ihm {
 	@FXML private Label lblO;
 	
 	
-	@FXML private void initialize() {
+	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
 		
 		this.btns = new ArrayList<>(Arrays.asList(
@@ -49,6 +49,8 @@ public class Ihm {
 			btnCase3, btnCase4, btnCase5, 
 			btnCase6, btnCase7, btnCase8
 		));
+		
+		this.ctrl.initDataFiles();
 		
 		this.ctrl.entToIhm();
 		

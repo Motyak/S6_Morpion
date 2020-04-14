@@ -81,8 +81,14 @@ public class Test {
 	public static void test2()
 	{
 		int[] layers = new int[]{ 9, 5, 9};
+
 		double learningRate = 0.1;
+
 		MultiLayerPerceptron net = new MultiLayerPerceptron(layers, learningRate, new SigmoidalTransferFunction());
+		
+//		String path = System.getProperty("user.dir") + File.separator + "data" + File.separator;
+//		String filename = layers[1] + "_" + learningRate + ".srl";
+//		net.save(path + filename);
 
 		//TEST
 		double[] input = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
