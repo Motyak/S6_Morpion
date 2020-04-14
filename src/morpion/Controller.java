@@ -5,16 +5,26 @@ import ai.MultiLayerPerceptron;
 import ai.SigmoidalTransferFunction;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public class Controller {
 	private Ihm ihm;
 	private Ent ent;
+	
+	private MultiLayerPerceptron aiModel;
 	
 	public final static String DATA_DIRPATH = 
 			System.getProperty("user.dir") + File.separator + "data" + File.separator;
@@ -24,16 +34,20 @@ public class Controller {
 	
 	public final static String CONF_FILENAME = "difficulties.conf";
 	
-	Controller(Ihm ihm, Ent ent) {
+	Controller(Ihm ihm, Ent ent) throws Exception {
 		this.ihm = ihm;
 		this.ent = ent;
+		
+		this.initDataFiles();
+		this.loadAiModel();
 	}
 	
-//	public static void main(String[] args) {
-//		//TU check lines
+//	public static void main(String[] args) throws Exception {
+		//TU check lines
 //		Ent ent = new Ent();
 //		Controller ctrl = new Controller(new Ihm(), ent);
-//		
+		
+		
 //		Case[] grille = ent.getGrille();
 //		grille[0] = Case.VIDE;
 //		grille[1] = Case.O;
@@ -61,8 +75,8 @@ public class Controller {
 		this.ihm.setTourDeJeu(this.ent.getTourJeu());
 	}
 	
+//	check any missing file, create them with default values if so
 	public void initDataFiles() throws Exception {
-//		check any missing file, create them with default values if so
 		File dataDir = new File(Controller.DATA_DIRPATH);
 		if(!dataDir.exists())
 		{
@@ -84,17 +98,55 @@ public class Controller {
 		}
 	}
 	
+	public void loadAiModel() throws IOException {
+		Difficulte diff = this.ent.getDiff();
+		String conf = TextFile.fileToString(Controller.DATA_DIRPATH + Controller.CONF_FILENAME);
+		Matcher mat = Pattern.compile(diff.getValue() + ":(.*?)\n").matcher(conf);
+		mat.find();
+		Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
+		config.find();
+		int abstractionLevel = Integer.parseInt(config.group(1));
+		double learningRate = Double.parseDouble(config.group(2));
+		String filename = abstractionLevel + "_" + learningRate + ".srl";
+
+		this.aiModel = MultiLayerPerceptron.load(Controller.DATA_DIRPATH + filename);
+	}
+	
 	public void proposerCoup(int id) {
 		
-			Case c = this.ent.getGrille()[id];
-			if(c == Case.VIDE)
+		Case c = this.ent.getGrille()[id];
+		if(c == Case.VIDE)
+		{
+			this.ent.getGrille()[id] = Case.valueOf(this.ent.getTourJeu().toString());
+			this.incrementerTourDeJeu();
+			this.entToIhm();
+			this.afficherGrille();	//debug
+			Joueur vainqueur = this.finDePartie();
+			boolean partieTerminee = (vainqueur != null) || this.grilleComplete();
+			if(partieTerminee)
 			{
-				this.ent.getGrille()[id] = Case.valueOf(this.ent.getTourJeu().toString());
+				if(vainqueur != null)
+					System.out.println("Le vainqueur est " + vainqueur.toString());
+				else
+					System.out.println("Aucun gagnant");
+				
+				this.clearGrille();
+				this.ent.setTourJeu(Joueur.values()[0]);
+				this.entToIhm();
+				return;
+			}
+			
+			
+			
+			if(this.ent.getMode() == Mode.P_VS_AI)
+			{
+//				this.aiPlaysRandomly();
+				this.aiPlays();
 				this.incrementerTourDeJeu();
 				this.entToIhm();
 				this.afficherGrille();	//debug
-				Joueur vainqueur = this.finDePartie();
-				boolean partieTerminee = (vainqueur != null) || this.grilleComplete();
+				vainqueur = this.finDePartie();
+				partieTerminee = (vainqueur != null) || this.grilleComplete();
 				if(partieTerminee)
 				{
 					if(vainqueur != null)
@@ -105,35 +157,23 @@ public class Controller {
 					this.clearGrille();
 					this.ent.setTourJeu(Joueur.values()[0]);
 					this.entToIhm();
-					return;
 				}
-				
-				
-				
-				if(this.ent.getMode() == Mode.P_VS_AI)
-				{
-					this.aiPlays();
-					this.incrementerTourDeJeu();
-					this.entToIhm();
-					this.afficherGrille();	//debug
-					vainqueur = this.finDePartie();
-					partieTerminee = (vainqueur != null) || this.grilleComplete();
-					if(partieTerminee)
-					{
-						if(vainqueur != null)
-							System.out.println("Le vainqueur est " + vainqueur.toString());
-						else
-							System.out.println("Aucun gagnant");
-						
-						this.clearGrille();
-						this.ent.setTourJeu(Joueur.values()[0]);
-						this.entToIhm();
-					}
-				}
-			}	
+			}
+		}	
 	}
 	
 	private void aiPlays()
+	{
+		Case[] grille = this.ent.getGrille();
+		double[] input = this.grilleToDoubles(grille);
+		int[] output = this.sortedOutput(this.aiModel.forwardPropagation(input));
+		int i = 0;
+		while(grille[output[i]] != Case.VIDE)
+			++i;
+		grille[output[i]] = Case.O;
+	}
+	
+	private void aiPlaysRandomly()
 	{
 		Case[] grille = this.ent.getGrille();
 		int aleat;
@@ -258,6 +298,33 @@ public class Controller {
 			return Joueur.O;
 		
 		return null;
+	}
+	
+	private int[] sortedOutput(double[] output)
+	{
+		int[] sortedIndexes = new int[output.length];
+		TreeMap<Double,Integer> map = new TreeMap<Double,Integer>(Collections.reverseOrder());
+		for(int i = 0 ; i < output.length ; ++i)
+		    map.put( output[i], i );
+		
+
+		Collection<Integer> values = map.values();
+		int i = 0;
+		for(Integer value : values)
+		{
+			sortedIndexes[i] = value;
+			++i;
+		}
+
+		return sortedIndexes;
+	}
+	
+	private double[] grilleToDoubles(Case[] grille)
+	{
+		double[] res = new double[Ent.TAILLE_GRILLE];
+		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
+			res[i] = (double)grille[i].getValue();
+		return res;
 	}
 	
 	//debug

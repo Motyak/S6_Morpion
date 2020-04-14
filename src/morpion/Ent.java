@@ -7,6 +7,7 @@ public class Ent {
 	private Case[] grille;
 	private Joueur tourJeu;
 	private Mode mode;
+	private Difficulte diff;
 	
 	Ent() {
 		this.grille = new Case[Ent.TAILLE_GRILLE];
@@ -15,6 +16,7 @@ public class Ent {
 		
 		this.tourJeu = Joueur.values()[0];
 		this.mode = Mode.P_VS_AI;
+		this.setDiff(Difficulte.NORMAL);
 	}
 
 	public Case[] getGrille() {return grille;}
@@ -27,7 +29,11 @@ public class Ent {
 
 	public Mode getMode() { return mode; }
 
-	public void setMode(Mode mode) { this.mode = mode; }	
+	public void setMode(Mode mode) { this.mode = mode; }
+
+	public Difficulte getDiff() { return diff; }
+
+	public void setDiff(Difficulte diff) { this.diff = diff; }	
 }
 
 

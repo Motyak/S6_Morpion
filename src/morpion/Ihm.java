@@ -50,16 +50,10 @@ public class Ihm {
 			btnCase6, btnCase7, btnCase8
 		));
 		
-		this.ctrl.initDataFiles();
-		
 		this.ctrl.entToIhm();
 		
 		for(Button b : this.btns)
 			b.setOnAction(this.caseOnClick);
-		
-		
-
-		
 	}
 	
 	public void writeCase(int id, Case c)
