@@ -110,6 +110,8 @@ public class Controller {
 		String filename = abstractionLevel + "_" + learningRate + ".srl";
 
 		this.aiModel = MultiLayerPerceptron.load(Controller.DATA_DIRPATH + filename);
+		System.out.println("Difficulté : " + this.ent.getDiff());
+		System.out.println("Modèle chargée : " + abstractionLevel + " , " + learningRate);
 	}
 	
 	public void proposerCoup(int id) {
