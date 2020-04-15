@@ -5,6 +5,7 @@ import Mk.TextFile;
 import ai.MultiLayerPerceptron;
 import ai.SigmoidalTransferFunction;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,7 +33,7 @@ public class Controller {
 	public final static String CONF_FILE_DEFCONTENT = 
 			"#mode facile\n1:3,0.1\n#mode normal\n2:6,0.75\n#mode difficile\n3:9,0.9\n";
 	
-	public final static String CONF_FILENAME = "difficulties.conf";
+	public final static String CONF_FILENAME = "config.txt";
 	public final static String COUPS_FILENAME = "coups.txt";
 	
 	Controller(Ihm ihm, Ent ent) throws Exception {
@@ -45,28 +46,12 @@ public class Controller {
 	}
 	
 //	public static void main(String[] args) throws Exception {
-		//TU check lines
+////		TU check lines
 //		Ent ent = new Ent();
 //		Controller ctrl = new Controller(new Ihm(), ent);
-		
-		
-//		Case[] grille = ent.getGrille();
-//		grille[0] = Case.VIDE;
-//		grille[1] = Case.O;
-//		grille[2] = Case.O;
 //		
-//		grille[3] = Case.O;
-//		grille[4] = Case.O;
-//		grille[5] = Case.O;
 //		
-//		grille[6] = Case.X;
-//		grille[7] = Case.VIDE;
-//		grille[8] = Case.X;
-//		
-//		ctrl.afficherGrille();
-//		Joueur j = ctrl.finDePartie();
-//		if(j != null)
-//			System.out.println(j.toString());	
+//		ctrl.editConfigFile();
 //	}
 	
 	public void entToIhm() {
@@ -286,5 +271,10 @@ public class Controller {
 		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
 			res[i] = (double)grille.at(i).getValue();
 		return res;
+	}
+	
+	public void editConfigFile() throws IOException
+	{
+		Desktop.getDesktop().open(new File(Controller.DATA_DIRPATH + Controller.CONF_FILENAME));
 	}
 }
