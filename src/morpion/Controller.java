@@ -68,10 +68,10 @@ public class Controller {
 //	}
 	
 	public void entToIhm() {
-		Case[] grille = this.ent.getGrille();
+		Grille grille = this.ent.getGrille();
 		
 		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-			this.ihm.writeCase(i, grille[i]);
+			this.ihm.writeCase(i, grille.at(i));
 		this.ihm.setTourDeJeu(this.ent.getTourJeu());
 	}
 	
@@ -111,20 +111,22 @@ public class Controller {
 
 		this.aiModel = MultiLayerPerceptron.load(Controller.DATA_DIRPATH + filename);
 		System.out.println("Difficulté : " + this.ent.getDiff());
-		System.out.println("Modèle chargée : " + abstractionLevel + " , " + learningRate);
+		System.out.println("Modèle chargé : " + abstractionLevel + " , " + learningRate);
 	}
 	
 	public void proposerCoup(int id) {
 		
-		Case c = this.ent.getGrille()[id];
+		Case c = this.ent.getGrille().at(id);
+		
 		if(c == Case.VIDE)
 		{
-			this.ent.getGrille()[id] = Case.valueOf(this.ent.getTourJeu().toString());
+			this.ent.getGrille().set(id, Case.valueOf(this.ent.getTourJeu().toString()));
+//			this.ent.getGrille()[id] = Case.valueOf(this.ent.getTourJeu().toString());
 			this.incrementerTourDeJeu();
 			this.entToIhm();
-			this.afficherGrille();	//debug
-			Joueur vainqueur = this.finDePartie();
-			boolean partieTerminee = (vainqueur != null) || this.grilleComplete();
+			this.ent.getGrille().afficher();
+			Joueur vainqueur = this.ent.getGrille().finDePartie();
+			boolean partieTerminee = (vainqueur != null) || this.ent.getGrille().is_filled();
 			if(partieTerminee)
 			{
 				if(vainqueur != null)
@@ -132,7 +134,7 @@ public class Controller {
 				else
 					System.out.println("Aucun gagnant");
 				
-				this.clearGrille();
+				this.ent.getGrille().clear();
 				this.ent.setTourJeu(Joueur.values()[0]);
 				this.entToIhm();
 				return;
@@ -146,9 +148,9 @@ public class Controller {
 				this.aiPlays();
 				this.incrementerTourDeJeu();
 				this.entToIhm();
-				this.afficherGrille();	//debug
-				vainqueur = this.finDePartie();
-				partieTerminee = (vainqueur != null) || this.grilleComplete();
+				this.ent.getGrille().afficher();
+				vainqueur = this.ent.getGrille().finDePartie();
+				partieTerminee = (vainqueur != null) || this.ent.getGrille().is_filled();
 				if(partieTerminee)
 				{
 					if(vainqueur != null)
@@ -156,7 +158,7 @@ public class Controller {
 					else
 						System.out.println("Aucun gagnant");
 					
-					this.clearGrille();
+					this.ent.getGrille().clear();
 					this.ent.setTourJeu(Joueur.values()[0]);
 					this.entToIhm();
 				}
@@ -166,25 +168,25 @@ public class Controller {
 	
 	private void aiPlays()
 	{
-		Case[] grille = this.ent.getGrille();
+		Grille grille = this.ent.getGrille();
 		double[] input = this.grilleToDoubles(grille);
 		int[] output = this.sortedOutput(this.aiModel.forwardPropagation(input));
 		int i = 0;
-		while(grille[output[i]] != Case.VIDE)
+		while(grille.at(output[i]) != Case.VIDE)
 			++i;
-		grille[output[i]] = Case.O;
+		grille.set(output[i], Case.O);
 	}
 	
 	private void aiPlaysRandomly()
 	{
-		Case[] grille = this.ent.getGrille();
+		Grille grille = this.ent.getGrille();
 		int aleat;
 		do
 		{
 			Random r = new Random();
 			aleat = r.nextInt(8);
-		} while(grille[aleat] != Case.VIDE);
-		grille[aleat] = Case.O;
+		} while(grille.at(aleat) != Case.VIDE);
+		grille.set(aleat, Case.O);
 	}
 	
 	private void incrementerTourDeJeu()
@@ -192,114 +194,6 @@ public class Controller {
 		Joueur j = this.ent.getTourJeu();
 		j = j.next();
 		this.ent.setTourJeu(j);
-	}
-	
-	private void clearGrille()
-	{
-		Case[] grille = this.ent.getGrille();
-		
-		Arrays.fill(grille, Case.VIDE);
-		
-		System.out.println("RESET");
-	}
-	
-	private boolean grilleComplete()
-	{
-		Case[] grille = this.ent.getGrille();
-		
-		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-		{
-			if(grille[i] == Case.VIDE)
-				return false;
-		}
-		return true;
-	}
-	
-	private Joueur finDePartie()
-	{
-		Joueur j = this.checkLines();
-		if(j == null)
-			j = this.checkColumns();
-		if(j == null)
-			j = this.checkDiags();
-		return j;
-	}
-	
-	private int sumOfRange(List<Case> cases)
-	{
-		int sum = 0;
-		for(Case c : cases)
-			sum += c.getValue();
-		
-		return sum;
-	}
-	
-	private Joueur checkLines()
-	{
-		Case[] grille = this.ent.getGrille();
-		List<Case> line = new ArrayList<>();
-		
-		int i = 0;
-		int j;
-	
-		for(; i < Ent.DIM_GRILLE ; ++i)
-		{
-			for(j = Ent.DIM_GRILLE * i ; j < (i + 1) * Ent.DIM_GRILLE ; ++j)
-				line.add(grille[j]);
-			int sum = this.sumOfRange(line);
-			if(sum == Ent.DIM_GRILLE * Case.X.getValue())
-				return Joueur.X;
-			else if(sum == Ent.DIM_GRILLE * Case.O.getValue())
-				return Joueur.O;
-			line.clear();
-		}
-		return null;
-	}
-	
-	private Joueur checkColumns()
-	{
-		Case[] grille = this.ent.getGrille();
-		List<Case> column = new ArrayList<>();
-		
-		int i = 0;
-		int j;
-	
-		for(; i < Ent.DIM_GRILLE ; ++i)	//+0, +1, +2
-		{
-			for(j = i ; j <= 2 * Ent.DIM_GRILLE + i ; j+=Ent.DIM_GRILLE)
-				column.add(grille[j]);
-			int sum = this.sumOfRange(column);
-			if(sum == Ent.DIM_GRILLE * Case.X.getValue())
-				return Joueur.X;
-			else if(sum == Ent.DIM_GRILLE * Case.O.getValue())
-				return Joueur.O;
-			column.clear();
-		}
-		return null;
-	}
-	
-	private Joueur checkDiags()
-	{
-		Case[] grille = this.ent.getGrille();
-		List<Case> diag = new ArrayList<>();
-		
-		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; i += 4)
-			diag.add(grille[i]);
-		int sum = this.sumOfRange(diag);
-		if(sum == Ent.DIM_GRILLE * Case.X.getValue())
-			return Joueur.X;
-		else if(sum == Ent.DIM_GRILLE * Case.O.getValue())
-			return Joueur.O;
-		diag.clear();
-		for(int i = 2 ; i <= 2 * Ent.DIM_GRILLE ; i += 2)
-			diag.add(grille[i]);
-		sum = this.sumOfRange(diag);
-		if(sum == Ent.DIM_GRILLE * Case.X.getValue())
-			return Joueur.X;
-		else if(sum == Ent.DIM_GRILLE * Case.O.getValue())
-			return Joueur.O;
-		
-		return null;
 	}
 	
 	private int[] sortedOutput(double[] output)
@@ -321,30 +215,11 @@ public class Controller {
 		return sortedIndexes;
 	}
 	
-	private double[] grilleToDoubles(Case[] grille)
+	private double[] grilleToDoubles(Grille grille)
 	{
 		double[] res = new double[Ent.TAILLE_GRILLE];
 		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-			res[i] = (double)grille[i].getValue();
+			res[i] = (double)grille.at(i).getValue();
 		return res;
-	}
-	
-	//debug
-	private void afficherGrille()
-	{
-		Case[] grille = this.ent.getGrille();
-		
-		int i = 0;
-		int j = 0;
-		System.out.println("--------------------");
-		for(; i < Ent.DIM_GRILLE ; ++i)
-		{
-			for(j = Ent.DIM_GRILLE * i ; j < (i + 1) * Ent.DIM_GRILLE - 1 ; ++j)
-			{
-				System.out.print(grille[j] + "\t");
-			}
-			System.out.print(grille[j] + "\n\n");
-		}
-		System.out.println("--------------------");
 	}
 }
