@@ -1,5 +1,6 @@
 package morpion;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,7 +84,11 @@ public class Ihm {
 			Button btn = (Button)event.getSource();
 			int btnId = Integer.valueOf(btn.getId().substring(btn.getId().length() - 1));
 			
-			Ihm.this.ctrl.proposerCoup(btnId);
+			try {
+				Ihm.this.ctrl.proposerCoup(btnId);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	};
 }

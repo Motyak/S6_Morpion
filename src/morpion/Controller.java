@@ -20,6 +20,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Text;
+
 public class Controller {
 	private Ihm ihm;
 	private Ent ent;
@@ -34,6 +36,7 @@ public class Controller {
 			"#mode facile\n1:3,0.1\n#mode normal\n2:6,0.75\n#mode difficile\n3:9,0.9\n";
 	
 	public final static String CONF_FILENAME = "difficulties.conf";
+	public final static String COUPS_FILENAME = "coups.txt";
 	
 	Controller(Ihm ihm, Ent ent) throws Exception {
 		this.ihm = ihm;
@@ -83,7 +86,8 @@ public class Controller {
 		if(!dataDir.exists())
 		{
 			dataDir.mkdir();
-			TextFile.stringToFile(Controller.CONF_FILE_DEFCONTENT, Controller.DATA_DIRPATH + Controller.CONF_FILENAME);
+			TextFile.stringToFile("", Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, false);
+			TextFile.stringToFile(Controller.CONF_FILE_DEFCONTENT, Controller.DATA_DIRPATH + Controller.CONF_FILENAME, false);
 
 			Matcher mat = Pattern.compile("\n.*?:(.*?)\n").matcher(Controller.CONF_FILE_DEFCONTENT);
 			while(mat.find())
@@ -116,7 +120,7 @@ public class Controller {
 		System.out.println("Modèle chargé : " + abstractionLevel + " , " + learningRate);
 	}
 	
-	public void proposerCoup(int id) {
+	public void proposerCoup(int id) throws IOException {
 		
 		Case c = this.ent.getGrille().at(id);
 		
@@ -130,7 +134,6 @@ public class Controller {
 				this.partie.coupsY.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
 			this.incrementerTourDeJeu();
 			this.entToIhm();
-//			this.ent.getGrille().afficher();
 			Joueur vainqueur = this.ent.getGrille().finDePartie();
 			boolean partieTerminee = (vainqueur != null) || this.ent.getGrille().is_filled();
 			if(partieTerminee)
@@ -138,8 +141,8 @@ public class Controller {
 				if(vainqueur != null)
 				{
 					System.out.println("Le vainqueur est " + vainqueur.toString());
-//					afficher les coups du vainqueur, DEBUG
-					this.partie.afficherCoups(vainqueur);
+					TextFile.stringToFile(this.partie.getCoups(vainqueur), 
+							Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, true);
 				}
 				else
 					System.out.println("Aucun gagnant");
@@ -155,11 +158,12 @@ public class Controller {
 			
 			if(this.ent.getMode() == Mode.P_VS_AI)
 			{
+				save = new Grille(this.ent.getGrille());
 //				this.aiPlaysRandomly();
 				this.aiPlays();
+				this.partie.coupsY.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
 				this.incrementerTourDeJeu();
 				this.entToIhm();
-//				this.ent.getGrille().afficher();
 				vainqueur = this.ent.getGrille().finDePartie();
 				partieTerminee = (vainqueur != null) || this.ent.getGrille().is_filled();
 				if(partieTerminee)
@@ -167,8 +171,8 @@ public class Controller {
 					if(vainqueur != null)
 					{
 						System.out.println("Le vainqueur est " + vainqueur.toString());
-//						afficher les coups du vainqueur, DEBUG
-						this.partie.afficherCoups(vainqueur);
+						TextFile.stringToFile(this.partie.getCoups(vainqueur), 
+								Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, true);
 					}
 					else
 						System.out.println("Aucun gagnant");

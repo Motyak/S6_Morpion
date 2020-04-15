@@ -20,6 +20,21 @@ public class Coup_Ent {
 	
 	@Override
 	public String toString() {
+		String res = "";
+		
+		int i = 0;
+		for(; i < Ent.TAILLE_GRILLE - 1 ; ++i)
+			res += this.avant.at(i).getValue() + ",";
+		res += this.avant.at(i).getValue() + ";";
+		for(i = 0 ; i < Ent.TAILLE_GRILLE - 1 ; ++i)
+			res += this.apres.at(i).getValue() + ",";
+		res += this.apres.at(i).getValue();
+		
+		return res;
+	}
+	
+	public void afficher()
+	{
 		int numCase = this.getNumCaseJouee();
 		int i = 0;
 		int j = 0;
@@ -38,20 +53,20 @@ public class Coup_Ent {
 			else
 				res += this.apres.at(j) + "\n\n";
 		}
-		return res;
+		System.out.println(res);
 	}
 	
-//	public static void main(String[] args)
-//	{
-//		Grille g1 = new Grille();
-//		g1.set(0, Case.X);
-//		g1.set(4, Case.X);
-//		g1.set(7, Case.X);
-//		g1.set(1, Case.O);
-//		g1.set(3, Case.O);
-//		Grille g2 = new Grille(g1);
-//		g2.set(8, Case.O);
-//		Coup_Ent coup = new  Coup_Ent(g1, g2);
-//		System.out.println(coup);
-//	}
+	public static void main(String[] args)
+	{
+		Grille g1 = new Grille();
+		g1.set(0, Case.X);
+		g1.set(4, Case.X);
+		g1.set(7, Case.X);
+		g1.set(1, Case.O);
+		g1.set(3, Case.O);
+		Grille g2 = new Grille(g1);
+		g2.set(8, Case.O);
+		Coup_Ent coup = new  Coup_Ent(g1, g2);
+		System.out.println(coup);
+	}
 }

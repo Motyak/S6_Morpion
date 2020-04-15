@@ -24,7 +24,7 @@ public class TextFile {
 		String content = new String("line1\nline2\nline3");
 		
 		System.out.println("creating file1 with the content of str..");
-		TextFile.stringToFile(content, userDir + "file1");
+		TextFile.stringToFile(content, userDir + "file1", false);
 		
 		System.out.println("renaming file1 into file2.. (and overwriting if the file already exists)");
 		TextFile.rename(userDir, "file1", "file2", true);
@@ -68,9 +68,9 @@ public class TextFile {
 	 * @param filePath the absolute path of the file to create
 	 * @throws IOException if there's a problem finding/writing the file
 	 */
-	public static void stringToFile(Object stringable, String filePath) throws IOException {
+	public static void stringToFile(Object stringable, String filePath, boolean append) throws IOException {
 		String str = stringable.toString();
-		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, append));
 		writer.write(str);
 	    writer.close();
 	}

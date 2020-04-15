@@ -28,23 +28,10 @@ public class Partie_Ent {
 		this.coupsX.clear();
 		this.coupsY.clear();
 	}
-	
-	@Override
-	public String toString() {
-		String res = "";
-		for(int i = 0 ; i < this.coupsX.size() ; ++i)
-		{
-			res += this.coupsX.get(i).toString();
-			if(i < this.coupsY.size())
-				res += this.coupsY.get(i).toString();
-			res += "--------------------\n";
-		}
-			
-		return res;
-	}
 
-	public void afficherCoups(Joueur j)
+	public String getCoups(Joueur j)
 	{
+		String res = "";
 		List<Coup_Ent> coups = null;
 		if(j == Joueur.X)
 			coups = this.coupsX;
@@ -52,24 +39,23 @@ public class Partie_Ent {
 			coups = this.coupsY;
 		
 		for(int i = 0 ; i < coups.size() ; ++i)
-		{
-			System.out.println(coups.get(i));
-			System.out.println("--------------------\n");
-		}
+			res += coups.get(i).toString() + "\n";
+		
+		return res;
 	}
 	
-//	public static void main(String[] args) {
-//		Partie_Ent p = new Partie_Ent();
-//		Grille g1 = new Grille();
-//		Grille g2 = new Grille();
-//		
-//		g2.set(2, Case.X);
-//		Grille g3 = new Grille(g2);
-//		g3.set(6, Case.O);
-//		p.coupsX.add(new Coup_Ent(g1, g2));
-//		p.coupsX.add(new Coup_Ent(g2, g3));
-//		Coup_Ent c = new Coup_Ent(g2, g3);
-//		System.out.println(p);
-//	}
+	public static void main(String[] args) {
+		Partie_Ent p = new Partie_Ent();
+		Grille g1 = new Grille();
+		Grille g2 = new Grille();
+		
+		g2.set(2, Case.X);
+		Grille g3 = new Grille(g2);
+		g3.set(6, Case.O);
+		p.coupsX.add(new Coup_Ent(g1, g2));
+		p.coupsX.add(new Coup_Ent(g2, g3));
+		Coup_Ent c = new Coup_Ent(g2, g3);
+		System.out.println(p.getCoups(Joueur.X));
+	}
 	
 }
