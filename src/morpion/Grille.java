@@ -7,13 +7,28 @@ import java.util.List;
 public class Grille {
 	
 	private Case[] cases;
+	private int taille;
 	
-	public Grille(int dimension)
+	public Grille()
 	{
-		int taille = dimension * dimension;
-		this.cases = new Case[taille];
+		int dimension = Ent.DIM_GRILLE;
+		this.taille = dimension * dimension;
+		this.cases = new Case[this.taille];
 		for(int i = 0 ; i < taille ; ++i)
 			this.cases[i] = Case.VIDE;
+	}
+	
+	public Grille(Grille grille)
+	{
+		this.taille = grille.size();
+		this.cases = new Case[this.taille];
+		for(int i = 0 ; i < grille.size() ; ++i)
+			this.cases[i] = grille.at(i);
+	}
+	
+	public int size()
+	{
+		return this.taille;
 	}
 	
 	public Case at(int index)
@@ -29,7 +44,6 @@ public class Grille {
 	public void clear()
 	{
 		Arrays.fill(this.cases, Case.VIDE);
-		System.out.println("RESET");
 	}
 	
 	public boolean is_filled()

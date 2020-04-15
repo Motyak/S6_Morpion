@@ -25,6 +25,7 @@ public class Controller {
 	private Ent ent;
 	
 	private MultiLayerPerceptron aiModel;
+	private Partie_Ent partie;
 	
 	public final static String DATA_DIRPATH = 
 			System.getProperty("user.dir") + File.separator + "data" + File.separator;
@@ -40,6 +41,7 @@ public class Controller {
 		
 		this.initDataFiles();
 		this.loadAiModel();
+		this.partie = new Partie_Ent();
 	}
 	
 //	public static void main(String[] args) throws Exception {
@@ -120,21 +122,30 @@ public class Controller {
 		
 		if(c == Case.VIDE)
 		{
+			Grille save = new Grille(this.ent.getGrille());
 			this.ent.getGrille().set(id, Case.valueOf(this.ent.getTourJeu().toString()));
-//			this.ent.getGrille()[id] = Case.valueOf(this.ent.getTourJeu().toString());
+			if(this.ent.getTourJeu() == Joueur.X)
+				this.partie.coupsX.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
+			else
+				this.partie.coupsY.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
 			this.incrementerTourDeJeu();
 			this.entToIhm();
-			this.ent.getGrille().afficher();
+//			this.ent.getGrille().afficher();
 			Joueur vainqueur = this.ent.getGrille().finDePartie();
 			boolean partieTerminee = (vainqueur != null) || this.ent.getGrille().is_filled();
 			if(partieTerminee)
 			{
 				if(vainqueur != null)
+				{
 					System.out.println("Le vainqueur est " + vainqueur.toString());
+//					afficher les coups du vainqueur, DEBUG
+					this.partie.afficherCoups(vainqueur);
+				}
 				else
 					System.out.println("Aucun gagnant");
 				
 				this.ent.getGrille().clear();
+				this.partie.reset();	//clear les coups
 				this.ent.setTourJeu(Joueur.values()[0]);
 				this.entToIhm();
 				return;
@@ -148,17 +159,22 @@ public class Controller {
 				this.aiPlays();
 				this.incrementerTourDeJeu();
 				this.entToIhm();
-				this.ent.getGrille().afficher();
+//				this.ent.getGrille().afficher();
 				vainqueur = this.ent.getGrille().finDePartie();
 				partieTerminee = (vainqueur != null) || this.ent.getGrille().is_filled();
 				if(partieTerminee)
 				{
 					if(vainqueur != null)
+					{
 						System.out.println("Le vainqueur est " + vainqueur.toString());
+//						afficher les coups du vainqueur, DEBUG
+						this.partie.afficherCoups(vainqueur);
+					}
 					else
 						System.out.println("Aucun gagnant");
 					
 					this.ent.getGrille().clear();
+					this.partie.reset();	//clear les coups
 					this.ent.setTourJeu(Joueur.values()[0]);
 					this.entToIhm();
 				}

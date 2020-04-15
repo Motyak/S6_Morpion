@@ -10,7 +10,7 @@ public class Ent {
 	private Difficulte diff;
 	
 	Ent() {
-		this.grille = new Grille(Ent.DIM_GRILLE);
+		this.grille = new Grille();
 		this.tourJeu = Joueur.values()[0];
 		this.mode = Mode.P_VS_AI;
 		this.setDiff(Difficulte.NORMAL);
