@@ -54,7 +54,6 @@ public class Partie_Ent {
 		g3.set(6, Case.O);
 		p.coupsX.add(new Coup_Ent(g1, g2));
 		p.coupsX.add(new Coup_Ent(g2, g3));
-		Coup_Ent c = new Coup_Ent(g2, g3);
 		System.out.println(p.getCoups(Joueur.X));
 	}
 	

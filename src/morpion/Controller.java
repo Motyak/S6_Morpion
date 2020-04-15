@@ -1,26 +1,23 @@
 package morpion;
 
+import Mk.Pair;
 import Mk.TextFile;
 import ai.MultiLayerPerceptron;
 import ai.SigmoidalTransferFunction;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
-
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Text;
 
 public class Controller {
 	private Ihm ihm;
@@ -81,7 +78,7 @@ public class Controller {
 	}
 	
 //	check any missing file, create them with default values if so
-	public void initDataFiles() throws Exception {
+	private void initDataFiles() throws Exception {
 		File dataDir = new File(Controller.DATA_DIRPATH);
 		if(!dataDir.exists())
 		{
@@ -104,20 +101,13 @@ public class Controller {
 		}
 	}
 	
-	public void loadAiModel() throws IOException {
-		Difficulte diff = this.ent.getDiff();
-		String conf = TextFile.fileToString(Controller.DATA_DIRPATH + Controller.CONF_FILENAME);
-		Matcher mat = Pattern.compile(diff.getValue() + ":(.*?)\n").matcher(conf);
-		mat.find();
-		Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
-		config.find();
-		int abstractionLevel = Integer.parseInt(config.group(1));
-		double learningRate = Double.parseDouble(config.group(2));
-		String filename = abstractionLevel + "_" + learningRate + ".srl";
+	private void loadAiModel() throws IOException {
+		Pair<Integer,Double> params = this.getModelParams();
+		String filename = params.first + "_" + params.second + ".srl";
 
 		this.aiModel = MultiLayerPerceptron.load(Controller.DATA_DIRPATH + filename);
 		System.out.println("Difficulté : " + this.ent.getDiff());
-		System.out.println("Modèle chargé : " + abstractionLevel + " , " + learningRate);
+		System.out.println("Modèle chargé : " + filename);
 	}
 	
 	public void proposerCoup(int id) throws IOException {
@@ -143,9 +133,12 @@ public class Controller {
 					System.out.println("Le vainqueur est " + vainqueur.toString());
 					TextFile.stringToFile(this.partie.getCoups(vainqueur), 
 							Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, true);
+					this.aiLearns();
 				}
 				else
 					System.out.println("Aucun gagnant");
+				
+				
 				
 				this.ent.getGrille().clear();
 				this.partie.reset();	//clear les coups
@@ -173,9 +166,12 @@ public class Controller {
 						System.out.println("Le vainqueur est " + vainqueur.toString());
 						TextFile.stringToFile(this.partie.getCoups(vainqueur), 
 								Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, true);
+						this.aiLearns();
 					}
 					else
 						System.out.println("Aucun gagnant");
+					
+					
 					
 					this.ent.getGrille().clear();
 					this.partie.reset();	//clear les coups
@@ -209,6 +205,49 @@ public class Controller {
 		grille.set(aleat, Case.O);
 	}
 	
+	private Pair<Integer,Double> getModelParams() throws IOException
+	{
+		Difficulte diff = this.ent.getDiff();
+		String conf = TextFile.fileToString(Controller.DATA_DIRPATH + Controller.CONF_FILENAME);
+		Matcher mat = Pattern.compile(diff.getValue() + ":(.*?)\n").matcher(conf);
+		mat.find();
+		Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
+		config.find();
+		int abstractionLevel = Integer.parseInt(config.group(1));
+		double learningRate = Double.parseDouble(config.group(2));
+		return new Pair<>(abstractionLevel, learningRate);
+	}
+	
+	private void aiLearns() throws IOException
+	{
+		double[] input, output;
+		BufferedReader reader;
+		reader = new BufferedReader(new FileReader(Controller.DATA_DIRPATH + Controller.COUPS_FILENAME));
+		String line = reader.readLine();
+		while(line != null)
+		{
+			input = new double[Ent.TAILLE_GRILLE];
+			output = new double[Ent.TAILLE_GRILLE];
+			Matcher mat = Pattern.compile("([^;]+);([^;]+)").matcher(line);
+			mat.find();
+			List<String> grilleInput = Arrays.asList(mat.group(1).split("\\s*,\\s*"));
+			List<String> grilleOutput = Arrays.asList(mat.group(2).split("\\s*,\\s*"));
+			for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
+			{
+				input[i] = Double.parseDouble(grilleInput.get(i));
+				output[i] = Double.parseDouble(grilleOutput.get(i));
+			}
+			this.aiModel.backPropagate(input, output);
+			line = reader.readLine();
+		}
+		reader.close();
+		
+		Pair<Integer,Double> params = this.getModelParams();
+		String filename = params.first + "_" + params.second + ".srl";
+		this.aiModel.save(Controller.DATA_DIRPATH + filename);
+		System.out.println("Modèle sauvegardé : " + filename);
+	}
+	
 	private void incrementerTourDeJeu()
 	{
 		Joueur j = this.ent.getTourJeu();
@@ -218,6 +257,12 @@ public class Controller {
 	
 	private int[] sortedOutput(double[] output)
 	{
+//		//debug
+//		for(int i = 0 ; i < output.length ; ++i)
+//			System.out.println(output[i]);
+//		System.out.println();
+		
+		
 		int[] sortedIndexes = new int[output.length];
 		TreeMap<Double,Integer> map = new TreeMap<Double,Integer>(Collections.reverseOrder());
 		for(int i = 0 ; i < output.length ; ++i)
