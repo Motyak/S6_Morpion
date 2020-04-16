@@ -7,7 +7,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,8 +21,8 @@ import ai.SigmoidalTransferFunction;
 
 public class Ai {
 	public MultiLayerPerceptron model;
-	private Difficulte diff;
 	public Data data;
+	private Difficulte diff;
 	
 	public final static String DATA_DIRPATH = 
 			System.getProperty("user.dir") + File.separator + "data" + File.separator;
@@ -35,6 +38,45 @@ public class Ai {
 		this.data = new Data();
 		this.initDataFiles();
 		this.loadAiModel();
+	}
+	
+	public void learn() throws IOException
+	{
+		double[] input, output;
+		BufferedReader reader;
+		reader = new BufferedReader(new FileReader(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME));
+		String line = reader.readLine();
+		while(line != null)
+		{
+			input = new double[Ent.TAILLE_GRILLE];
+			output = new double[Ent.TAILLE_GRILLE];
+			Matcher mat = Pattern.compile("([^;]+);([^;]+)").matcher(line);
+			mat.find();
+			List<String> grilleInput = Arrays.asList(mat.group(1).split("\\s*,\\s*"));
+			List<String> grilleOutput = Arrays.asList(mat.group(2).split("\\s*,\\s*"));
+			for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
+			{
+				input[i] = Double.parseDouble(grilleInput.get(i));
+				output[i] = Double.parseDouble(grilleOutput.get(i));
+			}
+			this.model.backPropagate(input, output);
+			line = reader.readLine();
+		}
+		reader.close();
+		
+		Pair<Integer,Double> params = this.getModelParams();
+		String filename = params.first + "_" + params.second + ".srl";
+		this.model.save(Ai.DATA_DIRPATH + filename);
+		System.out.println("Modèle sauvegardé : " + filename);
+	}
+	
+	public int[] genOutput(double[] input) {
+		return this.sortedOutput(this.model.forwardPropagation(input));
+	}
+	
+	public void editConfigFile() throws IOException
+	{
+		Desktop.getDesktop().open(new File(Ai.DATA_DIRPATH + Ai.CONF_FILENAME));
 	}
 	
 //	check any missing file, create them with default values if so
@@ -83,39 +125,22 @@ public class Ai {
 		return new Pair<>(abstractionLevel, learningRate);
 	}
 	
-	public void learn() throws IOException
+	private int[] sortedOutput(double[] output)
 	{
-		double[] input, output;
-		BufferedReader reader;
-		reader = new BufferedReader(new FileReader(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME));
-		String line = reader.readLine();
-		while(line != null)
+		int[] sortedIndexes = new int[output.length];
+		TreeMap<Double,Integer> map = new TreeMap<Double,Integer>(Collections.reverseOrder());
+		for(int i = 0 ; i < output.length ; ++i)
+		    map.put( output[i], i );
+
+		Collection<Integer> values = map.values();
+		int i = 0;
+		for(Integer value : values)
 		{
-			input = new double[Ent.TAILLE_GRILLE];
-			output = new double[Ent.TAILLE_GRILLE];
-			Matcher mat = Pattern.compile("([^;]+);([^;]+)").matcher(line);
-			mat.find();
-			List<String> grilleInput = Arrays.asList(mat.group(1).split("\\s*,\\s*"));
-			List<String> grilleOutput = Arrays.asList(mat.group(2).split("\\s*,\\s*"));
-			for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-			{
-				input[i] = Double.parseDouble(grilleInput.get(i));
-				output[i] = Double.parseDouble(grilleOutput.get(i));
-			}
-			this.model.backPropagate(input, output);
-			line = reader.readLine();
+			sortedIndexes[i] = value;
+			++i;
 		}
-		reader.close();
-		
-		Pair<Integer,Double> params = this.getModelParams();
-		String filename = params.first + "_" + params.second + ".srl";
-		this.model.save(Ai.DATA_DIRPATH + filename);
-		System.out.println("Modèle sauvegardé : " + filename);
-	}
-	
-	public void editConfigFile() throws IOException
-	{
-		Desktop.getDesktop().open(new File(Ai.DATA_DIRPATH + Ai.CONF_FILENAME));
+
+		return sortedIndexes;
 	}
 	
 	static class Data {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Grille {
+class Grille {
 	
 	private Case[] cases;
 	private int taille;

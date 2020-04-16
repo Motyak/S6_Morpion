@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+//obligé de mettre en public pour lier le doc FXML
 public class Ihm {
 	private Controller ctrl;
 	private List<Button> btns;

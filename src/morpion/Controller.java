@@ -2,16 +2,13 @@ package morpion;
 
 import Mk.TextFile;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.TreeMap;
 
-public class Controller {
+class Controller {
 	private Ihm ihm;
 	private Ent ent;
+	
 	private Ai ai;
 
-	
 	Controller(Ihm ihm, Ent ent) throws Exception {
 		this.ihm = ihm;
 		this.ent = ent;
@@ -101,7 +98,7 @@ public class Controller {
 	{
 		Grille grille = this.ent.getGrille();
 		double[] input = this.grilleToDoubles(grille);
-		int[] output = this.sortedOutput(this.ai.model.forwardPropagation(input));
+		int[] output = this.ai.genOutput(input);
 		int i = 0;
 		while(grille.at(output[i]) != Case.VIDE)
 			++i;
@@ -113,25 +110,6 @@ public class Controller {
 		Joueur j = this.ent.getTourJeu();
 		j = j.next();
 		this.ent.setTourJeu(j);
-	}
-	
-	private int[] sortedOutput(double[] output)
-	{
-		int[] sortedIndexes = new int[output.length];
-		TreeMap<Double,Integer> map = new TreeMap<Double,Integer>(Collections.reverseOrder());
-		for(int i = 0 ; i < output.length ; ++i)
-		    map.put( output[i], i );
-		
-
-		Collection<Integer> values = map.values();
-		int i = 0;
-		for(Integer value : values)
-		{
-			sortedIndexes[i] = value;
-			++i;
-		}
-
-		return sortedIndexes;
 	}
 	
 	private double[] grilleToDoubles(Grille grille)
