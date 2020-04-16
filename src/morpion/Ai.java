@@ -27,7 +27,6 @@ import ai.TransferFunction;
 
 public class Ai {
 	
-//	public MultiLayerPerceptron model;
 	public Model model;
 	public Data data;
 	
@@ -99,6 +98,13 @@ public class Ai {
 		int abstractionLevel = Integer.parseInt(config.group(1));
 		double learningRate = Double.parseDouble(config.group(2));
 		return new Pair<>(abstractionLevel, learningRate);
+	}
+	
+	public void reset() throws IOException {
+		Pair<Integer,Double> params = this.getModelParams();
+		int[] layers = {Ent.TAILLE_GRILLE, params.second.intValue(), Ent.TAILLE_GRILLE };
+		this.model = new Model(layers, params.second, new SigmoidalTransferFunction());
+		this.save();
 	}
 	
 //	return the number of needed elements to learn for optimal usage, depending on the model params
