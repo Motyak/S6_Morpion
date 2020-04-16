@@ -23,35 +23,28 @@ import java.util.regex.Pattern;
 public class Controller {
 	private Ihm ihm;
 	private Ent ent;
+	private Ai ai;
+//	private MultiLayerPerceptron aiModel;
+//	private Partie_Ent partie;
 	
-	private MultiLayerPerceptron aiModel;
-	private Partie_Ent partie;
+
 	
-	public final static String DATA_DIRPATH = 
-			System.getProperty("user.dir") + File.separator + "data" + File.separator;
-	
-	public final static String CONF_FILE_DEFCONTENT = 
-			"#mode facile\n1:3,0.1\n#mode normal\n2:6,0.75\n#mode difficile\n3:9,0.9\n";
-	
-	public final static String CONF_FILENAME = "config.txt";
-	public final static String COUPS_FILENAME = "coups.txt";
+
 	
 	Controller(Ihm ihm, Ent ent) throws Exception {
 		this.ihm = ihm;
 		this.ent = ent;
+		this.ai = new Ai(this.ent.getDiff());
 		
-		this.initDataFiles();
-		this.loadAiModel();
-		this.partie = new Partie_Ent();
+//		this.initDataFiles();
+//		this.loadAiModel();
+//		this.partie = new Partie_Ent();
 	}
 	
 //	public static void main(String[] args) throws Exception {
 ////		TU check lines
 //		Ent ent = new Ent();
 //		Controller ctrl = new Controller(new Ihm(), ent);
-//		
-//		
-//		ctrl.editConfigFile();
 //	}
 	
 	public void entToIhm() {
@@ -62,38 +55,38 @@ public class Controller {
 		this.ihm.setTourDeJeu(this.ent.getTourJeu());
 	}
 	
-//	check any missing file, create them with default values if so
-	private void initDataFiles() throws Exception {
-		File dataDir = new File(Controller.DATA_DIRPATH);
-		if(!dataDir.exists())
-		{
-			dataDir.mkdir();
-			TextFile.stringToFile("", Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, false);
-			TextFile.stringToFile(Controller.CONF_FILE_DEFCONTENT, Controller.DATA_DIRPATH + Controller.CONF_FILENAME, false);
-
-			Matcher mat = Pattern.compile("\n.*?:(.*?)\n").matcher(Controller.CONF_FILE_DEFCONTENT);
-			while(mat.find())
-			{
-				Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
-				config.find();
-				int abstractionLevel = Integer.parseInt(config.group(1));
-				double learningRate = Double.parseDouble(config.group(2));
-				int[] layers = new int[]{Ent.TAILLE_GRILLE, abstractionLevel, Ent.TAILLE_GRILLE};
-				MultiLayerPerceptron net = new MultiLayerPerceptron(layers, learningRate, new SigmoidalTransferFunction());
-				if(!net.save(Controller.DATA_DIRPATH + abstractionLevel + "_" + learningRate + ".srl"))
-					throw new Exception("Error creating the file " + abstractionLevel + "_" + learningRate + ".srl");
-			}
-		}
-	}
-	
-	private void loadAiModel() throws IOException {
-		Pair<Integer,Double> params = this.getModelParams();
-		String filename = params.first + "_" + params.second + ".srl";
-
-		this.aiModel = MultiLayerPerceptron.load(Controller.DATA_DIRPATH + filename);
-		System.out.println("Difficulté : " + this.ent.getDiff());
-		System.out.println("Modèle chargé : " + filename);
-	}
+////	check any missing file, create them with default values if so
+//	private void initDataFiles() throws Exception {
+//		File dataDir = new File(Controller.DATA_DIRPATH);
+//		if(!dataDir.exists())
+//		{
+//			dataDir.mkdir();
+//			TextFile.stringToFile("", Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, false);
+//			TextFile.stringToFile(Controller.CONF_FILE_DEFCONTENT, Controller.DATA_DIRPATH + Controller.CONF_FILENAME, false);
+//
+//			Matcher mat = Pattern.compile("\n.*?:(.*?)\n").matcher(Controller.CONF_FILE_DEFCONTENT);
+//			while(mat.find())
+//			{
+//				Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
+//				config.find();
+//				int abstractionLevel = Integer.parseInt(config.group(1));
+//				double learningRate = Double.parseDouble(config.group(2));
+//				int[] layers = new int[]{Ent.TAILLE_GRILLE, abstractionLevel, Ent.TAILLE_GRILLE};
+//				MultiLayerPerceptron net = new MultiLayerPerceptron(layers, learningRate, new SigmoidalTransferFunction());
+//				if(!net.save(Controller.DATA_DIRPATH + abstractionLevel + "_" + learningRate + ".srl"))
+//					throw new Exception("Error creating the file " + abstractionLevel + "_" + learningRate + ".srl");
+//			}
+//		}
+//	}
+//	
+//	private void loadAiModel() throws IOException {
+//		Pair<Integer,Double> params = this.getModelParams();
+//		String filename = params.first + "_" + params.second + ".srl";
+//
+//		this.aiModel = MultiLayerPerceptron.load(Controller.DATA_DIRPATH + filename);
+//		System.out.println("Difficulté : " + this.ent.getDiff());
+//		System.out.println("Modèle chargé : " + filename);
+//	}
 	
 	public void proposerCoup(int id) throws IOException {
 		
@@ -104,9 +97,11 @@ public class Controller {
 			Grille save = new Grille(this.ent.getGrille());
 			this.ent.getGrille().set(id, Case.valueOf(this.ent.getTourJeu().toString()));
 			if(this.ent.getTourJeu() == Joueur.X)
-				this.partie.coupsX.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
+//				this.partie.coupsX.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
+				this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Grille(this.ent.getGrille())));
 			else
-				this.partie.coupsY.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
+//				this.partie.coupsY.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
+				this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Grille(this.ent.getGrille())));
 			this.incrementerTourDeJeu();
 			this.entToIhm();
 			Joueur vainqueur = this.ent.getGrille().finDePartie();
@@ -116,9 +111,12 @@ public class Controller {
 				if(vainqueur != null)
 				{
 					System.out.println("Le vainqueur est " + vainqueur.toString());
-					TextFile.stringToFile(this.partie.getCoups(vainqueur), 
-							Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, true);
-					this.aiLearns();
+//					TextFile.stringToFile(this.partie.getCoups(vainqueur), 
+//							Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, true);
+					TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
+							Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, true);
+//					this.aiLearns();
+					this.ai.learn();
 				}
 				else
 					System.out.println("Aucun gagnant");
@@ -126,7 +124,8 @@ public class Controller {
 				
 				
 				this.ent.getGrille().clear();
-				this.partie.reset();	//clear les coups
+//				this.partie.reset();	//clear les coups
+				this.ai.data.reset();
 				this.ent.setTourJeu(Joueur.values()[0]);
 				this.entToIhm();
 				return;
@@ -139,7 +138,8 @@ public class Controller {
 				save = new Grille(this.ent.getGrille());
 //				this.aiPlaysRandomly();
 				this.aiPlays();
-				this.partie.coupsY.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
+//				this.partie.coupsY.add(new Coup_Ent(save, new Grille(this.ent.getGrille())));
+				this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Grille(this.ent.getGrille())));
 				this.incrementerTourDeJeu();
 				this.entToIhm();
 				vainqueur = this.ent.getGrille().finDePartie();
@@ -149,9 +149,12 @@ public class Controller {
 					if(vainqueur != null)
 					{
 						System.out.println("Le vainqueur est " + vainqueur.toString());
-						TextFile.stringToFile(this.partie.getCoups(vainqueur), 
-								Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, true);
-						this.aiLearns();
+//						TextFile.stringToFile(this.partie.getCoups(vainqueur), 
+//								Controller.DATA_DIRPATH + Controller.COUPS_FILENAME, true);
+						TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
+								Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, true);
+//						this.aiLearns();
+						this.ai.learn();
 					}
 					else
 						System.out.println("Aucun gagnant");
@@ -159,7 +162,8 @@ public class Controller {
 					
 					
 					this.ent.getGrille().clear();
-					this.partie.reset();	//clear les coups
+//					this.partie.reset();	//clear les coups
+					this.ai.data.reset();
 					this.ent.setTourJeu(Joueur.values()[0]);
 					this.entToIhm();
 				}
@@ -171,7 +175,8 @@ public class Controller {
 	{
 		Grille grille = this.ent.getGrille();
 		double[] input = this.grilleToDoubles(grille);
-		int[] output = this.sortedOutput(this.aiModel.forwardPropagation(input));
+//		int[] output = this.sortedOutput(this.aiModel.forwardPropagation(input));
+		int[] output = this.sortedOutput(this.ai.model.forwardPropagation(input));
 		int i = 0;
 		while(grille.at(output[i]) != Case.VIDE)
 			++i;
@@ -190,48 +195,48 @@ public class Controller {
 		grille.set(aleat, Case.O);
 	}
 	
-	private Pair<Integer,Double> getModelParams() throws IOException
-	{
-		Difficulte diff = this.ent.getDiff();
-		String conf = TextFile.fileToString(Controller.DATA_DIRPATH + Controller.CONF_FILENAME);
-		Matcher mat = Pattern.compile(diff.getValue() + ":(.*?)\n").matcher(conf);
-		mat.find();
-		Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
-		config.find();
-		int abstractionLevel = Integer.parseInt(config.group(1));
-		double learningRate = Double.parseDouble(config.group(2));
-		return new Pair<>(abstractionLevel, learningRate);
-	}
-	
-	private void aiLearns() throws IOException
-	{
-		double[] input, output;
-		BufferedReader reader;
-		reader = new BufferedReader(new FileReader(Controller.DATA_DIRPATH + Controller.COUPS_FILENAME));
-		String line = reader.readLine();
-		while(line != null)
-		{
-			input = new double[Ent.TAILLE_GRILLE];
-			output = new double[Ent.TAILLE_GRILLE];
-			Matcher mat = Pattern.compile("([^;]+);([^;]+)").matcher(line);
-			mat.find();
-			List<String> grilleInput = Arrays.asList(mat.group(1).split("\\s*,\\s*"));
-			List<String> grilleOutput = Arrays.asList(mat.group(2).split("\\s*,\\s*"));
-			for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-			{
-				input[i] = Double.parseDouble(grilleInput.get(i));
-				output[i] = Double.parseDouble(grilleOutput.get(i));
-			}
-			this.aiModel.backPropagate(input, output);
-			line = reader.readLine();
-		}
-		reader.close();
-		
-		Pair<Integer,Double> params = this.getModelParams();
-		String filename = params.first + "_" + params.second + ".srl";
-		this.aiModel.save(Controller.DATA_DIRPATH + filename);
-		System.out.println("Modèle sauvegardé : " + filename);
-	}
+//	private Pair<Integer,Double> getModelParams() throws IOException
+//	{
+//		Difficulte diff = this.ent.getDiff();
+//		String conf = TextFile.fileToString(Controller.DATA_DIRPATH + Controller.CONF_FILENAME);
+//		Matcher mat = Pattern.compile(diff.getValue() + ":(.*?)\n").matcher(conf);
+//		mat.find();
+//		Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
+//		config.find();
+//		int abstractionLevel = Integer.parseInt(config.group(1));
+//		double learningRate = Double.parseDouble(config.group(2));
+//		return new Pair<>(abstractionLevel, learningRate);
+//	}
+//	
+//	private void aiLearns() throws IOException
+//	{
+//		double[] input, output;
+//		BufferedReader reader;
+//		reader = new BufferedReader(new FileReader(Controller.DATA_DIRPATH + Controller.COUPS_FILENAME));
+//		String line = reader.readLine();
+//		while(line != null)
+//		{
+//			input = new double[Ent.TAILLE_GRILLE];
+//			output = new double[Ent.TAILLE_GRILLE];
+//			Matcher mat = Pattern.compile("([^;]+);([^;]+)").matcher(line);
+//			mat.find();
+//			List<String> grilleInput = Arrays.asList(mat.group(1).split("\\s*,\\s*"));
+//			List<String> grilleOutput = Arrays.asList(mat.group(2).split("\\s*,\\s*"));
+//			for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
+//			{
+//				input[i] = Double.parseDouble(grilleInput.get(i));
+//				output[i] = Double.parseDouble(grilleOutput.get(i));
+//			}
+//			this.aiModel.backPropagate(input, output);
+//			line = reader.readLine();
+//		}
+//		reader.close();
+//		
+//		Pair<Integer,Double> params = this.getModelParams();
+//		String filename = params.first + "_" + params.second + ".srl";
+//		this.aiModel.save(Controller.DATA_DIRPATH + filename);
+//		System.out.println("Modèle sauvegardé : " + filename);
+//	}
 	
 	private void incrementerTourDeJeu()
 	{
@@ -271,10 +276,5 @@ public class Controller {
 		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
 			res[i] = (double)grille.at(i).getValue();
 		return res;
-	}
-	
-	public void editConfigFile() throws IOException
-	{
-		Desktop.getDesktop().open(new File(Controller.DATA_DIRPATH + Controller.CONF_FILENAME));
 	}
 }
