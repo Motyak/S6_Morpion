@@ -71,7 +71,7 @@ public class TextFile {
 	public static void stringToFile(Object stringable, String filePath, boolean append) throws IOException {
 		String str = stringable.toString();
 		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, append));
-		writer.write(str);
+		writer.write(str + "\n");
 	    writer.close();
 	}
 	

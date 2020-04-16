@@ -1,14 +1,14 @@
 package morpion;
 
 enum Difficulte {
-	FACILE(1),
-	NORMAL(2),
-	DIFFICILE(3);
+	FACILE("Facile"),
+	NORMAL("Normal"),
+	DIFFICILE("Difficile");
 	
-	private final int value;
-	private Difficulte(int value) {
+	private final String value;
+	private Difficulte(String value) {
 		this.value = value;
 	}
 	
-	public int getValue() { return this.value; }
+	public String getValue() { return this.value; }
 }

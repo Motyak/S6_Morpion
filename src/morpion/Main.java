@@ -8,6 +8,13 @@ import javafx.scene.Scene;
 
 
 public class Main extends Application {
+	
+	public static Thread learningThread;
+	
+	public static void main(String[] args) {
+		launch(args);
+	}
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -21,7 +28,9 @@ public class Main extends Application {
 		}
 	}
 	
-	public static void main(String[] args) {
-		launch(args);
+	@Override
+	public void stop() throws Exception {
+		if(Main.learningThread != null)
+			Main.learningThread.interrupt();
 	}
 }

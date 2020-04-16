@@ -20,28 +20,31 @@ import ai.MultiLayerPerceptron;
 import ai.SigmoidalTransferFunction;
 
 public class Ai {
+	
 	public MultiLayerPerceptron model;
 	public Data data;
+	
 	private Difficulte diff;
+	private int consideredMoves;
 	
 	public final static String DATA_DIRPATH = 
 			System.getProperty("user.dir") + File.separator + "data" + File.separator;
 	
 	public final static String CONF_FILE_DEFCONTENT = 
-			"#mode facile\n1:3,0.1\n#mode normal\n2:6,0.75\n#mode difficile\n3:9,0.9\n";
+			"Facile=3,0.1\nNormal=6,0.75\nDifficile=9,0.9\n";
 	
 	public final static String CONF_FILENAME = "config.txt";
 	public final static String COUPS_FILENAME = "coups.txt";
 	
 	public Ai(Difficulte diff) throws Exception {
 		this.diff = diff;
+		this.consideredMoves = 0;
 		this.data = new Data();
 		this.initDataFiles();
 		this.loadAiModel();
 	}
 	
-	public void learn() throws IOException
-	{
+	public void learn() throws IOException {
 		double[] input, output;
 		BufferedReader reader;
 		reader = new BufferedReader(new FileReader(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME));
@@ -74,10 +77,31 @@ public class Ai {
 		return this.sortedOutput(this.model.forwardPropagation(input));
 	}
 	
-	public void editConfigFile() throws IOException
-	{
+	public void editConfigFile() throws IOException {
 		Desktop.getDesktop().open(new File(Ai.DATA_DIRPATH + Ai.CONF_FILENAME));
 	}
+	
+	public Pair<Integer,Double> getModelParams() throws IOException
+	{
+		Difficulte diff = this.diff;
+		String conf = TextFile.fileToString(Ai.DATA_DIRPATH + Ai.CONF_FILENAME);
+		Matcher mat = Pattern.compile(diff.getValue() + "=(.*?)\n").matcher(conf);
+		mat.find();
+		Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
+		config.find();
+		int abstractionLevel = Integer.parseInt(config.group(1));
+		double learningRate = Double.parseDouble(config.group(2));
+		return new Pair<>(abstractionLevel, learningRate);
+	}
+	
+	public int calcOptNb(int abstractionLevel, double learningRate) {
+//		hardcoded for the moment
+		return 10000;
+	}
+	
+	public Difficulte getDiff() { return this.diff; }
+	
+	public int getConsideredMoves() { return this.consideredMoves; }
 	
 //	check any missing file, create them with default values if so
 	private void initDataFiles() throws Exception {
@@ -88,7 +112,7 @@ public class Ai {
 			TextFile.stringToFile("", Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, false);
 			TextFile.stringToFile(Ai.CONF_FILE_DEFCONTENT, Ai.DATA_DIRPATH + Ai.CONF_FILENAME, false);
 
-			Matcher mat = Pattern.compile("\n.*?:(.*?)\n").matcher(Ai.CONF_FILE_DEFCONTENT);
+			Matcher mat = Pattern.compile("=(.*?)\n").matcher(Ai.CONF_FILE_DEFCONTENT);
 			while(mat.find())
 			{
 				Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
@@ -102,27 +126,14 @@ public class Ai {
 			}
 		}
 	}
-	
+
 	private void loadAiModel() throws IOException {
 		Pair<Integer,Double> params = this.getModelParams();
 		String filename = params.first + "_" + params.second + ".srl";
 
 		this.model = MultiLayerPerceptron.load(Ai.DATA_DIRPATH + filename);
-		System.out.println("Difficulté : " + this.diff);
+		System.out.println("Difficulté : " + this.diff.getValue());
 		System.out.println("Modèle chargé : " + filename);
-	}
-	
-	private Pair<Integer,Double> getModelParams() throws IOException
-	{
-		Difficulte diff = this.diff;
-		String conf = TextFile.fileToString(Ai.DATA_DIRPATH + Ai.CONF_FILENAME);
-		Matcher mat = Pattern.compile(diff.getValue() + ":(.*?)\n").matcher(conf);
-		mat.find();
-		Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
-		config.find();
-		int abstractionLevel = Integer.parseInt(config.group(1));
-		double learningRate = Double.parseDouble(config.group(2));
-		return new Pair<>(abstractionLevel, learningRate);
 	}
 	
 	private int[] sortedOutput(double[] output)
