@@ -3,8 +3,13 @@ package morpion;
 import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,27 +23,27 @@ import Mk.Pair;
 import Mk.TextFile;
 import ai.MultiLayerPerceptron;
 import ai.SigmoidalTransferFunction;
+import ai.TransferFunction;
 
 public class Ai {
 	
-	public MultiLayerPerceptron model;
+//	public MultiLayerPerceptron model;
+	public Model model;
 	public Data data;
 	
 	private Difficulte diff;
-	private int consideredMoves;
 	
 	public final static String DATA_DIRPATH = 
 			System.getProperty("user.dir") + File.separator + "data" + File.separator;
 	
 	public final static String CONF_FILE_DEFCONTENT = 
-			"Facile=3,0.1\nNormal=6,0.75\nDifficile=9,0.9\n";
+			"Facile=3,0.1\nNormal=6,0.75\nDifficile=9,0.9\n\n";
 	
 	public final static String CONF_FILENAME = "config.txt";
 	public final static String COUPS_FILENAME = "coups.txt";
 	
 	public Ai(Difficulte diff) throws Exception {
 		this.diff = diff;
-		this.consideredMoves = 0;
 		this.data = new Data();
 		this.initDataFiles();
 		this.loadAiModel();
@@ -66,7 +71,9 @@ public class Ai {
 			line = reader.readLine();
 		}
 		reader.close();
-		
+	}
+	
+	public void save() throws IOException {
 		Pair<Integer,Double> params = this.getModelParams();
 		String filename = params.first + "_" + params.second + ".srl";
 		this.model.save(Ai.DATA_DIRPATH + filename);
@@ -94,14 +101,13 @@ public class Ai {
 		return new Pair<>(abstractionLevel, learningRate);
 	}
 	
+//	return the number of needed elements to learn for optimal usage, depending on the model params
 	public int calcOptNb(int abstractionLevel, double learningRate) {
 //		hardcoded for the moment
 		return 10000;
 	}
 	
 	public Difficulte getDiff() { return this.diff; }
-	
-	public int getConsideredMoves() { return this.consideredMoves; }
 	
 //	check any missing file, create them with default values if so
 	private void initDataFiles() throws Exception {
@@ -120,18 +126,17 @@ public class Ai {
 				int abstractionLevel = Integer.parseInt(config.group(1));
 				double learningRate = Double.parseDouble(config.group(2));
 				int[] layers = new int[]{Ent.TAILLE_GRILLE, abstractionLevel, Ent.TAILLE_GRILLE};
-				MultiLayerPerceptron net = new MultiLayerPerceptron(layers, learningRate, new SigmoidalTransferFunction());
-				if(!net.save(Ai.DATA_DIRPATH + abstractionLevel + "_" + learningRate + ".srl"))
-					throw new Exception("Error creating the file " + abstractionLevel + "_" + learningRate + ".srl");
+				Model mod = new Model(layers, learningRate, new SigmoidalTransferFunction());
+				mod.save(Ai.DATA_DIRPATH + abstractionLevel + "_" + learningRate + ".srl");
 			}
 		}
 	}
 
-	private void loadAiModel() throws IOException {
+	private void loadAiModel() throws Exception {
 		Pair<Integer,Double> params = this.getModelParams();
 		String filename = params.first + "_" + params.second + ".srl";
 
-		this.model = MultiLayerPerceptron.load(Ai.DATA_DIRPATH + filename);
+		this.model = Ai.Model.load(Ai.DATA_DIRPATH + filename);
 		System.out.println("Difficulté : " + this.diff.getValue());
 		System.out.println("Modèle chargé : " + filename);
 	}
@@ -152,6 +157,40 @@ public class Ai {
 		}
 
 		return sortedIndexes;
+	}
+	
+	static class Model implements Serializable{
+
+		MultiLayerPerceptron p;
+		int consideredMoves;
+		
+		public Model(int[] layers, double learningRate, TransferFunction fun) {
+			this.p = new MultiLayerPerceptron(layers, learningRate, fun);
+			this.consideredMoves = 0;
+		}
+		
+		public int getConsideredMoves() { return this.consideredMoves; }
+		public void incConsideredMoves() { ++this.consideredMoves; }
+		
+		public double[] forwardPropagation(double[] input){ return this.p.forwardPropagation(input); }
+		public double backPropagate(double[] input, double[] output) { return this.p.backPropagate(input, output); }
+		
+		public void save(String filePath) throws IOException {
+			FileOutputStream fos = new FileOutputStream(filePath);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(this);
+			oos.close();
+		}
+		
+		public static Model load(String filePath) throws Exception {
+			FileInputStream fis = new FileInputStream(filePath);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			Model mod = (Model) ois.readObject();
+			ois.close();
+			
+			return mod;
+		}
+		
 	}
 	
 	static class Data {

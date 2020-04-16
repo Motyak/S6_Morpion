@@ -94,6 +94,12 @@ class Controller {
 		}	
 	}
 	
+	public void lancerApprentissage() {
+		Main.learningThread = new Thread(new Apprentissage_Task<>(this.ai));
+		Main.learningThread.setDaemon(true);
+		Main.learningThread.start();
+	}
+	
 	private void aiPlays()
 	{
 		Grille grille = this.ent.getGrille();

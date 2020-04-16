@@ -46,6 +46,8 @@ public class Ihm {
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
 		
+		this.ctrl.lancerApprentissage();
+		
 		this.btns = new ArrayList<>(Arrays.asList(
 			btnCase0, btnCase1, btnCase2, 
 			btnCase3, btnCase4, btnCase5, 
