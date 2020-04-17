@@ -7,8 +7,8 @@ enum Case {
 			return "";
 		}
 	},
-	X(3),
-	O(5);
+	X(-1),
+	O(1);
 	
 	
 	private final int value;
