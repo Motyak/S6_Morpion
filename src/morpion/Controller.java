@@ -1,5 +1,6 @@
 package morpion;
 
+import Mk.Pair;
 import Mk.TextFile;
 import java.io.IOException;
 
@@ -24,7 +25,7 @@ class Controller {
 	}
 	
 	public void proposerCoup(int id) throws IOException {
-		
+
 		Case c = this.ent.getGrille().at(id);
 		
 		if(c == Case.VIDE)
@@ -121,8 +122,10 @@ class Controller {
 	private double[] grilleToDoubles(Grille grille)
 	{
 		double[] res = new double[Ent.TAILLE_GRILLE];
-		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-			res[i] = (double)grille.at(i).getValue();
+		for(int i = 0 ; i < Ent.DIM_GRILLE ; ++i)
+			for(int j = 0 ; j < Ent.DIM_GRILLE ; ++j)
+				res[Ent.DIM_GRILLE * i + j] = grille.at(i, j).getValue();
+		
 		return res;
 	}
 }

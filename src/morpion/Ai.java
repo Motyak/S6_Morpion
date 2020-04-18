@@ -241,23 +241,20 @@ public class Ai {
 			
 			public int getNumCaseJouee()
 			{
-				for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-					if(avant.at(i) != apres.at(i))
-						return i;
+				int dim = this.avant.getDim();
+				int j;
+				for(int i = 0 ; i < dim ; ++i)
+					for(j = 0 ; j < dim ; ++j)
+						if(this.avant.at(i, j) != this.apres.at(i, j))
+							return i;
 				return -1;
 			}
 			
 			@Override
 			public String toString() {
 				String res = "";
-				
-				int i = 0;
-				for(; i < Ent.TAILLE_GRILLE - 1 ; ++i)
-					res += this.avant.at(i).getValue() + ",";
-				res += this.avant.at(i).getValue() + ";";
-				for(i = 0 ; i < Ent.TAILLE_GRILLE - 1 ; ++i)
-					res += this.apres.at(i).getValue() + ",";
-				res += this.apres.at(i).getValue();
+				res += this.avant + ";";
+				res += this.apres;
 				
 				return res;
 			}

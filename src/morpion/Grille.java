@@ -11,30 +11,6 @@ class Grille {
 	private Case[][] cases;
 	private int dim;
 	
-//	public static void main(String[] args) {
-//		Grille grille = new Grille();
-//		
-//		grille.set(0, 0, Case.O);
-//		grille.set(0, 1, Case.X);
-//		grille.set(0, 2, Case.VIDE);
-//		grille.set(1, 0, Case.X);
-//		grille.set(1, 1, Case.O);
-//		grille.set(1, 2, Case.VIDE);
-//		grille.set(2, 0, Case.X);
-//		grille.set(2, 1, Case.VIDE);
-//		grille.set(2, 2, Case.O);
-//		
-//		grille.afficher();
-//		
-//		Joueur vainqueur = grille.finDePartie();
-//		if(vainqueur == null)
-//			System.out.println("pas de vainqueur");
-//		else
-//			System.out.println("vainqueur : " + vainqueur);
-//
-//		
-//	}
-	
 	public Grille()
 	{
 		this.dim = Ent.DIM_GRILLE;
@@ -57,7 +33,11 @@ class Grille {
 	
 	public Case at(int i, int j) { return this.cases[i][j]; }
 	
+	public Case at(int id) { return this.cases[id / this.dim][id % this.dim]; }
+	
 	public void set(int i, int j, Case c) { this.cases[i][j] = c; }
+	
+	public void set(int id, Case c) { this.cases[id / this.dim][id % this.dim] = c; }
 	
 	public void clear()
 	{
@@ -108,93 +88,18 @@ class Grille {
 		}
 		sumsRanges.addAll(sumDiags);
 		sumsRanges.sort((Integer i1, Integer i2) -> Math.square(i2).compareTo(Math.square(i1)));
-		System.out.println(sumsRanges);
 		int bestRange = sumsRanges.get(0);
 		return Joueur.get(bestRange / this.dim);
 	}
 	
-//	public Joueur finDePartie()
-//	{
-//		Joueur j = this.checkLines();
-//		if(j == null)
-//			j = this.checkColumns();
-//		if(j == null)
-//			j = this.checkDiags();
-//		return j;
-//	}
-//	
-//	private int sumOfRange(List<Case> cases)
-//	{
-//		int sum = 0;
-//		for(Case c : cases)
-//			sum += c.getValue();
-//		
-//		return sum;
-//	}
-//	
-//	private Joueur checkLines()
-//	{
-//		List<Case> line = new ArrayList<>();
-//		
-//		int i = 0;
-//		int j;
-//	
-//		for(; i < Ent.DIM_GRILLE ; ++i)
-//		{
-//			for(j = Ent.DIM_GRILLE * i ; j < (i + 1) * Ent.DIM_GRILLE ; ++j)
-//				line.add(this.cases[j]);
-//			int sum = this.sumOfRange(line);
-//			if(sum == Ent.DIM_GRILLE * Case.X.getValue())
-//				return Joueur.X;
-//			else if(sum == Ent.DIM_GRILLE * Case.O.getValue())
-//				return Joueur.O;
-//			line.clear();
-//		}
-//		return null;
-//	}
-//	
-//	private Joueur checkColumns()
-//	{
-//		List<Case> column = new ArrayList<>();
-//		
-//		int i = 0;
-//		int j;
-//	
-//		for(; i < Ent.DIM_GRILLE ; ++i)	//+0, +1, +2
-//		{
-//			for(j = i ; j <= 2 * Ent.DIM_GRILLE + i ; j+=Ent.DIM_GRILLE)
-//				column.add(this.cases[j]);
-//			int sum = this.sumOfRange(column);
-//			if(sum == Ent.DIM_GRILLE * Case.X.getValue())
-//				return Joueur.X;
-//			else if(sum == Ent.DIM_GRILLE * Case.O.getValue())
-//				return Joueur.O;
-//			column.clear();
-//		}
-//		return null;
-//	}
-//	
-//	private Joueur checkDiags()
-//	{
-//		List<Case> diag = new ArrayList<>();
-//		
-//		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; i += 4)
-//			diag.add(this.cases[i]);
-//		int sum = this.sumOfRange(diag);
-//		if(sum == Ent.DIM_GRILLE * Case.X.getValue())
-//			return Joueur.X;
-//		else if(sum == Ent.DIM_GRILLE * Case.O.getValue())
-//			return Joueur.O;
-//		diag.clear();
-//		for(int i = 2 ; i <= 2 * Ent.DIM_GRILLE ; i += 2)
-//			diag.add(this.cases[i]);
-//		sum = this.sumOfRange(diag);
-//		if(sum == Ent.DIM_GRILLE * Case.X.getValue())
-//			return Joueur.X;
-//		else if(sum == Ent.DIM_GRILLE * Case.O.getValue())
-//			return Joueur.O;
-//		
-//		return null;
-//	}
-
+	@Override
+	public String toString() {
+		StringBuilder res = new StringBuilder("");
+		int j, k;
+		for(int i = 0 ; i < this.dim ; ++i)
+			for(j = 0 ; j < this.dim ; ++j)
+				res.append(this.cases[i][j].getValue() + ",");
+		res.deleteCharAt(res.length() - 1);
+		return res.toString();
+	}
 }

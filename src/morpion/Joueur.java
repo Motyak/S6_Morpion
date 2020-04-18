@@ -22,7 +22,6 @@ enum Joueur {
 		return null;
 	}
 	
-	
 	private Joueur(int value) {
 		this.value = value;
 	}
