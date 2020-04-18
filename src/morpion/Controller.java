@@ -1,6 +1,7 @@
 package morpion;
 
 import Mk.TextFile;
+
 import java.io.IOException;
 
 class Controller {
@@ -18,7 +19,7 @@ class Controller {
 	
 	public void entToIhm() 
 	{
-		Grille grille = this.ent.getGrille();
+		Ent.Grille grille = this.ent.getGrille();
 		
 		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
 			this.ihm.writeCase(i, grille.at(i));
@@ -27,7 +28,7 @@ class Controller {
 	
 	public void proposerCoup(int id) throws IOException 
 	{
-		Grille grille = this.ent.getGrille();
+		Ent.Grille grille = this.ent.getGrille();
 		
 		if(grille.at(id) == Case.VIDE)
 		{
@@ -53,21 +54,21 @@ class Controller {
 	
 	private void jouerCoup(int id)
 	{
-		Grille grille = this.ent.getGrille();
+		Ent.Grille grille = this.ent.getGrille();
 		
-		Grille save = new Grille(grille);
+		Ent.Grille save = new Ent.Grille(grille);
 		grille.set(id, Case.valueOf(this.ent.getTourJeu().toString()));
 		if(this.ent.getTourJeu() == Joueur.X)
-			this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Grille(grille)));
+			this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
 		else
-			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Grille(grille)));
+			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
 		this.incrementerTourDeJeu();
 		this.entToIhm();
 	}
 	
 	private boolean verifierFinDePartie() throws IOException
 	{
-		Grille grille = this.ent.getGrille();
+		Ent.Grille grille = this.ent.getGrille();
 		
 		Joueur vainqueur = grille.finDePartie();
 		boolean partieTerminee = (vainqueur != null) || grille.is_filled();
@@ -95,7 +96,7 @@ class Controller {
 	
 	private int aiPlays()
 	{
-		Grille grille = this.ent.getGrille();
+		Ent.Grille grille = this.ent.getGrille();
 		
 		double[] input = this.grilleToDoubles(grille);
 		int[] output = this.ai.genOutput(input);
@@ -113,7 +114,7 @@ class Controller {
 		this.ent.setTourJeu(j);
 	}
 	
-	private double[] grilleToDoubles(Grille grille)
+	private double[] grilleToDoubles(Ent.Grille grille)
 	{
 		double[] res = new double[Ent.TAILLE_GRILLE];
 		for(int i = 0 ; i < Ent.DIM_GRILLE ; ++i)

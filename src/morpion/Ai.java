@@ -224,16 +224,16 @@ public class Ai {
 				coups = this.coupsY;
 			
 			for(int i = 0 ; i < coups.size() ; ++i)
-				res += coups.get(i).toString() + "\n";
+				res += coups.get(i) + "\n";
 			
 			return res;
 		}
 		
 		static class Coup {
-			public Grille avant;
-			public Grille apres;
+			public Ent.Grille avant;
+			public Ent.Grille apres;
 			
-			public Coup(Grille avant, Grille apres)
+			public Coup(Ent.Grille avant, Ent.Grille apres)
 			{
 				this.avant = avant;
 				this.apres = apres;
