@@ -1,6 +1,5 @@
 package morpion;
 
-import Mk.Pair;
 import Mk.TextFile;
 import java.io.IOException;
 

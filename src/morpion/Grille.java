@@ -95,7 +95,7 @@ class Grille {
 	@Override
 	public String toString() {
 		StringBuilder res = new StringBuilder("");
-		int j, k;
+		int j;
 		for(int i = 0 ; i < this.dim ; ++i)
 			for(j = 0 ; j < this.dim ; ++j)
 				res.append(this.cases[i][j].getValue() + ",");

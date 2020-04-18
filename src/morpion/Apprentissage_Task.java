@@ -3,6 +3,7 @@ package morpion;
 import Mk.Pair;
 import javafx.concurrent.Task;
 
+@SuppressWarnings("hiding")
 public class Apprentissage_Task<Void> extends Task<Void> {
 	
 	private Ai ai;

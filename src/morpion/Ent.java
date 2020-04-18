@@ -13,7 +13,7 @@ public class Ent {
 		this.grille = new Grille();
 		this.tourJeu = Joueur.values()[0];
 		this.mode = Mode.P_VS_AI;
-		this.setDiff(Difficulte.NORMAL);
+		this.setDiff(Difficulte.FACILE);
 	}
 
 	public Grille getGrille() {return grille;}
