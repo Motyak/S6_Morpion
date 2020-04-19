@@ -252,11 +252,7 @@ public class Ai {
 			
 			@Override
 			public String toString() {
-				String res = "";
-				res += this.avant + ";";
-				res += this.apres;
-				
-				return res;
+				return this.avant + ";" + this.apres;
 			}
 		}
 	}
