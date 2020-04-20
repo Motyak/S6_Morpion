@@ -20,22 +20,16 @@ import javafx.stage.Window;
 //obligé de mettre en public pour lier le doc FXML
 public class Ihm {
 	private Controller ctrl;
+	
+//	les controllers des sous-vues
 	@FXML private Grille panelGrilleController;
 	@FXML private TourJeu panelTourJeuController;
-	
-	@FXML private GridPane panelGrille;
-	@FXML private HBox panelTourJeu;
+	@FXML private Menu panelMenuController;
 	
 //	panels
-//	@FXML private HBox panelMain;
+	@FXML private GridPane panelGrille;
+	@FXML private HBox panelTourJeu;
 	@FXML private AnchorPane panelMenu;
-//	@FXML private VBox panelJeu;
-	
-	
-////	tour de jeu
-//	@FXML private Label lblX;
-//	@FXML private Label lblO;
-	
 	
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
@@ -121,6 +115,10 @@ public class Ihm {
 				this.lblO.setTextFill(Color.BLACK);
 			}
 		}
+	}
+	
+	public static class Menu {
+		;
 	}
 
 }
