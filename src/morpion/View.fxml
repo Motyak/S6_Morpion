@@ -21,26 +21,7 @@
       <VBox fx:id="panelJeu">
          <children>
             <fx:include fx:id="panelGrille" source="Grille.fxml" />
-            <HBox fx:id="panelTourJeu">
-               <children>
-                  <Label fx:id="lblX" text="X" textFill="GREY">
-                     <HBox.margin>
-                        <Insets left="95.0" />
-                     </HBox.margin>
-                     <font>
-                        <Font size="26.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lblO" text="O" textFill="GREY">
-                     <HBox.margin>
-                        <Insets left="75.0" />
-                     </HBox.margin>
-                     <font>
-                        <Font size="26.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
+            <fx:include fx:id="panelTourJeu" source="TourJeu.fxml" />
          </children>
       </VBox>
    </children>

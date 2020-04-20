@@ -20,11 +20,11 @@ class Controller {
 	public void entToIhm() 
 	{
 		Ent.Grille grille = this.ent.getGrille();
+		Ihm.Grille grilleIhm = this.ihm.getGrille();
 		
 		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-//			this.ihm.writeCase(i, grille.at(i));
-			this.ihm.getGrille().writeCase(i, grille.at(i));
-		this.ihm.setTourDeJeu(this.ent.getTourJeu());
+			grilleIhm.writeCase(i, grille.at(i));
+		this.ihm.getTourJeu().setTourDeJeu(this.ent.getTourJeu());
 	}
 	
 	public void proposerCoup(int id) throws IOException 

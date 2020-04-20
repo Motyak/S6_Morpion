@@ -21,32 +21,20 @@ import javafx.stage.Window;
 public class Ihm {
 	private Controller ctrl;
 	@FXML private Grille panelGrilleController;
+	@FXML private TourJeu panelTourJeuController;
 	
 	@FXML private GridPane panelGrille;
-	
-//	private List<Button> btns;
+	@FXML private HBox panelTourJeu;
 	
 //	panels
 //	@FXML private HBox panelMain;
 	@FXML private AnchorPane panelMenu;
 //	@FXML private VBox panelJeu;
-//	@FXML private GridPane panelGrille;
-	@FXML private HBox panelTourJeu;
 	
-////	cases du morpion
-//	@FXML private Button btnCase0;
-//	@FXML private Button btnCase1;
-//	@FXML private Button btnCase2;
-//	@FXML private Button btnCase3;
-//	@FXML private Button btnCase4;
-//	@FXML private Button btnCase5;
-//	@FXML private Button btnCase6;
-//	@FXML private Button btnCase7;
-//	@FXML private Button btnCase8;
 	
-//	tour de jeu
-	@FXML private Label lblX;
-	@FXML private Label lblO;
+////	tour de jeu
+//	@FXML private Label lblX;
+//	@FXML private Label lblO;
 	
 	
 	@FXML private void initialize() throws Exception {
@@ -57,22 +45,8 @@ public class Ihm {
 	}
 	
 	public Controller getCtrl() { return this.ctrl; }
-	
 	public Grille getGrille() { return this.panelGrilleController; }
-	
-	public void setTourDeJeu(Joueur j)
-	{
-		if(j == Joueur.X)
-		{
-			this.lblX.setTextFill(Color.BLACK);
-			this.lblO.setTextFill(Color.GREY);
-		}
-		else if(j == Joueur.O)
-		{
-			this.lblX.setTextFill(Color.GREY);
-			this.lblO.setTextFill(Color.BLACK);
-		}
-	}
+	public TourJeu getTourJeu() { return this.panelTourJeuController; }
 
 	public static class Grille {
 		private Ihm ihm;
@@ -124,6 +98,29 @@ public class Ihm {
 				}
 			}
 		};
+	}
+	
+	public static class TourJeu {
+		@FXML private Label lblX;
+		@FXML private Label lblO;
+		
+		@FXML private void initialize() throws Exception {
+			this.setTourDeJeu(Joueur.X);
+		}
+		
+		public void setTourDeJeu(Joueur j)
+		{
+			if(j == Joueur.X)
+			{
+				this.lblX.setTextFill(Color.BLACK);
+				this.lblO.setTextFill(Color.GREY);
+			}
+			else if(j == Joueur.O)
+			{
+				this.lblX.setTextFill(Color.GREY);
+				this.lblO.setTextFill(Color.BLACK);
+			}
+		}
 	}
 
 }
