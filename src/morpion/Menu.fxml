@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="panelMenu" minHeight="450.0" minWidth="265.0" prefHeight="450.0" prefWidth="265.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="450.0" minWidth="265.0" prefHeight="450.0" prefWidth="265.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm$Menu">
    <children>
       <HBox minHeight="450.0" minWidth="265.0" prefHeight="450.0" prefWidth="265.0">
          <children>
@@ -51,7 +51,7 @@
                               <Insets left="10.0" top="10.0" />
                            </HBox.margin>
                         </Button>
-                        <Button minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" text="Button">
+                        <Button fx:id="btnEditConfig" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" text="Button">
                            <HBox.margin>
                               <Insets left="40.0" top="10.0" />
                            </HBox.margin>

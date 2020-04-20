@@ -46,11 +46,17 @@ class Controller {
 		}	
 	}
 	
-	public void lancerApprentissage() 
+	public void lancerApprentissage() throws IOException 
 	{
+//		this.ai.reset();
 		Main.learningThread = new Thread(new Apprentissage_Task<>(this.ai));
 		Main.learningThread.setDaemon(true);
 		Main.learningThread.start();
+	}
+	
+	public void editConfigFile() throws IOException
+	{
+		this.ai.editConfigFile();
 	}
 	
 	private void jouerCoup(int id)

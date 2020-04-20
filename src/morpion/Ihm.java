@@ -8,6 +8,7 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -34,6 +35,7 @@ public class Ihm {
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
 		this.panelGrilleController.injectMainController(this);
+		this.panelMenuController.injectMainController(this);
 		
 		this.ctrl.lancerApprentissage();
 	}
@@ -57,7 +59,7 @@ public class Ihm {
 		@FXML private Button btnCase7;
 		@FXML private Button btnCase8;
 		
-		@FXML private void initialize() throws Exception {
+		@FXML private void initialize() {
 			this.btns = new ArrayList<>(Arrays.asList(
 			btnCase0, btnCase1, btnCase2, 
 			btnCase3, btnCase4, btnCase5, 
@@ -98,7 +100,7 @@ public class Ihm {
 		@FXML private Label lblX;
 		@FXML private Label lblO;
 		
-		@FXML private void initialize() throws Exception {
+		@FXML private void initialize() {
 			this.setTourDeJeu(Joueur.X);
 		}
 		
@@ -118,7 +120,27 @@ public class Ihm {
 	}
 	
 	public static class Menu {
-		;
+		private Ihm ihm;
+		
+		@FXML private Button btnEditConfig;
+		
+		@FXML private void initialize() {
+			this.btnEditConfig.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					try {
+						Menu.this.ihm.getCtrl().editConfigFile();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+		
+		public void injectMainController(Ihm ihm)
+		{
+			this.ihm = ihm;
+		}
 	}
 
 }
