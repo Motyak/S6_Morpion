@@ -22,7 +22,8 @@ class Controller {
 		Ent.Grille grille = this.ent.getGrille();
 		
 		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-			this.ihm.writeCase(i, grille.at(i));
+//			this.ihm.writeCase(i, grille.at(i));
+			this.ihm.getGrille().writeCase(i, grille.at(i));
 		this.ihm.setTourDeJeu(this.ent.getTourJeu());
 	}
 	

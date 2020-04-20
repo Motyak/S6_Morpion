@@ -15,28 +15,34 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Window;
 
 //obligé de mettre en public pour lier le doc FXML
 public class Ihm {
 	private Controller ctrl;
-	private List<Button> btns;
+	@FXML private Grille panelGrilleController;
+	
+	@FXML private GridPane panelGrille;
+	
+//	private List<Button> btns;
 	
 //	panels
+//	@FXML private HBox panelMain;
 	@FXML private AnchorPane panelMenu;
-	@FXML private VBox panelJeu;
-	@FXML private GridPane panelGrille;
+//	@FXML private VBox panelJeu;
+//	@FXML private GridPane panelGrille;
 	@FXML private HBox panelTourJeu;
 	
-//	cases du morpion
-	@FXML private Button btnCase0;
-	@FXML private Button btnCase1;
-	@FXML private Button btnCase2;
-	@FXML private Button btnCase3;
-	@FXML private Button btnCase4;
-	@FXML private Button btnCase5;
-	@FXML private Button btnCase6;
-	@FXML private Button btnCase7;
-	@FXML private Button btnCase8;
+////	cases du morpion
+//	@FXML private Button btnCase0;
+//	@FXML private Button btnCase1;
+//	@FXML private Button btnCase2;
+//	@FXML private Button btnCase3;
+//	@FXML private Button btnCase4;
+//	@FXML private Button btnCase5;
+//	@FXML private Button btnCase6;
+//	@FXML private Button btnCase7;
+//	@FXML private Button btnCase8;
 	
 //	tour de jeu
 	@FXML private Label lblX;
@@ -45,25 +51,14 @@ public class Ihm {
 	
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
+		this.panelGrilleController.injectMainController(this);
 		
 		this.ctrl.lancerApprentissage();
-		
-		this.btns = new ArrayList<>(Arrays.asList(
-			btnCase0, btnCase1, btnCase2, 
-			btnCase3, btnCase4, btnCase5, 
-			btnCase6, btnCase7, btnCase8
-		));
-		
-		this.ctrl.entToIhm();
-		
-		for(Button b : this.btns)
-			b.setOnAction(this.caseOnClick);
 	}
 	
-	public void writeCase(int id, Case c)
-	{
-		this.btns.get(id).setText(c.toString());
-	}
+	public Controller getCtrl() { return this.ctrl; }
+	
+	public Grille getGrille() { return this.panelGrilleController; }
 	
 	public void setTourDeJeu(Joueur j)
 	{
@@ -79,19 +74,56 @@ public class Ihm {
 		}
 	}
 
-	
-//	les events handlers
-	private EventHandler<ActionEvent> caseOnClick = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			Button btn = (Button)event.getSource();
-			int btnId = Integer.valueOf(btn.getId().substring(btn.getId().length() - 1));
+	public static class Grille {
+		private Ihm ihm;
+		private List<Button> btns;
+		
+//		cases du morpion
+		@FXML private Button btnCase0;
+		@FXML private Button btnCase1;
+		@FXML private Button btnCase2;
+		@FXML private Button btnCase3;
+		@FXML private Button btnCase4;
+		@FXML private Button btnCase5;
+		@FXML private Button btnCase6;
+		@FXML private Button btnCase7;
+		@FXML private Button btnCase8;
+		
+		@FXML private void initialize() throws Exception {
+			this.btns = new ArrayList<>(Arrays.asList(
+			btnCase0, btnCase1, btnCase2, 
+			btnCase3, btnCase4, btnCase5, 
+			btnCase6, btnCase7, btnCase8
+		));
 			
-			try {
-				Ihm.this.ctrl.proposerCoup(btnId);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			for(Button b : this.btns)
+				b.setOnAction(this.caseOnClick);
 		}
-	};
+		
+		public void injectMainController(Ihm ihm)
+		{
+			this.ihm = ihm;
+		}
+		
+		public void writeCase(int id, Case c)
+		{
+			this.btns.get(id).setText(c.toString());
+		}
+		
+//		les events handlers
+		private EventHandler<ActionEvent> caseOnClick = new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Button btn = (Button)event.getSource();
+				int btnId = Integer.valueOf(btn.getId().substring(btn.getId().length() - 1));
+				
+				try {
+					Grille.this.ihm.getCtrl().proposerCoup(btnId);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+	}
+
 }
