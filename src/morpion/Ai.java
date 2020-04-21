@@ -149,8 +149,15 @@ public class Ai {
 	private void loadAiModel() throws Exception {
 		Pair<Integer,Double> params = this.getModelParams();
 		String filename = params.first + "_" + params.second + ".srl";
-
-		this.model = Ai.Model.load(Ai.DATA_DIRPATH + filename);
+		if(!new File(Ai.DATA_DIRPATH + filename).exists()) 
+		{
+			int[] layers = {Ent.TAILLE_GRILLE, params.second.intValue(), Ent.TAILLE_GRILLE };
+			this.model = new Model(layers, params.second, new SigmoidalTransferFunction());
+			this.save();
+		}
+		else
+			this.model = Ai.Model.load(Ai.DATA_DIRPATH + filename);
+		
 		System.out.println("Modèle chargé : " + filename);
 	}
 	
