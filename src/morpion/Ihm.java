@@ -21,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 //obligé de mettre en public pour lier le doc FXML
@@ -135,6 +136,7 @@ public class Ihm {
 		@FXML private Slider slDiff;
 		@FXML private Label lblArrowUp;
 		@FXML private Label lblArrowDown;
+		@FXML private Button btnRegles;
 		
 		@FXML private void initialize() {
 			this.btnsModeJeu = Arrays.asList(this.btnModeJeu0, this.btnModeJeu1);
@@ -147,7 +149,6 @@ public class Ihm {
 						if(b.isSelected())	mouseEvent.consume();
 					}
 				});
-				
 				b.setOnAction(this.btnModeJeuOnClick);
 			}
 
@@ -158,6 +159,8 @@ public class Ihm {
 			
 			this.lblArrowUp.setOnMouseClicked(this.lblArrowUpOnClick);
 			this.lblArrowDown.setOnMouseClicked(this.lblArrowDownOnClick);
+			
+			this.btnRegles.setOnAction(this.btnReglesOnClick);
 		}
 		
 		public void injectMainController(Ihm ihm)
@@ -174,6 +177,13 @@ public class Ihm {
 		}
 		
 //		les events handlers
+		private EventHandler<ActionEvent> btnReglesOnClick = new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Menu.this.ihm.getCtrl().showDialogRegles();
+			}
+		};
+		
 		private EventHandler<ActionEvent> btnEditConfigOnClick = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {

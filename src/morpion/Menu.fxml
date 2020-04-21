@@ -62,7 +62,7 @@
                   </HBox>
                   <HBox minHeight="75.0" minWidth="220.0" prefHeight="75.0" prefWidth="220.0">
                      <children>
-                        <Button minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" text="Button">
+                        <Button fx:id="btnRegles" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" text="Button">
                            <HBox.margin>
                               <Insets left="10.0" top="10.0" />
                            </HBox.margin>

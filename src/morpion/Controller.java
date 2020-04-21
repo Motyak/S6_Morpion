@@ -91,6 +91,11 @@ class Controller {
 		System.out.println("Difficulte actuelle : " + this.ent.getDiff().getValue());
 	}
 	
+	public void showDialogRegles()
+	{
+		Main.dialogRegles.showAndWait();
+	}
+	
 	private void renewGame()
 	{
 		this.ent.getGrille().clear();
