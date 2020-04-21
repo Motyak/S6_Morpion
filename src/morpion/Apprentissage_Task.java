@@ -39,7 +39,10 @@ public class Apprentissage_Task<Void> extends Task<Void> {
 			
 			reached = (i >= optNb);
 			
-			if (Main.learningThread.isInterrupted())	return null;
+			if (Main.learningThread.isInterrupted()) {
+				System.out.println("Thread interrompu");
+				return null;
+			}
 		}
 		System.out.println("Modèle " + diff + " (" + params.first + 
 				", " + params.second + ") : " + "Apprentissage terminée !");

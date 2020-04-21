@@ -79,6 +79,14 @@ public class Ai {
 		System.out.println("Modèle sauvegardé : " + filename);
 	}
 	
+	public void changeDiff(Difficulte diff) throws Exception
+	{
+		this.diff = diff;
+		this.data.reset();
+		this.initDataFiles();
+		this.loadAiModel();
+	}
+	
 	public int[] genOutput(double[] input) {
 		return this.sortedOutput(this.model.forwardPropagation(input));
 	}
@@ -143,7 +151,6 @@ public class Ai {
 		String filename = params.first + "_" + params.second + ".srl";
 
 		this.model = Ai.Model.load(Ai.DATA_DIRPATH + filename);
-		System.out.println("Difficulté : " + this.diff.getValue());
 		System.out.println("Modèle chargé : " + filename);
 	}
 	

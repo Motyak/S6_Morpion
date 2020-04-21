@@ -20,10 +20,13 @@ class Controller {
 	public void entToIhm() 
 	{
 		Ent.Grille grille = this.ent.getGrille();
+		Ihm.Grille grilleIhm = this.ihm.getGrille();
 		
 		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
-			this.ihm.writeCase(i, grille.at(i));
-		this.ihm.setTourDeJeu(this.ent.getTourJeu());
+			grilleIhm.writeCase(i, grille.at(i));
+		this.ihm.getTourJeu().setTourDeJeu(this.ent.getTourJeu());
+		
+		this.ihm.getMenu().setModeJeu(this.ent.getMode());
 	}
 	
 	public void proposerCoup(int id) throws IOException 
@@ -45,11 +48,60 @@ class Controller {
 		}	
 	}
 	
-	public void lancerApprentissage() 
+	public void lancerApprentissage() throws IOException 
 	{
+//		this.ai.reset();
+		if(Main.learningThread != null) {
+			Main.learningThread.interrupt();
+			while(Main.learningThread.isAlive())
+				;
+		}
+		
 		Main.learningThread = new Thread(new Apprentissage_Task<>(this.ai));
 		Main.learningThread.setDaemon(true);
 		Main.learningThread.start();
+	}
+	
+	public void editConfigFile() throws IOException
+	{
+		this.ai.editConfigFile();
+	}
+	
+	public void changerModeJeu(Mode mode)
+	{
+		if(this.ent.getMode() == mode)
+			return;
+		
+		this.ent.setMode(mode);
+		this.renewGame();
+		System.out.println("Mode de jeu actuel : " + this.ent.getMode());
+	}
+	
+	public void changerDiff(Difficulte diff) throws Exception
+	{
+		if(this.ent.getDiff() == diff)
+			return;
+		
+		this.ent.setDiff(diff);
+		this.ai.changeDiff(diff);
+		this.renewGame();
+		
+		this.lancerApprentissage();
+		
+		System.out.println("Difficulte actuelle : " + this.ent.getDiff().getValue());
+	}
+	
+	public void showDialogRegles()
+	{
+		Main.dialogRegles.showAndWait();
+	}
+	
+	private void renewGame()
+	{
+		this.ent.getGrille().clear();
+		this.ai.data.reset();
+		this.ent.setTourJeu(Joueur.values()[0]);
+		this.entToIhm();
 	}
 	
 	private void jouerCoup(int id)
