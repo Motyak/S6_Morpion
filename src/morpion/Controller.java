@@ -25,6 +25,8 @@ class Controller {
 		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
 			grilleIhm.writeCase(i, grille.at(i));
 		this.ihm.getTourJeu().setTourDeJeu(this.ent.getTourJeu());
+		
+		this.ihm.getMenu().setModeJeu(this.ent.getMode());
 	}
 	
 	public void proposerCoup(int id) throws IOException 
@@ -57,6 +59,24 @@ class Controller {
 	public void editConfigFile() throws IOException
 	{
 		this.ai.editConfigFile();
+	}
+	
+	public void changerModeJeu(Mode mode)
+	{
+		if(this.ent.getMode() == mode)
+			return;
+		
+		this.ent.setMode(mode);
+		this.renewGame();
+		System.out.println("Mode de jeu actuel : " + this.ent.getMode());
+	}
+	
+	private void renewGame()
+	{
+		this.ent.getGrille().clear();
+		this.ai.data.reset();
+		this.ent.setTourJeu(Joueur.values()[0]);
+		this.entToIhm();
 	}
 	
 	private void jouerCoup(int id)

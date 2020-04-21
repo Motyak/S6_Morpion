@@ -17,12 +17,12 @@
          <children>
             <VBox minHeight="357.0" minWidth="230.0" prefHeight="357.0" prefWidth="230.0">
                <children>
-                  <ToggleButton minHeight="65.0" minWidth="200.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="200.0" text="ToggleButton">
+                  <ToggleButton fx:id="btnModeJeu0" minHeight="65.0" minWidth="200.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="200.0" text="ToggleButton">
                      <VBox.margin>
                         <Insets left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
                   </ToggleButton>
-                  <ToggleButton minHeight="65.0" minWidth="200.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="200.0" text="ToggleButton">
+                  <ToggleButton fx:id="btnModeJeu1" minHeight="65.0" minWidth="200.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="200.0" text="ToggleButton">
                      <VBox.margin>
                         <Insets left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
