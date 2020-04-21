@@ -34,7 +34,7 @@
                               <Insets left="10.0" />
                            </HBox.margin>
                         </ImageView>
-                        <Slider blockIncrement="1.0" majorTickUnit="1.0" max="3.0" min="1.0" minHeight="140.0" minWidth="25.0" minorTickCount="0" orientation="VERTICAL" prefHeight="140.0" prefWidth="25.0" showTickMarks="true" value="1.0">
+                        <Slider fx:id="slDiff" blockIncrement="1.0" majorTickUnit="1.0" max="2.0" min="0.0" minHeight="140.0" minWidth="25.0" minorTickCount="0" orientation="VERTICAL" prefHeight="140.0" prefWidth="25.0" showTickMarks="true" value="1.0">
                            <HBox.margin>
                               <Insets left="20.0" />
                            </HBox.margin>

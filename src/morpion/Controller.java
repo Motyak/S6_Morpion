@@ -51,6 +51,12 @@ class Controller {
 	public void lancerApprentissage() throws IOException 
 	{
 //		this.ai.reset();
+		if(Main.learningThread != null) {
+			Main.learningThread.interrupt();
+			while(Main.learningThread.isAlive())
+				;
+		}
+		
 		Main.learningThread = new Thread(new Apprentissage_Task<>(this.ai));
 		Main.learningThread.setDaemon(true);
 		Main.learningThread.start();
@@ -69,6 +75,20 @@ class Controller {
 		this.ent.setMode(mode);
 		this.renewGame();
 		System.out.println("Mode de jeu actuel : " + this.ent.getMode());
+	}
+	
+	public void changerDiff(Difficulte diff) throws Exception
+	{
+		if(this.ent.getDiff() == diff)
+			return;
+		
+		this.ent.setDiff(diff);
+		this.ai.changeDiff(diff);
+		this.renewGame();
+		
+		this.lancerApprentissage();
+		
+		System.out.println("Difficulte actuelle : " + this.ent.getDiff().getValue());
 	}
 	
 	private void renewGame()

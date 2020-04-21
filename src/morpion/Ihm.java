@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -129,6 +132,7 @@ public class Ihm {
 		@FXML private Button btnEditConfig;
 		@FXML private ToggleButton btnModeJeu0;
 		@FXML private ToggleButton btnModeJeu1;
+		@FXML private Slider slDiff;
 		
 		@FXML private void initialize() {
 			this.btnsModeJeu = Arrays.asList(this.btnModeJeu0, this.btnModeJeu1);
@@ -146,6 +150,10 @@ public class Ihm {
 			}
 
 			this.btnEditConfig.setOnAction(this.btnEditConfigOnClick);
+			
+			this.slDiff.valueProperty().addListener((obs, oldVal, newVal) -> this.slDiff.setValue(Math.round(newVal.doubleValue())));
+			this.slDiff.setOnMouseReleased(this.slDiffOnMouseReleased);
+			
 		}
 		
 		public void injectMainController(Ihm ihm)
@@ -183,6 +191,19 @@ public class Ihm {
 				Menu.this.ihm.getCtrl().changerModeJeu(mode);
 			}
 		};
+		
+		private EventHandler<? super MouseEvent> slDiffOnMouseReleased = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				Difficulte diff = Difficulte.values()[(int)Menu.this.slDiff.getValue()];
+				try {
+					Menu.this.ihm.getCtrl().changerDiff(diff);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+			
 	}
 
 }
