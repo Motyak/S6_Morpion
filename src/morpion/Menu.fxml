@@ -34,11 +34,27 @@
                               <Insets left="10.0" />
                            </HBox.margin>
                         </ImageView>
-                        <Slider fx:id="slDiff" blockIncrement="1.0" majorTickUnit="1.0" max="2.0" min="0.0" minHeight="140.0" minWidth="25.0" minorTickCount="0" orientation="VERTICAL" prefHeight="140.0" prefWidth="25.0" showTickMarks="true" value="1.0">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Slider>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label fx:id="lblArrowUp" rotate="90.0" text="&lt;" textFill="#868686">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="4.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Slider fx:id="slDiff" blockIncrement="1.0" majorTickUnit="1.0" max="2.0" min="0.0" minHeight="140.0" minWidth="25.0" minorTickCount="0" orientation="VERTICAL" prefHeight="140.0" prefWidth="25.0" showTickMarks="true" value="1.0" />
+                              <Label fx:id="lblArrowDown" rotate="-90.0" text="&lt;" textFill="#868686">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="1.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
                      </children>
                      <VBox.margin>
                         <Insets top="50.0" />

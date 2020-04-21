@@ -133,6 +133,8 @@ public class Ihm {
 		@FXML private ToggleButton btnModeJeu0;
 		@FXML private ToggleButton btnModeJeu1;
 		@FXML private Slider slDiff;
+		@FXML private Label lblArrowUp;
+		@FXML private Label lblArrowDown;
 		
 		@FXML private void initialize() {
 			this.btnsModeJeu = Arrays.asList(this.btnModeJeu0, this.btnModeJeu1);
@@ -154,6 +156,8 @@ public class Ihm {
 			this.slDiff.valueProperty().addListener((obs, oldVal, newVal) -> this.slDiff.setValue(Math.round(newVal.doubleValue())));
 			this.slDiff.setOnMouseReleased(this.slDiffOnMouseReleased);
 			
+			this.lblArrowUp.setOnMouseClicked(this.lblArrowUpOnClick);
+			this.lblArrowDown.setOnMouseClicked(this.lblArrowDownOnClick);
 		}
 		
 		public void injectMainController(Ihm ihm)
@@ -200,6 +204,30 @@ public class Ihm {
 					Menu.this.ihm.getCtrl().changerDiff(diff);
 				} catch (Exception e) {
 					e.printStackTrace();
+				}
+			}
+		};
+		
+		private EventHandler<? super MouseEvent> lblArrowUpOnClick = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				int value = (int)Menu.this.slDiff.getValue() + 1;
+
+				if(value < Difficulte.values().length) {
+					Menu.this.slDiff.setValue(value);
+					Menu.this.slDiffOnMouseReleased.handle(event);
+				}
+			}
+		};
+		
+		private EventHandler<? super MouseEvent> lblArrowDownOnClick = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				int value = (int)Menu.this.slDiff.getValue() - 1;
+
+				if(value >= 0) {
+					Menu.this.slDiff.setValue(value);
+					Menu.this.slDiffOnMouseReleased.handle(event);
 				}
 			}
 		};
