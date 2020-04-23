@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -54,28 +55,32 @@ public class Ihm {
 
 	public static class Grille {
 		private Ihm ihm;
-		private List<Button> btns;
+		private List<Label> cases;
 		
 //		cases du morpion
-		@FXML private Button btnCase0;
-		@FXML private Button btnCase1;
-		@FXML private Button btnCase2;
-		@FXML private Button btnCase3;
-		@FXML private Button btnCase4;
-		@FXML private Button btnCase5;
-		@FXML private Button btnCase6;
-		@FXML private Button btnCase7;
-		@FXML private Button btnCase8;
+		@FXML private Label lblCase0;
+		@FXML private Label lblCase1;
+		@FXML private Label lblCase2;
+		@FXML private Label lblCase3;
+		@FXML private Label lblCase4;
+		@FXML private Label lblCase5;
+		@FXML private Label lblCase6;
+		@FXML private Label lblCase7;
+		@FXML private Label lblCase8;
 		
 		@FXML private void initialize() {
-			this.btns = new ArrayList<>(Arrays.asList(
-			btnCase0, btnCase1, btnCase2, 
-			btnCase3, btnCase4, btnCase5, 
-			btnCase6, btnCase7, btnCase8
-		));
-			
-			for(Button b : this.btns)
-				b.setOnAction(this.caseOnClick);
+			this.cases = new ArrayList<>(Arrays.asList(
+					lblCase0, lblCase1, lblCase2, 
+					lblCase3, lblCase4, lblCase5, 
+					lblCase6, lblCase7, lblCase8
+			));
+			for(Label c : this.cases)
+			{
+				c.setOnMouseClicked(this.caseOnClick);
+				c.setOnMouseEntered(this.caseOnMouseIn);
+				c.setOnMouseExited(this.caseOnMouseOut);
+			}
+				
 		}
 		
 		public void injectMainController(Ihm ihm)
@@ -85,19 +90,48 @@ public class Ihm {
 		
 		public void writeCase(int id, Case c)
 		{
-			this.btns.get(id).setText(c.toString());
+			this.cases.get(id).setText(c.toString());
 		}
 		
-		private EventHandler<ActionEvent> caseOnClick = new EventHandler<ActionEvent>() {
+		private EventHandler<? super MouseEvent> caseOnClick = new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(ActionEvent event) {
-				Button btn = (Button)event.getSource();
-				int btnId = Integer.valueOf(btn.getId().substring(btn.getId().length() - 1));
-				
+			public void handle(MouseEvent event) {
+				Label lbl = (Label)event.getSource();
+				int lblId = Integer.valueOf(lbl.getId().substring(lbl.getId().length() - 1));
 				try {
-					Grille.this.ihm.getCtrl().proposerCoup(btnId);
+					if(Grille.this.ihm.getCtrl().proposerCoup(lblId))
+						lbl.setOpacity(1.0);
 				} catch (IOException e) {
 					e.printStackTrace();
+				}
+			}
+		};
+		
+		private EventHandler<? super MouseEvent> caseOnMouseIn = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				Controller ctrl = Grille.this.ihm.getCtrl();
+				Label lbl = (Label)event.getSource();
+				int lblId = Integer.valueOf(lbl.getId().substring(lbl.getId().length() - 1));
+				if(ctrl.caseVide(lblId))
+				{
+					Joueur j = ctrl.getJoueurCourant();
+					lbl.setOpacity(0.3);
+					lbl.setText(j.toString());
+				}
+			}
+		};
+		
+		private EventHandler<? super MouseEvent> caseOnMouseOut = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				Controller ctrl = Grille.this.ihm.getCtrl();
+				Label lbl = (Label)event.getSource();
+				int lblId = Integer.valueOf(lbl.getId().substring(lbl.getId().length() - 1));
+				if(ctrl.caseVide(lblId))
+				{
+					lbl.setText(Case.VIDE.toString());
+					lbl.setOpacity(1.0);
 				}
 			}
 		};

@@ -29,7 +29,7 @@ class Controller {
 		this.ihm.getMenu().setModeJeu(this.ent.getMode());
 	}
 	
-	public void proposerCoup(int id) throws IOException 
+	public boolean proposerCoup(int id) throws IOException 
 	{
 		Ent.Grille grille = this.ent.getGrille();
 		
@@ -38,14 +38,16 @@ class Controller {
 			this.jouerCoup(id);
 			
 			if(this.verifierFinDePartie())
-				return;
+				return true;
 			
 			if(this.ent.getMode() == Mode.P_VS_AI)
 			{
 				this.jouerCoup(this.aiPlays());
 				this.verifierFinDePartie();
 			}
-		}	
+			return true;
+		}
+		return false;
 	}
 	
 	public void lancerApprentissage() throws IOException 
@@ -94,6 +96,16 @@ class Controller {
 	public void showDialogRegles()
 	{
 		Main.dialogRegles.showAndWait();
+	}
+	
+	public Joueur getJoueurCourant()
+	{
+		return this.ent.getTourJeu();
+	}
+	
+	public boolean caseVide(int id)
+	{
+		return this.ent.getGrille().at(id) == Case.VIDE;
 	}
 	
 	private void renewGame()
