@@ -13,9 +13,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.AnchorPane;//
+import javafx.scene.layout.GridPane;//
 
 //obligé de mettre en public pour lier le doc FXML
 public class Ihm {
@@ -27,9 +26,9 @@ public class Ihm {
 	@FXML private Menu panelMenuController;
 	
 //	panels
-	@FXML private GridPane panelGrille;
-	@FXML private GridPane panelTourJeu;
-	@FXML private AnchorPane panelMenu;
+//	@FXML private GridPane panelGrille;
+//	@FXML private GridPane panelTourJeu;
+//	@FXML private AnchorPane panelMenu;
 	
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
@@ -50,15 +49,9 @@ public class Ihm {
 		private List<Label> cases;
 		
 //		cases du morpion
-		@FXML private Label lblCase0;
-		@FXML private Label lblCase1;
-		@FXML private Label lblCase2;
-		@FXML private Label lblCase3;
-		@FXML private Label lblCase4;
-		@FXML private Label lblCase5;
-		@FXML private Label lblCase6;
-		@FXML private Label lblCase7;
-		@FXML private Label lblCase8;
+		@FXML private Label lblCase0; @FXML private Label lblCase1; @FXML private Label lblCase2;
+		@FXML private Label lblCase3; @FXML private Label lblCase4; @FXML private Label lblCase5;
+		@FXML private Label lblCase6; @FXML private Label lblCase7; @FXML private Label lblCase8;
 		
 		@FXML private void initialize() {
 			this.cases = new ArrayList<>(Arrays.asList(
@@ -68,9 +61,9 @@ public class Ihm {
 			));
 			for(Label c : this.cases)
 			{
-				c.setOnMouseClicked(this.caseOnClick);
-				c.setOnMouseEntered(this.caseOnMouseIn);
-				c.setOnMouseExited(this.caseOnMouseOut);
+				c.setOnMouseClicked(this::handleMouseEventOnCase);
+				c.setOnMouseEntered(this::handleMouseEventOnCase);
+				c.setOnMouseExited(this::handleMouseEventOnCase);
 			}
 				
 		}
@@ -85,48 +78,30 @@ public class Ihm {
 			this.cases.get(id).setText(c.toString());
 		}
 		
-		private EventHandler<? super MouseEvent> caseOnClick = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				Label lbl = (Label)event.getSource();
-				int lblId = Integer.valueOf(lbl.getId().substring(lbl.getId().length() - 1));
+		private void handleMouseEventOnCase(MouseEvent event) {
+			Controller ctrl = Grille.this.ihm.getCtrl();
+			Label lbl = (Label)event.getSource();
+			int lblId = Integer.valueOf(lbl.getId().substring(lbl.getId().length() - 1));
+			String eventType = event.getEventType().toString();
+			
+			if(eventType.equals("MOUSE_CLICKED")) {
 				try {
 					if(Grille.this.ihm.getCtrl().proposerCoup(lblId))
 						lbl.setOpacity(1.0);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				} catch (IOException e) { e.printStackTrace(); }
 			}
-		};
-		
-		private EventHandler<? super MouseEvent> caseOnMouseIn = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				Controller ctrl = Grille.this.ihm.getCtrl();
-				Label lbl = (Label)event.getSource();
-				int lblId = Integer.valueOf(lbl.getId().substring(lbl.getId().length() - 1));
-				if(ctrl.caseVide(lblId))
-				{
+			else if(ctrl.caseVide(lblId)) {
+				if(eventType.equals("MOUSE_ENTERED")) {
 					Joueur j = ctrl.getJoueurCourant();
 					lbl.setOpacity(0.3);
 					lbl.setText(j.toString());
 				}
-			}
-		};
-		
-		private EventHandler<? super MouseEvent> caseOnMouseOut = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				Controller ctrl = Grille.this.ihm.getCtrl();
-				Label lbl = (Label)event.getSource();
-				int lblId = Integer.valueOf(lbl.getId().substring(lbl.getId().length() - 1));
-				if(ctrl.caseVide(lblId))
-				{
+				else if(eventType.equals("MOUSE_EXITED")) {
 					lbl.setText(Case.VIDE.toString());
 					lbl.setOpacity(1.0);
 				}
 			}
-		};
+		}
 	}
 	
 	public static class TourJeu {
@@ -141,13 +116,13 @@ public class Ihm {
 		{
 			if(j == Joueur.X)
 			{
-				this.lblX.setStyle(CSS.STYLE_TOUR_JEU_REMPLI);
-				this.lblO.setStyle(CSS.STYLE_TOUR_JEU_VIDE);
+				this.lblX.setStyle(CSS.STYLE_LABEL__TOUR_JEU_REMPLI);
+				this.lblO.setStyle(CSS.STYLE_LABEL_TOUR_JEU_VIDE);
 			}
 			else if(j == Joueur.O)
 			{
-				this.lblX.setStyle(CSS.STYLE_TOUR_JEU_VIDE);
-				this.lblO.setStyle(CSS.STYLE_TOUR_JEU_REMPLI);
+				this.lblX.setStyle(CSS.STYLE_LABEL_TOUR_JEU_VIDE);
+				this.lblO.setStyle(CSS.STYLE_LABEL__TOUR_JEU_REMPLI);
 			}
 		}
 	}

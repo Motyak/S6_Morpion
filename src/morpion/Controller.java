@@ -29,7 +29,7 @@ class Controller {
 		this.ihm.getMenu().setModeJeu(this.ent.getMode());
 	}
 	
-	public boolean proposerCoup(int id) throws IOException 
+	public boolean proposerCoup(int id) throws IOException
 	{
 		Ent.Grille grille = this.ent.getGrille();
 		
