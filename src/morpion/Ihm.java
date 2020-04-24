@@ -116,13 +116,13 @@ public class Ihm {
 		{
 			if(j == Joueur.X)
 			{
-				this.lblX.setStyle(CSS.STYLE_LABEL__TOUR_JEU_REMPLI);
+				this.lblX.setStyle(CSS.STYLE_LABEL_TOUR_JEU_REMPLI);
 				this.lblO.setStyle(CSS.STYLE_LABEL_TOUR_JEU_VIDE);
 			}
 			else if(j == Joueur.O)
 			{
 				this.lblX.setStyle(CSS.STYLE_LABEL_TOUR_JEU_VIDE);
-				this.lblO.setStyle(CSS.STYLE_LABEL__TOUR_JEU_REMPLI);
+				this.lblO.setStyle(CSS.STYLE_LABEL_TOUR_JEU_REMPLI);
 			}
 		}
 	}
