@@ -5,25 +5,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 
 //obligé de mettre en public pour lier le doc FXML
 public class Ihm {
@@ -36,7 +28,7 @@ public class Ihm {
 	
 //	panels
 	@FXML private GridPane panelGrille;
-	@FXML private HBox panelTourJeu;
+	@FXML private GridPane panelTourJeu;
 	@FXML private AnchorPane panelMenu;
 	
 	@FXML private void initialize() throws Exception {
@@ -149,13 +141,13 @@ public class Ihm {
 		{
 			if(j == Joueur.X)
 			{
-				this.lblX.setTextFill(Color.BLACK);
-				this.lblO.setTextFill(Color.GREY);
+				this.lblX.setStyle(CSS.STYLE_TOUR_JEU_REMPLI);
+				this.lblO.setStyle(CSS.STYLE_TOUR_JEU_VIDE);
 			}
 			else if(j == Joueur.O)
 			{
-				this.lblX.setTextFill(Color.GREY);
-				this.lblO.setTextFill(Color.BLACK);
+				this.lblX.setStyle(CSS.STYLE_TOUR_JEU_VIDE);
+				this.lblO.setStyle(CSS.STYLE_TOUR_JEU_REMPLI);
 			}
 		}
 	}
