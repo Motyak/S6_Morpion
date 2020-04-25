@@ -103,6 +103,11 @@ class Controller {
 		return this.ent.getTourJeu();
 	}
 	
+	public Mode getModeJeu()
+	{
+		return this.ent.getMode();
+	}
+	
 	public boolean caseVide(int id)
 	{
 		return this.ent.getGrille().at(id) == Case.VIDE;

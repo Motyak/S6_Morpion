@@ -1,5 +1,6 @@
 package morpion;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;//
 import javafx.scene.layout.GridPane;//
@@ -81,7 +84,7 @@ public class Ihm {
 		private void handleMouseEventOnCase(MouseEvent event) {
 			Controller ctrl = Grille.this.ihm.getCtrl();
 			Label lbl = (Label)event.getSource();
-			int lblId = Integer.valueOf(lbl.getId().substring(lbl.getId().length() - 1));
+			int lblId = Integer.parseInt(lbl.getId().substring(lbl.getId().length() - 1));
 			String eventType = event.getEventType().toString();
 			
 			if(eventType.equals("MOUSE_CLICKED")) {
@@ -129,39 +132,35 @@ public class Ihm {
 	
 	public static class Menu {
 		private Ihm ihm;
-		private List<ToggleButton> btnsModeJeu;
+		private List<ImageView> imgsModeJeu;
 		
-		@FXML private Button btnEditConfig;
-		@FXML private ToggleButton btnModeJeu0;
-		@FXML private ToggleButton btnModeJeu1;
+		@FXML private ImageView imgModeJeu0;
+		@FXML private ImageView imgModeJeu1;
 		@FXML private Slider slDiff;
-		@FXML private Label lblArrowUp;
-		@FXML private Label lblArrowDown;
-		@FXML private Button btnRegles;
+		@FXML private ImageView imgArrowUp;
+		@FXML private ImageView imgArrowDown;
+		@FXML private ImageView imgRegles;
+		@FXML private ImageView imgEditConfig;
 		
 		@FXML private void initialize() {
-			this.btnsModeJeu = Arrays.asList(this.btnModeJeu0, this.btnModeJeu1);
+			this.imgsModeJeu = Arrays.asList(this.imgModeJeu0, this.imgModeJeu1);
 			
-			for(ToggleButton b : this.btnsModeJeu)
+			for(ImageView iv : this.imgsModeJeu)
 			{
-				b.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-					@Override
-					public void handle(MouseEvent mouseEvent) {
-						if(b.isSelected())	mouseEvent.consume();
-					}
-				});
-				b.setOnAction(this.btnModeJeuOnClick);
+				iv.setOnMouseClicked(this::handleMouseEventOnMode);
+				iv.setOnMouseEntered(this::handleMouseEventOnMode);
+				iv.setOnMouseExited(this::handleMouseEventOnMode);
 			}
 
-			this.btnEditConfig.setOnAction(this.btnEditConfigOnClick);
-			
-			this.slDiff.valueProperty().addListener((obs, oldVal, newVal) -> this.slDiff.setValue(Math.round(newVal.doubleValue())));
-			this.slDiff.setOnMouseReleased(this.slDiffOnMouseReleased);
-			
-			this.lblArrowUp.setOnMouseClicked(this.lblArrowUpOnClick);
-			this.lblArrowDown.setOnMouseClicked(this.lblArrowDownOnClick);
-			
-			this.btnRegles.setOnAction(this.btnReglesOnClick);
+//			this.btnEditConfig.setOnAction(this.btnEditConfigOnClick);
+//			
+//			this.slDiff.valueProperty().addListener((obs, oldVal, newVal) -> this.slDiff.setValue(Math.round(newVal.doubleValue())));
+//			this.slDiff.setOnMouseReleased(this.slDiffOnMouseReleased);
+//			
+//			this.lblArrowUp.setOnMouseClicked(this.lblArrowUpOnClick);
+//			this.lblArrowDown.setOnMouseClicked(this.lblArrowDownOnClick);
+//			
+//			this.btnRegles.setOnAction(this.btnReglesOnClick);
 		}
 		
 		public void injectMainController(Ihm ihm)
@@ -171,77 +170,106 @@ public class Ihm {
 		
 		public void setModeJeu(Mode mode)
 		{
-			List<ToggleButton> btns = this.btnsModeJeu;
-			for(ToggleButton b : btns)
-				b.setSelected(false);
-			btns.get(mode.getValue()).setSelected(true);
+			if(mode == Mode.P_VS_AI) {
+				this.imgModeJeu0.setImage(new Image(new File(RES.P_VS_AI_PRESSED).toURI().toString()));
+				this.imgModeJeu1.setImage(new Image(new File(RES.P_VS_P_UNPRESSED).toURI().toString()));
+			}
+			else if(mode == Mode.P_VS_P) {
+				this.imgModeJeu0.setImage(new Image(new File(RES.P_VS_AI_UNPRESSED).toURI().toString()));
+				this.imgModeJeu1.setImage(new Image(new File(RES.P_VS_P_PRESSED).toURI().toString()));
+			}
 		}
 		
 //		les events handlers
-		private EventHandler<ActionEvent> btnReglesOnClick = new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				Menu.this.ihm.getCtrl().showDialogRegles();
-			}
-		};
-		
-		private EventHandler<ActionEvent> btnEditConfigOnClick = new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				try {
-					Menu.this.ihm.getCtrl().editConfigFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		
-		private EventHandler<ActionEvent> btnModeJeuOnClick = new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				ToggleButton btn = (ToggleButton)event.getSource();
-				int idBtn = Integer.valueOf(btn.getId().substring(btn.getId().length() - 1));
-				Mode mode = Mode.get(idBtn);
+		private void handleMouseEventOnMode(MouseEvent event) {
+			String evtType = event.getEventType().toString();
+			ImageView iv = (ImageView)event.getSource();
+			int idMode = Integer.valueOf(iv.getId().substring(iv.getId().length() - 1));
+			Mode mode = Mode.get(idMode);
+			boolean modeActuel = mode == Menu.this.ihm.getCtrl().getModeJeu();
 
+			if(evtType.equals("MOUSE_CLICKED"))
 				Menu.this.ihm.getCtrl().changerModeJeu(mode);
+			
+			else if(evtType.equals("MOUSE_ENTERED") && !modeActuel) {
+				if(mode == Mode.P_VS_P)
+					iv.setImage(new Image(new File(RES.P_VS_P_HOVER).toURI().toString()));
+				else if(mode == Mode.P_VS_AI)
+					iv.setImage(new Image(new File(RES.P_VS_AI_HOVER).toURI().toString()));
 			}
-		};
+			
+			else if(evtType.equals("MOUSE_EXITED") && !modeActuel) {
+				if(mode == Mode.P_VS_P)
+					iv.setImage(new Image(new File(RES.P_VS_P_UNPRESSED).toURI().toString()));
+				else if(mode == Mode.P_VS_AI)
+					iv.setImage(new Image(new File(RES.P_VS_AI_UNPRESSED).toURI().toString()));
+			}
+		}
 		
-		private EventHandler<? super MouseEvent> slDiffOnMouseReleased = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				Difficulte diff = Difficulte.values()[(int)Menu.this.slDiff.getValue()];
-				try {
-					Menu.this.ihm.getCtrl().changerDiff(diff);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		
-		private EventHandler<? super MouseEvent> lblArrowUpOnClick = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				int value = (int)Menu.this.slDiff.getValue() + 1;
-
-				if(value < Difficulte.values().length) {
-					Menu.this.slDiff.setValue(value);
-					Menu.this.slDiffOnMouseReleased.handle(event);
-				}
-			}
-		};
-		
-		private EventHandler<? super MouseEvent> lblArrowDownOnClick = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				int value = (int)Menu.this.slDiff.getValue() - 1;
-
-				if(value >= 0) {
-					Menu.this.slDiff.setValue(value);
-					Menu.this.slDiffOnMouseReleased.handle(event);
-				}
-			}
-		};
+//		private EventHandler<ActionEvent> btnReglesOnClick = new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent event) {
+//				Menu.this.ihm.getCtrl().showDialogRegles();
+//			}
+//		};
+//		
+//		private EventHandler<ActionEvent> btnEditConfigOnClick = new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent event) {
+//				try {
+//					Menu.this.ihm.getCtrl().editConfigFile();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		};
+//		
+//		private EventHandler<ActionEvent> btnModeJeuOnClick = new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent event) {
+//				ToggleButton btn = (ToggleButton)event.getSource();
+//				int idBtn = Integer.valueOf(btn.getId().substring(btn.getId().length() - 1));
+//				Mode mode = Mode.get(idBtn);
+//
+//				Menu.this.ihm.getCtrl().changerModeJeu(mode);
+//			}
+//		};
+//		
+//		private EventHandler<? super MouseEvent> slDiffOnMouseReleased = new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent event) {
+//				Difficulte diff = Difficulte.values()[(int)Menu.this.slDiff.getValue()];
+//				try {
+//					Menu.this.ihm.getCtrl().changerDiff(diff);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		};
+//		
+//		private EventHandler<? super MouseEvent> lblArrowUpOnClick = new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent event) {
+//				int value = (int)Menu.this.slDiff.getValue() + 1;
+//
+//				if(value < Difficulte.values().length) {
+//					Menu.this.slDiff.setValue(value);
+//					Menu.this.slDiffOnMouseReleased.handle(event);
+//				}
+//			}
+//		};
+//		
+//		private EventHandler<? super MouseEvent> lblArrowDownOnClick = new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent event) {
+//				int value = (int)Menu.this.slDiff.getValue() - 1;
+//
+//				if(value >= 0) {
+//					Menu.this.slDiff.setValue(value);
+//					Menu.this.slDiffOnMouseReleased.handle(event);
+//				}
+//			}
+//		};
 			
 	}
 

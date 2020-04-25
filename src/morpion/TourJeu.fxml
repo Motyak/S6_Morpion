@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -23,7 +24,7 @@
             <Font name="Segoe Script Bold" size="60.0" />
          </font>
          <padding>
-            <Insets top="-20.0" />
+            <Insets top="-23.0" />
          </padding>
          <GridPane.margin>
             <Insets />
@@ -31,27 +32,33 @@
       </Label>
       <ImageView fitHeight="35.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
          <image>
-            <Image url="@../../res/user_gray.png" />
+            <Image url="@../../res/user_64x64.png" />
          </image>
          <GridPane.margin>
             <Insets bottom="3.0" />
          </GridPane.margin>
+         <effect>
+            <ColorAdjust brightness="0.2" />
+         </effect>
       </ImageView>
       <Label fx:id="lblO" alignment="CENTER" minHeight="70.0" minWidth="180.0" style="-fx-border-color: black; -fx-border-width: 2;" text="O" textFill="GREY" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
          <font>
             <Font name="Segoe Script Bold" size="60.0" />
          </font>
          <padding>
-            <Insets top="-20.0" />
+            <Insets top="-23.0" />
          </padding>
       </Label>
       <ImageView fitHeight="35.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
          <image>
-            <Image url="@../../res/computer_gray.png" />
+            <Image url="@../../res/computer_64x64.png" />
          </image>
          <GridPane.margin>
             <Insets right="4.0" />
          </GridPane.margin>
+         <effect>
+            <ColorAdjust brightness="0.2" />
+         </effect>
       </ImageView>
    </children>
 </GridPane>
