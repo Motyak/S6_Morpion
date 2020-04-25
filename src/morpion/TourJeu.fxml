@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="70.0" prefHeight="70.0" prefWidth="360.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm$TourJeu">
+<GridPane minHeight="100.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm$TourJeu">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -19,18 +19,18 @@
       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Label fx:id="lblX" alignment="CENTER" minHeight="70.0" minWidth="180.0" style="-fx-background-color: silver; -fx-border-color: black; -fx-border-width: 2;" text="X" textFill="GREY" GridPane.halignment="CENTER">
+      <Label fx:id="lblX" alignment="CENTER" maxHeight="100.0" maxWidth="300.0" minHeight="100.0" minWidth="300.0" style="-fx-background-color: silver; -fx-border-color: black; -fx-border-width: 2;" text="X" textFill="GREY" GridPane.halignment="CENTER">
          <font>
-            <Font name="Segoe Script Bold" size="60.0" />
+            <Font name="Segoe Script Bold" size="90.0" />
          </font>
-         <padding>
-            <Insets top="-23.0" />
-         </padding>
          <GridPane.margin>
             <Insets />
          </GridPane.margin>
+         <padding>
+            <Insets top="-38.0" />
+         </padding>
       </Label>
-      <ImageView fitHeight="35.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
+      <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
          <image>
             <Image url="@../../res/user_64x64.png" />
          </image>
@@ -41,15 +41,15 @@
             <ColorAdjust brightness="0.2" />
          </effect>
       </ImageView>
-      <Label fx:id="lblO" alignment="CENTER" minHeight="70.0" minWidth="180.0" style="-fx-border-color: black; -fx-border-width: 2;" text="O" textFill="GREY" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
+      <Label fx:id="lblO" alignment="CENTER" maxHeight="100.0" maxWidth="300.0" minHeight="100.0" minWidth="300.0" style="-fx-border-color: black; -fx-border-width: 2;" text="O" textFill="GREY" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
          <font>
-            <Font name="Segoe Script Bold" size="60.0" />
+            <Font name="Segoe Script Bold" size="90.0" />
          </font>
          <padding>
-            <Insets top="-23.0" />
+            <Insets top="-37.0" />
          </padding>
       </Label>
-      <ImageView fitHeight="35.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+      <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
          <image>
             <Image url="@../../res/computer_64x64.png" />
          </image>

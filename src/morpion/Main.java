@@ -1,5 +1,6 @@
 package morpion;
 	
+import java.io.File;
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -9,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 
 
 public class Main extends Application {
@@ -24,11 +26,12 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("View.fxml"));
-//			Scene scene = new Scene(root,610,420);
-			Scene scene = new Scene(root,900,900);
+			Scene scene = new Scene(root,890,890);	//900x900 taille réelle
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
-//			primaryStage.setResizable(false);
+			primaryStage.setResizable(false);
+			primaryStage.setTitle("XO");
+			primaryStage.getIcons().add(new Image(new File(RES.APP_ICON).toURI().toString()));
 			primaryStage.show();
 			
 			this.createDialogRegles(primaryStage);
@@ -48,7 +51,7 @@ public class Main extends Application {
 		Main.dialogRegles = new Stage();
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("DialogRegles.fxml"));
-			Scene scene = new Scene(root,400,400);
+			Scene scene = new Scene(root,800,800);
 			Main.dialogRegles.setScene(scene);
 		} catch (IOException e) {
 			e.printStackTrace();
