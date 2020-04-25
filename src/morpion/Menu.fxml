@@ -74,7 +74,7 @@
                               <Insets bottom="2.0" top="2.0" />
                            </VBox.margin>
                         </Slider>
-                        <ImageView fitHeight="13.0" fitWidth="17.0" pickOnBounds="true" rotate="90.0">
+                        <ImageView fx:id="imgArrowDown" fitHeight="13.0" fitWidth="17.0" pickOnBounds="true" rotate="90.0">
                            <image>
                               <Image url="@../../res/next_64.png" />
                            </image>

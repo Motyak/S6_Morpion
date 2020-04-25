@@ -151,16 +151,14 @@ public class Ihm {
 				iv.setOnMouseEntered(this::handleMouseEventOnMode);
 				iv.setOnMouseExited(this::handleMouseEventOnMode);
 			}
-
-//			this.btnEditConfig.setOnAction(this.btnEditConfigOnClick);
-//			
-//			this.slDiff.valueProperty().addListener((obs, oldVal, newVal) -> this.slDiff.setValue(Math.round(newVal.doubleValue())));
-//			this.slDiff.setOnMouseReleased(this.slDiffOnMouseReleased);
-//			
-//			this.lblArrowUp.setOnMouseClicked(this.lblArrowUpOnClick);
-//			this.lblArrowDown.setOnMouseClicked(this.lblArrowDownOnClick);
-//			
+			
+			this.slDiff.valueProperty().addListener((obs, oldVal, newVal) -> this.slDiff.setValue(Math.round(newVal.doubleValue())));
+			this.slDiff.setOnMouseReleased(this::handleMouseEventOnSlider);
+			this.imgArrowUp.setOnMouseClicked(this::handleMouseEventOnUpArrow);
+			this.imgArrowDown.setOnMouseClicked(this::handleMouseEventOnDownArrow);
+			
 //			this.btnRegles.setOnAction(this.btnReglesOnClick);
+//			this.btnEditConfig.setOnAction(this.btnEditConfigOnClick);
 		}
 		
 		public void injectMainController(Ihm ihm)
@@ -226,42 +224,55 @@ public class Ihm {
 //				Menu.this.ihm.getCtrl().changerModeJeu(mode);
 //			}
 //		};
-//		
-//		private EventHandler<? super MouseEvent> slDiffOnMouseReleased = new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent event) {
-//				Difficulte diff = Difficulte.values()[(int)Menu.this.slDiff.getValue()];
-//				try {
-//					Menu.this.ihm.getCtrl().changerDiff(diff);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		};
-//		
-//		private EventHandler<? super MouseEvent> lblArrowUpOnClick = new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent event) {
-//				int value = (int)Menu.this.slDiff.getValue() + 1;
-//
-//				if(value < Difficulte.values().length) {
-//					Menu.this.slDiff.setValue(value);
-//					Menu.this.slDiffOnMouseReleased.handle(event);
-//				}
-//			}
-//		};
-//		
-//		private EventHandler<? super MouseEvent> lblArrowDownOnClick = new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent event) {
-//				int value = (int)Menu.this.slDiff.getValue() - 1;
-//
-//				if(value >= 0) {
-//					Menu.this.slDiff.setValue(value);
-//					Menu.this.slDiffOnMouseReleased.handle(event);
-//				}
-//			}
-//		};
+		
+		private void handleMouseEventOnSlider(MouseEvent event) {
+			Difficulte diff = Difficulte.values()[(int)Menu.this.slDiff.getValue()];
+			try {
+				Menu.this.ihm.getCtrl().changerDiff(diff);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		private void handleMouseEventOnUpArrow(MouseEvent event) {
+			int value = (int)Menu.this.slDiff.getValue() + 1;
+			if(value < Difficulte.values().length) {
+				Menu.this.slDiff.setValue(value);
+				Menu.this.handleMouseEventOnSlider(event);
+			}
+		}
+		
+		private void handleMouseEventOnDownArrow(MouseEvent event) {
+			int value = (int)Menu.this.slDiff.getValue() - 1;
+			if(value >= 0) {
+				Menu.this.slDiff.setValue(value);
+				Menu.this.handleMouseEventOnSlider(event);
+			}
+		}
+		
+		private EventHandler<? super MouseEvent> lblArrowUpOnClick = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				int value = (int)Menu.this.slDiff.getValue() + 1;
+
+				if(value < Difficulte.values().length) {
+					Menu.this.slDiff.setValue(value);
+					Menu.this.handleMouseEventOnSlider(event);
+				}
+			}
+		};
+		
+		private EventHandler<? super MouseEvent> lblArrowDownOnClick = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				int value = (int)Menu.this.slDiff.getValue() - 1;
+
+				if(value >= 0) {
+					Menu.this.slDiff.setValue(value);
+					Menu.this.handleMouseEventOnSlider(event);
+				}
+			}
+		};
 			
 	}
 
