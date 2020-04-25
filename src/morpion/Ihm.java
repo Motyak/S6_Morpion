@@ -225,7 +225,7 @@ public class Ihm {
 		
 		private void handleMouseHoverOnImgs(MouseEvent event) {
 			ImageView iv = (ImageView)event.getSource();
-			iv.setEffect(new DropShadow(0.0, javafx.scene.paint.Color.RED));
+			iv.setEffect(new DropShadow(2.0, javafx.scene.paint.Color.BLACK));
 		}
 		
 		private void handleMouseUnhoverOnImgs(MouseEvent event) {

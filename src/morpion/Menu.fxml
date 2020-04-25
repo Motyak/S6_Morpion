@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane style="-fx-border-color: black; -fx-border-width: 3;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm$Menu">
+<GridPane minHeight="900.0" minWidth="300.0" style="-fx-border-color: black; -fx-border-width: 3;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm$Menu">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -27,30 +27,33 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <ImageView fx:id="imgModeJeu0" fitHeight="65.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-               <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin>
-               <image>
-                  <Image url="@../../res/pVsAi_pressed2_128.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="imgModeJeu1" fitHeight="65.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.valignment="TOP">
-               <image>
-                  <Image url="@../../res/pVsP_unpressed2_128.png" />
-               </image>
-               <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin>
-            </ImageView>
-            <HBox minHeight="150.0" minWidth="220.0" prefHeight="150.0" prefWidth="220.0" GridPane.rowIndex="2">
+            <VBox>
                <children>
-                  <ImageView fitHeight="140.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgModeJeu0" fitHeight="120.0" fitWidth="238.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../res/pVsAi_pressed2_128.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="imgModeJeu1" fitHeight="120.0" fitWidth="238.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../res/pVsP_unpressed2_128.png" />
+                     </image>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </ImageView>
+               </children>
+               <GridPane.margin>
+                  <Insets top="70.0" />
+               </GridPane.margin>
+            </VBox>
+            <HBox GridPane.rowIndex="1">
+               <children>
+                  <ImageView fitHeight="238.0" fitWidth="204.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
-                        <Insets left="10.0" right="8.0" top="6.0" />
+                        <Insets right="8.0" top="6.0" />
                      </HBox.margin>
                      <image>
                         <Image url="@../../res/difficultyScale_transparent.png" />
@@ -58,23 +61,23 @@
                   </ImageView>
                   <VBox maxHeight="150.0">
                      <children>
-                        <ImageView fx:id="imgArrowUp" fitHeight="13.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true" rotate="-90.0">
+                        <ImageView fx:id="imgArrowUp" fitHeight="26.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" rotate="-90.0">
                            <image>
                               <Image url="@../../res/next_64.png" />
                            </image>
                            <VBox.margin>
-                              <Insets left="2.0" />
+                              <Insets />
                            </VBox.margin>
                         </ImageView>
-                        <Slider fx:id="slDiff" blockIncrement="1.0" majorTickUnit="1.0" max="2.0" min="0.0" minHeight="120.0" minWidth="25.0" minorTickCount="0" orientation="VERTICAL" prefHeight="120.0" prefWidth="25.0" showTickMarks="true" value="1.0">
-                           <padding>
-                              <Insets bottom="-4.0" left="2.0" top="-5.0" />
-                           </padding>
+                        <Slider fx:id="slDiff" blockIncrement="1.0" majorTickUnit="1.0" max="2.0" min="0.0" minHeight="186.0" minWidth="25.0" minorTickCount="0" orientation="VERTICAL" showTickMarks="true" value="1.0">
                            <VBox.margin>
                               <Insets bottom="2.0" top="2.0" />
                            </VBox.margin>
+                           <padding>
+                              <Insets bottom="-11.0" left="3.0" top="-11.0" />
+                           </padding>
                         </Slider>
-                        <ImageView fx:id="imgArrowDown" fitHeight="13.0" fitWidth="17.0" pickOnBounds="true" rotate="90.0">
+                        <ImageView fx:id="imgArrowDown" fitHeight="26.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
                            <image>
                               <Image url="@../../res/next_64.png" />
                            </image>
@@ -86,20 +89,20 @@
                   </VBox>
                </children>
                <GridPane.margin>
-                  <Insets left="10.0" top="25.0" />
+                  <Insets top="150.0" />
                </GridPane.margin>
             </HBox>
-            <HBox minHeight="75.0" minWidth="220.0" prefHeight="75.0" prefWidth="220.0" GridPane.rowIndex="3">
+            <HBox maxHeight="64.0" minHeight="64.0" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <children>
-                  <ImageView fx:id="imgRegles" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgRegles" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
-                        <Insets left="10.0" />
+                        <Insets />
                      </HBox.margin>
                      <image>
                         <Image url="@../../res/rules_64x64.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="imgEditConfig" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgEditConfig" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets left="30.0" />
                      </HBox.margin>
@@ -108,20 +111,19 @@
                      </image>
                   </ImageView>
                </children>
-               <padding>
-                  <Insets top="25.0" />
-               </padding>
+               <GridPane.margin>
+                  <Insets bottom="10.0" />
+               </GridPane.margin>
             </HBox>
          </children>
+         <GridPane.margin>
+            <Insets left="10.0" right="10.0" />
+         </GridPane.margin>
       </GridPane>
-      <VBox alignment="CENTER" prefHeight="436.0" prefWidth="25.0" GridPane.columnIndex="1">
-         <children>
-            <ImageView fitHeight="25.0" fitWidth="25.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true">
-               <image>
-                  <Image url="@../../res/next_64.png" />
-               </image>
-            </ImageView>
-         </children>
-      </VBox>
+      <ImageView fitHeight="42.0" fitWidth="42.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+         <image>
+            <Image url="@../../res/next_64.png" />
+         </image>
+      </ImageView>
    </children>
 </GridPane>
