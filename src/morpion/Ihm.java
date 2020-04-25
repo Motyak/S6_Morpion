@@ -27,8 +27,8 @@ public class Ihm {
 	@FXML private Menu panelMenuController;
 	
 //	panels
-//	@FXML private GridPane panelGrille;
-//	@FXML private GridPane panelTourJeu;
+	@FXML private GridPane panelGrille;
+	@FXML private GridPane panelTourJeu;
 	@FXML private GridPane panelMenu;
 	
 	private boolean panelMenuOpened = false;
@@ -53,21 +53,37 @@ public class Ihm {
 	//events handlers
 	private void handleMouseHoverOnMenu(MouseEvent event) {
 		String evtType = event.getEventType().toString();
-		TranslateTransition tt = new TranslateTransition(new Duration(200), this.panelMenu);
+		TranslateTransition ttMenu = new TranslateTransition(new Duration(200), this.panelMenu);
+		TranslateTransition ttGrille = new TranslateTransition(new Duration(200), this.panelGrille);
+		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(200), this.panelTourJeu);
 		
 		if(evtType.equals("MOUSE_ENTERED") && !this.panelMenuOpened)
 		{
 			this.panelMenuOpened = true;
-			tt.setToX(0);
+			ttMenu.setToX(0.0);
+			this.panelGrille.setMinWidth(600.0);
+			ttGrille.setToX(0.0);
+			this.panelTourJeuController.lblX.setMinWidth(300.0);
+			this.panelTourJeuController.lblO.setMinWidth(300.0);
+			this.panelTourJeu.setMinWidth(600.0);
+			ttTourJeu.setToX(0.0);
 		}
 			
 		else if(evtType.equals("MOUSE_EXITED") && this.panelMenuOpened)
 		{
 			this.panelMenuOpened = false;
-			tt.setToX(-250.0);
+			ttMenu.setToX(-250.0);
+			this.panelGrille.setMinWidth(845.0);
+			ttGrille.setToX(-250.0);
+			this.panelTourJeuController.lblX.setMinWidth(423.0);
+			this.panelTourJeuController.lblO.setMinWidth(423.0);
+			this.panelTourJeu.setMinWidth(846.0);
+			ttTourJeu.setToX(-250.0);
 		}
 		
-		tt.play();
+		ttMenu.play();
+		ttGrille.play();
+		ttTourJeu.play();
 	}
 
 	public static class Grille {
