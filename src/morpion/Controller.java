@@ -64,9 +64,13 @@ class Controller {
 		Main.learningThread.start();
 	}
 	
-	public void editConfigFile() throws IOException
+	public void editConfigFile()
 	{
-		this.ai.editConfigFile();
+		try {
+			this.ai.editConfigFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void changerModeJeu(Mode mode)

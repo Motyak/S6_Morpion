@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sun.prism.paint.Color;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -13,6 +15,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -133,6 +137,7 @@ public class Ihm {
 	public static class Menu {
 		private Ihm ihm;
 		private List<ImageView> imgsModeJeu;
+		private List<ImageView> imgsBoutons;
 		
 		@FXML private ImageView imgModeJeu0;
 		@FXML private ImageView imgModeJeu1;
@@ -144,12 +149,16 @@ public class Ihm {
 		
 		@FXML private void initialize() {
 			this.imgsModeJeu = Arrays.asList(this.imgModeJeu0, this.imgModeJeu1);
+			this.imgsBoutons = Arrays.asList(this.imgRegles, this.imgEditConfig);
 			
-			for(ImageView iv : this.imgsModeJeu)
-			{
+			for(ImageView iv : this.imgsModeJeu) {
 				iv.setOnMouseClicked(this::handleMouseEventOnMode);
 				iv.setOnMouseEntered(this::handleMouseEventOnMode);
 				iv.setOnMouseExited(this::handleMouseEventOnMode);
+			}
+			for(ImageView iv : this.imgsBoutons) {
+				iv.setOnMouseEntered(this::handleMouseHoverOnImgs);
+				iv.setOnMouseExited(this::handleMouseUnhoverOnImgs);
 			}
 			
 			this.slDiff.valueProperty().addListener((obs, oldVal, newVal) -> this.slDiff.setValue(Math.round(newVal.doubleValue())));
@@ -157,8 +166,8 @@ public class Ihm {
 			this.imgArrowUp.setOnMouseClicked(this::handleMouseEventOnUpArrow);
 			this.imgArrowDown.setOnMouseClicked(this::handleMouseEventOnDownArrow);
 			
-//			this.btnRegles.setOnAction(this.btnReglesOnClick);
-//			this.btnEditConfig.setOnAction(this.btnEditConfigOnClick);
+			this.imgRegles.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().showDialogRegles());
+			this.imgEditConfig.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().editConfigFile());
 		}
 		
 		public void injectMainController(Ihm ihm)
@@ -196,35 +205,6 @@ public class Ihm {
 				iv.setImage(new Image(new File(RES.getUnpressed(mode)).toURI().toString()));
 		}
 		
-//		private EventHandler<ActionEvent> btnReglesOnClick = new EventHandler<ActionEvent>() {
-//			@Override
-//			public void handle(ActionEvent event) {
-//				Menu.this.ihm.getCtrl().showDialogRegles();
-//			}
-//		};
-//		
-//		private EventHandler<ActionEvent> btnEditConfigOnClick = new EventHandler<ActionEvent>() {
-//			@Override
-//			public void handle(ActionEvent event) {
-//				try {
-//					Menu.this.ihm.getCtrl().editConfigFile();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		};
-//		
-//		private EventHandler<ActionEvent> btnModeJeuOnClick = new EventHandler<ActionEvent>() {
-//			@Override
-//			public void handle(ActionEvent event) {
-//				ToggleButton btn = (ToggleButton)event.getSource();
-//				int idBtn = Integer.valueOf(btn.getId().substring(btn.getId().length() - 1));
-//				Mode mode = Mode.get(idBtn);
-//
-//				Menu.this.ihm.getCtrl().changerModeJeu(mode);
-//			}
-//		};
-		
 		private void handleMouseEventOnSlider(MouseEvent event) {
 			Difficulte diff = Difficulte.values()[(int)Menu.this.slDiff.getValue()];
 			try {
@@ -250,30 +230,15 @@ public class Ihm {
 			}
 		}
 		
-		private EventHandler<? super MouseEvent> lblArrowUpOnClick = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				int value = (int)Menu.this.slDiff.getValue() + 1;
-
-				if(value < Difficulte.values().length) {
-					Menu.this.slDiff.setValue(value);
-					Menu.this.handleMouseEventOnSlider(event);
-				}
-			}
-		};
+		private void handleMouseHoverOnImgs(MouseEvent event) {
+			ImageView iv = (ImageView)event.getSource();
+			iv.setEffect(new DropShadow(0.0, javafx.scene.paint.Color.RED));
+		}
 		
-		private EventHandler<? super MouseEvent> lblArrowDownOnClick = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				int value = (int)Menu.this.slDiff.getValue() - 1;
-
-				if(value >= 0) {
-					Menu.this.slDiff.setValue(value);
-					Menu.this.handleMouseEventOnSlider(event);
-				}
-			}
-		};
-			
+		private void handleMouseUnhoverOnImgs(MouseEvent event) {
+			ImageView iv = (ImageView)event.getSource();
+			iv.setEffect(null);
+		}
 	}
 
 }
