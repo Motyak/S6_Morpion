@@ -191,19 +191,11 @@ public class Ihm {
 			if(evtType.equals("MOUSE_CLICKED"))
 				Menu.this.ihm.getCtrl().changerModeJeu(mode);
 			
-			else if(evtType.equals("MOUSE_ENTERED") && !modeActuel) {
-				if(mode == Mode.P_VS_P)
-					iv.setImage(new Image(new File(RES.P_VS_P_HOVER).toURI().toString()));
-				else if(mode == Mode.P_VS_AI)
-					iv.setImage(new Image(new File(RES.P_VS_AI_HOVER).toURI().toString()));
-			}
+			else if(evtType.equals("MOUSE_ENTERED") && !modeActuel)
+				iv.setImage(new Image(new File(RES.getHover(mode)).toURI().toString()));
 			
-			else if(evtType.equals("MOUSE_EXITED") && !modeActuel) {
-				if(mode == Mode.P_VS_P)
-					iv.setImage(new Image(new File(RES.P_VS_P_UNPRESSED).toURI().toString()));
-				else if(mode == Mode.P_VS_AI)
-					iv.setImage(new Image(new File(RES.P_VS_AI_UNPRESSED).toURI().toString()));
-			}
+			else if(evtType.equals("MOUSE_EXITED") && !modeActuel)
+				iv.setImage(new Image(new File(RES.getUnpressed(mode)).toURI().toString()));
 		}
 		
 //		private EventHandler<ActionEvent> btnReglesOnClick = new EventHandler<ActionEvent>() {
