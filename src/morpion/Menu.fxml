@@ -120,7 +120,7 @@
             <Insets left="10.0" right="10.0" />
          </GridPane.margin>
       </GridPane>
-      <ImageView fitHeight="42.0" fitWidth="42.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+      <ImageView fitHeight="42.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
          <image>
             <Image url="@../../res/next_64.png" />
          </image>

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -13,8 +14,8 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;//
-import javafx.scene.layout.GridPane;//
+import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 
 //obligé de mettre en public pour lier le doc FXML
 public class Ihm {
@@ -28,12 +29,17 @@ public class Ihm {
 //	panels
 //	@FXML private GridPane panelGrille;
 //	@FXML private GridPane panelTourJeu;
-//	@FXML private AnchorPane panelMenu;
+	@FXML private GridPane panelMenu;
+	
+	private boolean panelMenuOpened = false;
 	
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
 		this.panelGrilleController.injectMainController(this);
 		this.panelMenuController.injectMainController(this);
+		
+		this.panelMenu.setOnMouseEntered(this::handleMouseHoverOnMenu);
+		this.panelMenu.setOnMouseExited(this::handleMouseHoverOnMenu);
 		
 		this.ctrl.entToIhm();
 		this.ctrl.lancerApprentissage();
@@ -43,6 +49,26 @@ public class Ihm {
 	public Grille getGrille() { return this.panelGrilleController; }
 	public TourJeu getTourJeu() { return this.panelTourJeuController; }
 	public Menu getMenu() { return this.panelMenuController; }
+	
+	//events handlers
+	private void handleMouseHoverOnMenu(MouseEvent event) {
+		String evtType = event.getEventType().toString();
+		TranslateTransition tt = new TranslateTransition(new Duration(200), this.panelMenu);
+		
+		if(evtType.equals("MOUSE_ENTERED") && !this.panelMenuOpened)
+		{
+			this.panelMenuOpened = true;
+			tt.setToX(0);
+		}
+			
+		else if(evtType.equals("MOUSE_EXITED") && this.panelMenuOpened)
+		{
+			this.panelMenuOpened = false;
+			tt.setToX(-250.0);
+		}
+		
+		tt.play();
+	}
 
 	public static class Grille {
 		private Ihm ihm;
