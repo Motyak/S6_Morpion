@@ -19,7 +19,6 @@ import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
@@ -36,7 +35,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
 //obligé de mettre en public pour lier le doc FXML
@@ -87,8 +85,10 @@ public class Ihm {
 		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.panelMenu);
 		TranslateTransition ttGrille = new TranslateTransition(new Duration(duration), this.panelGrille);
 		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(duration), this.panelTourJeu);
+		TranslateTransition ttImgMenuIcon = new TranslateTransition(new Duration(duration), this.panelMenuController.imgMenuArrowIcon);
+		RotateTransition rtImgMenuArrow = new RotateTransition(new Duration(duration), this.panelMenuController.imgMenuArrow);
 		ParallelTransition transition = new ParallelTransition(
-				ttMenu, ttGrille, ttTourJeu, 
+				ttMenu, ttGrille, ttTourJeu, ttImgMenuIcon, rtImgMenuArrow,
 				this.createMinWidthAnim(this.panelGrille, 595.0, duration),
 				this.createMinWidthAnim(this.panelTourJeuController.lblX, 300.0, duration),
 				this.createMinWidthAnim(this.panelTourJeuController.lblO, 300.0, duration),
@@ -97,7 +97,9 @@ public class Ihm {
 		ttMenu.setToX(0.0);
 		ttGrille.setToX(0.0);
 		ttTourJeu.setToX(-1.0);
-		this.panelMenuController.imgMenuArrow.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+		ttImgMenuIcon.setToX(-23.0);
+		rtImgMenuArrow.setToAngle(180.0);
+		this.panelMenuController.imgMenuArrowIcon.setImage(new Image(new File(RES.GAMEPAD_ICON).toURI().toString()));
 		
 		transition.play();
 	}
@@ -108,9 +110,10 @@ public class Ihm {
 		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.panelMenu);
 		TranslateTransition ttGrille = new TranslateTransition(new Duration(duration), this.panelGrille);
 		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(duration), this.panelTourJeu);
-		
+		TranslateTransition ttImgMenuIcon = new TranslateTransition(new Duration(duration), this.panelMenuController.imgMenuArrowIcon);
+		RotateTransition rtImgMenuArrow = new RotateTransition(new Duration(duration), this.panelMenuController.imgMenuArrow);
 		ParallelTransition transition = new ParallelTransition(
-				ttMenu, ttGrille, ttTourJeu, 
+				ttMenu, ttGrille, ttTourJeu, ttImgMenuIcon, rtImgMenuArrow,
 				this.createMinWidthAnim(this.panelGrille, 846.0, duration),
 				this.createMinWidthAnim(this.panelTourJeuController.lblX, 424.0, duration),
 				this.createMinWidthAnim(this.panelTourJeuController.lblO, 424.0, duration),
@@ -119,7 +122,9 @@ public class Ihm {
 		ttMenu.setToX(-250.0);
 		ttGrille.setToX(-250.0);
 		ttTourJeu.setToX(-252.0);
-		this.panelMenuController.imgMenuArrow.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+		ttImgMenuIcon.setToX(0.0);
+		rtImgMenuArrow.setToAngle(0.0);
+		this.panelMenuController.imgMenuArrowIcon.setImage(new Image(new File(RES.GEAR_ICON).toURI().toString()));
 		
 		transition.play();
 	}
@@ -338,6 +343,7 @@ public class Ihm {
 		@FXML private ImageView imgRegles;
 		@FXML private ImageView imgEditConfig;
 		@FXML private ImageView imgMenuArrow;
+		@FXML private ImageView imgMenuArrowIcon;
 		@FXML private HBox subpanelDiff;
 		
 		@FXML private void initialize() {

@@ -125,5 +125,13 @@
             <Image url="@../../res/next_64.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="imgMenuArrowIcon" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+         <image>
+            <Image url="@../../res/gear.png" />
+         </image>
+         <GridPane.margin>
+            <Insets left="25.0" top="30.0" />
+         </GridPane.margin>
+      </ImageView>
    </children>
 </GridPane>

@@ -42,5 +42,9 @@ final public class RES {
 	
 /* Icone application */
 	final static public String APP_ICON = resDirPath + "icon" + ".png";
+	
+/* Icones menu  (en dessous des fleches) */
+	final static public String GEAR_ICON = resDirPath + "gear" + ".png";
+	final static public String GAMEPAD_ICON = resDirPath + "gamepad" + ".png";
 
 }
