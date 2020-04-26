@@ -15,6 +15,7 @@ public class Apprentissage_Task<Void> extends Task<Void> {
 
 	@Override
 	protected Void call() throws Exception {
+		System.out.println("Thread apprentissage lancé");
 		
 		final File FILE_COUPS = new File(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME);
 		final double PERCENTAGE_STAGE = 10.0;
@@ -62,7 +63,7 @@ public class Apprentissage_Task<Void> extends Task<Void> {
 				}
 					
 				if (Main.learningThread.isInterrupted()) {
-					System.out.println("Thread interrompu");
+					System.out.println("Thread apprentissage interrompu");
 					return null;
 				}
 			}
@@ -78,7 +79,7 @@ public class Apprentissage_Task<Void> extends Task<Void> {
 			}
 			
 			if (Main.learningThread.isInterrupted()) {
-				System.out.println("Thread interrompu");
+				System.out.println("Thread apprentissage interrompu");
 				return null;
 			}
 		}

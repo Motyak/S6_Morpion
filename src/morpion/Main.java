@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 public class Main extends Application {
 	
 	public static Thread learningThread;
+	public static Thread configThread;
 	public static Stage dialogRegles;
 	
 	public static void main(String[] args) {
@@ -42,8 +43,8 @@ public class Main extends Application {
 	
 	@Override
 	public void stop() throws Exception {
-		if(Main.learningThread != null)
-			Main.learningThread.interrupt();
+		if(Main.configThread != null)
+			Main.configThread.interrupt();
 	}
 	
 	private void createDialogRegles(Stage parent)
@@ -51,7 +52,7 @@ public class Main extends Application {
 		Main.dialogRegles = new Stage();
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("DialogRegles.fxml"));
-			Scene scene = new Scene(root,800,800);
+			Scene scene = new Scene(root,810,810);
 			Main.dialogRegles.setScene(scene);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -59,6 +60,6 @@ public class Main extends Application {
 		
 		Main.dialogRegles.initOwner(parent);
 		Main.dialogRegles.initModality(Modality.APPLICATION_MODAL);
-		Main.dialogRegles.initStyle(StageStyle.UTILITY);	//mettre UNDECORATED quand on aura fini le fxml
+		Main.dialogRegles.initStyle(StageStyle.UTILITY);
 	}
 }

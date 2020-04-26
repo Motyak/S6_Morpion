@@ -52,7 +52,7 @@ class Controller {
 		return false;
 	}
 	
-	public void lancerApprentissage() throws IOException 
+	public static void lancerApprentissage(Ai ai) throws IOException 
 	{
 //		this.ai.reset();
 		if(Main.learningThread != null) {
@@ -61,9 +61,22 @@ class Controller {
 				;
 		}
 		
-		Main.learningThread = new Thread(new Apprentissage_Task<>(this.ai));
+		Main.learningThread = new Thread(new Apprentissage_Task<>(ai));
 		Main.learningThread.setDaemon(true);
 		Main.learningThread.start();
+	}
+	
+	public static void lancerConfigThread(Ai ai)
+	{
+		if(Main.configThread != null) {
+			Main.configThread.interrupt();
+			while(Main.configThread.isAlive())
+				;
+		}
+		
+		Main.configThread = new Thread(new Config_Task<>(ai));
+		Main.configThread.setDaemon(true);
+		Main.configThread.start();
 	}
 	
 	public void editConfigFile()
@@ -94,7 +107,7 @@ class Controller {
 		this.ai.changeDiff(diff);
 		this.renewGame();
 		
-		this.lancerApprentissage();
+		Controller.lancerApprentissage(this.ai);
 		
 		System.out.println("Difficulte actuelle : " + this.ent.getDiff().getValue());
 	}
@@ -103,6 +116,8 @@ class Controller {
 	{
 		Main.dialogRegles.showAndWait();
 	}
+	
+	public Ai getAi() { return this.ai; }
 	
 	public Joueur getJoueurCourant()
 	{

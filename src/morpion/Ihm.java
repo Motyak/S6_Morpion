@@ -17,8 +17,6 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.canvas.Canvas;
@@ -54,7 +52,6 @@ public class Ihm {
 	@FXML private GridPane panelMenu;
 	
 	private boolean panelMenuOpened = false;
-//	private boolean menuAnimLock = false;
 	
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
@@ -65,7 +62,8 @@ public class Ihm {
 		this.panelMenu.setOnMouseExited(this::handleMouseHoverOnMenu);
 		
 		this.ctrl.entToIhm();
-		this.ctrl.lancerApprentissage();
+		Controller.lancerConfigThread(this.ctrl.getAi());
+		Controller.lancerApprentissage(this.ctrl.getAi());
 	}
 	
 	public Controller getCtrl() { return this.ctrl; }
@@ -244,10 +242,6 @@ public class Ihm {
 				}
 			});
 			return pt;
-//			pt.play();
-//			pt.setOnFinished(e -> {
-//				gc.clearRect(0, 0, this.canvasGrille.getWidth(), this.canvasGrille.getHeight());
-//			});
 		}
 		
 		public void clearCanvas()
