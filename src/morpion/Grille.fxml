@@ -1,67 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:controller="morpion.Ihm$Grille" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="800.0" minHeight="800.0" minWidth="846.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm$Grille">
+   <children>
+      <ImageView fx:id="imgRenew" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+         <GridPane.margin>
+            <Insets right="40.0" top="15.0" />
+         </GridPane.margin>
+         <image>
+            <Image url="@../../res/reload.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="580.0" fitWidth="580.0" opacity="0.9" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
+         <image>
+            <Image url="@../../res/ticTacToe.png" />
+         </image>
+         <GridPane.margin>
+            <Insets left="10.0" right="10.0" top="110.0" />
+         </GridPane.margin>
+      </ImageView>
+      <GridPane maxWidth="580.0" GridPane.halignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="120.0" prefHeight="120.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="120.0" prefHeight="120.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="120.0" prefHeight="120.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label fx:id="lblCase0" alignment="CENTER" maxHeight="194.0" maxWidth="194.0">
+               <font>
+                  <Font name="Segoe Script Bold" size="96.0" />
+               </font>
+               <padding>
+                  <Insets right="-5.0" top="-15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="lblCase1" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="1">
+               <font>
+                  <Font name="Segoe Script Bold" size="96.0" />
+               </font>
+                <padding>
+                  <Insets right="-5.0" top="-15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="lblCase2" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="2">
+               <font>
+                  <Font name="Segoe Script Bold" size="96.0" />
+               </font>
+                <padding>
+                  <Insets right="-5.0" top="-15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="lblCase3" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Segoe Script Bold" size="96.0" />
+               </font>
+                <padding>
+                  <Insets right="-5.0" top="-15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="lblCase4" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Segoe Script Bold" size="96.0" />
+               </font>
+                <padding>
+                  <Insets right="-5.0" top="-15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="lblCase5" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Segoe Script Bold" size="96.0" />
+               </font>
+                <padding>
+                  <Insets right="-5.0" top="-15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="lblCase6" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Segoe Script Bold" size="96.0" />
+               </font>
+                <padding>
+                  <Insets right="-5.0" top="-15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="lblCase7" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Segoe Script Bold" size="96.0" />
+               </font>
+                <padding>
+                  <Insets right="-5.0" top="-15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="lblCase8" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Segoe Script Bold" size="96.0" />
+               </font>
+                <padding>
+                  <Insets right="-5.0" top="-15.0" />
+               </padding>
+            </Label>
+         </children>
+         <GridPane.margin>
+            <Insets left="10.0" right="10.0" top="110.0" />
+         </GridPane.margin>
+      </GridPane>
+      <Canvas fx:id="canvasGrille" height="580.0" mouseTransparent="true" width="580.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
+         <GridPane.margin>
+            <Insets left="10.0" right="10.0" top="110.0" />
+         </GridPane.margin>
+      </Canvas>
+      <ImageView fx:id="imgCup" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" translateY="200.0" GridPane.valignment="BOTTOM">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+         <image>
+            <Image url="@../../res/cup.png" />
+         </image>
+      </ImageView>
+   </children>
    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
+      <ColumnConstraints />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints minHeight="120.0" prefHeight="120.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="120.0" prefHeight="120.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="120.0" prefHeight="120.0" vgrow="SOMETIMES" />
+      <RowConstraints />
    </rowConstraints>
-   <children>
-      <Button fx:id="btnCase0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-         <font>
-            <Font size="45.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnCase1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="1">
-         <font>
-            <Font size="45.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnCase2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="2">
-         <font>
-            <Font size="45.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnCase3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.rowIndex="1">
-         <font>
-            <Font size="45.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnCase4" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         <font>
-            <Font size="45.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnCase5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="1">
-         <font>
-            <Font size="45.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnCase6" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.rowIndex="2">
-         <font>
-            <Font size="45.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnCase7" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
-         <font>
-            <Font size="45.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnCase8" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="2">
-         <font>
-            <Font size="45.0" />
-         </font>
-      </Button>
-   </children>
 </GridPane>

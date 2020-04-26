@@ -1,5 +1,6 @@
 package morpion;
 
+import java.io.File;
 import Mk.Pair;
 import javafx.concurrent.Task;
 
@@ -14,40 +15,74 @@ public class Apprentissage_Task<Void> extends Task<Void> {
 
 	@Override
 	protected Void call() throws Exception {
+		System.out.println("Thread apprentissage lancé");
+		
+		final File FILE_COUPS = new File(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME);
 		final double PERCENTAGE_STAGE = 10.0;
-		String diff = this.ai.getDiff().getValue();
+		final Pair<Integer,Double> params = this.ai.getModelParams();
+		final double optNb = (double)this.ai.calcOptNb(params.first, params.second);
+		final long stage = Math.round(optNb / PERCENTAGE_STAGE);
+		final String DIFFICULTY = this.ai.getDiff().getValue();
 		
+		int nbCoupsAppris;
+		double percentage;
 		int i = this.ai.model.getConsideredMoves();
-		Pair<Integer,Double> params = this.ai.getModelParams();
-		double optNb = (double)this.ai.calcOptNb(params.first, params.second);
-		long stage = Math.round(optNb / PERCENTAGE_STAGE);
-		boolean reached = (i >= optNb);
+		int stageIteration = 1;
 		
-		while(!reached)
+		boolean reached = (i >= optNb);
+		boolean needUpdate = (this.ai.model.getFileLastModified() != FILE_COUPS.lastModified());
+		boolean apprentissageTerminee = false;
+
+		while(true)
 		{
-			this.ai.learn();
-			++i;
-			this.ai.model.incConsideredMoves();
-			int percentage = (int)(i / optNb * 100.0);
-			if(i % stage == 0)
+			while(!reached || needUpdate)
 			{
-				this.ai.save();
-				System.out.println("Modèle " + diff + " (" + params.first + 
-						", " + params.second + ") : " + percentage + "%");
-			}
+				apprentissageTerminee = false;
+
+				if(needUpdate)
+				{
+					this.ai.reset();
+					i = this.ai.model.getConsideredMoves();
+					needUpdate = false;
+				}
+
+				nbCoupsAppris = this.ai.learn();
+				i += nbCoupsAppris;
+				this.ai.model.setConsideredMoves(i);
+				this.ai.model.setFileLastModified(FILE_COUPS.lastModified());
 				
+				reached = (i >= optNb);
 			
-			reached = (i >= optNb);
+				if(i >= stageIteration * stage)
+				{
+					this.ai.save();
+					percentage = stageIteration * PERCENTAGE_STAGE;
+					System.out.println("Modèle " + DIFFICULTY + " (" + params.first + 
+							", " + params.second + ") : " + percentage + "% of " + (int)optNb);
+					++stageIteration;
+				}
+					
+				if (Main.learningThread.isInterrupted()) {
+					System.out.println("Thread apprentissage interrompu");
+					return null;
+				}
+			}
+			stageIteration = 1;
+			needUpdate = (this.ai.model.getFileLastModified() != FILE_COUPS.lastModified());
+			
+			
+			if(!apprentissageTerminee)
+			{
+				System.out.println("Modèle " + DIFFICULTY + " (" + params.first + ", " + 
+						params.second + ") : " + "Apprentissage terminée !");
+				apprentissageTerminee = true;
+			}
 			
 			if (Main.learningThread.isInterrupted()) {
-				System.out.println("Thread interrompu");
+				System.out.println("Thread apprentissage interrompu");
 				return null;
 			}
 		}
-		System.out.println("Modèle " + diff + " (" + params.first + 
-				", " + params.second + ") : " + "Apprentissage terminée !");
-
-		return null;
 	}
 
 }

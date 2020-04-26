@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import Mk.Math;
+import Mk.Pair;
 
 public class Ent {
 	public static final int DIM_GRILLE = 3;
@@ -99,30 +100,59 @@ public class Ent {
 			System.out.println("--------------------");
 		}
 
-		public Joueur finDePartie() 
+		public Pair<Joueur,Range> finDePartie() 
 		{
-			List<Integer> sumsRanges = new ArrayList<>();
+			List<Pair<Integer,Range>> sumsRanges = new ArrayList<>();
 			for(int i = 0 ; i < this.dim ; ++i) 
 			{
-				List<Integer> sumLineCol = Arrays.asList(0, 0);
+				List<Pair<Integer,Range>> sumLineCol = Arrays.asList(new Pair<>(0, null), new Pair<>(0, null));
 				for(int j = 0 ; j < this.dim ; ++j) 
 				{
-					sumLineCol.set(0, sumLineCol.get(0) + this.cases[i][j].getValue());
-					sumLineCol.set(1, sumLineCol.get(1) + this.cases[j][i].getValue());
+					sumLineCol.set(0, new Pair<>(sumLineCol.get(0).first + this.cases[i][j].getValue(), Range.get(10 + i)));
+					sumLineCol.set(1, new Pair<>(sumLineCol.get(1).first + this.cases[j][i].getValue(), Range.get(20 + i)));
 				}
 				sumsRanges.addAll(sumLineCol);
 			}
-			List<Integer> sumDiags = Arrays.asList(0, 0);
+			List<Pair<Integer,Range>> sumDiags = Arrays.asList(new Pair<>(0, null), new Pair<>(0, null));
 			for(int i = 0 ; i < this.dim ; ++i)
 			{
-				sumDiags.set(0, sumDiags.get(0) + this.cases[i][i].getValue());
-				sumDiags.set(1, sumDiags.get(1) + this.cases[i][this.dim - 1 - i].getValue());
+				sumDiags.set(0, new Pair<>(sumDiags.get(0).first + this.cases[i][i].getValue(), Range.DIAGONALE_1));
+				sumDiags.set(1, new Pair<>(sumDiags.get(1).first + this.cases[i][this.dim - 1 - i].getValue(), Range.DIAGONALE_2));
 			}
 			sumsRanges.addAll(sumDiags);
-			sumsRanges.sort((Integer i1, Integer i2) -> Math.square(i2).compareTo(Math.square(i1)));
-			int bestRange = sumsRanges.get(0);
-			return Joueur.get(bestRange / this.dim);
+			sumsRanges.sort((Pair<Integer,Range> i1, Pair<Integer,Range> i2) -> Math.square(i2.first).compareTo(Math.square(i1.first)));
+			
+			int bestRange = sumsRanges.get(0).first;
+			Joueur vainqueur = Joueur.get(bestRange / this.dim);
+			Range ligneGagnante = sumsRanges.get(0).second;
+			
+			return new Pair<>(vainqueur, ligneGagnante);
 		}
+		
+//		public Joueur finDePartie() 
+//		{
+//			List<Integer> sumsRanges = new ArrayList<>();
+//			for(int i = 0 ; i < this.dim ; ++i) 
+//			{
+//				List<Integer> sumLineCol = Arrays.asList(0, 0);
+//				for(int j = 0 ; j < this.dim ; ++j) 
+//				{
+//					sumLineCol.set(0, sumLineCol.get(0) + this.cases[i][j].getValue());
+//					sumLineCol.set(1, sumLineCol.get(1) + this.cases[j][i].getValue());
+//				}
+//				sumsRanges.addAll(sumLineCol);
+//			}
+//			List<Integer> sumDiags = Arrays.asList(0, 0);
+//			for(int i = 0 ; i < this.dim ; ++i)
+//			{
+//				sumDiags.set(0, sumDiags.get(0) + this.cases[i][i].getValue());
+//				sumDiags.set(1, sumDiags.get(1) + this.cases[i][this.dim - 1 - i].getValue());
+//			}
+//			sumsRanges.addAll(sumDiags);
+//			sumsRanges.sort((Integer i1, Integer i2) -> Math.square(i2).compareTo(Math.square(i1)));
+//			int bestRange = sumsRanges.get(0);
+//			return Joueur.get(bestRange / this.dim);
+//		}
 		
 		@Override
 		public String toString() {

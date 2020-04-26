@@ -1,23 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<HBox fx:controller="morpion.Ihm" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<HBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm">
    <children>
-      <fx:include fx:id="panelMenu" source="Menu.fxml" />
+      <fx:include fx:id="panelMenu" source="Menu.fxml" translateX="-250.0" />
       <VBox>
          <children>
-            <fx:include fx:id="panelGrille" source="Grille.fxml" />
-            <fx:include fx:id="panelTourJeu" source="TourJeu.fxml" />
+            <fx:include fx:id="panelGrille" source="Grille.fxml" translateX="-250.0" />
+            <fx:include fx:id="panelTourJeu" source="TourJeu.fxml" translateX="-252.0" />
          </children>
       </VBox>
    </children>

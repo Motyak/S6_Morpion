@@ -1,0 +1,18 @@
+.slider:vertical .track {
+    -fx-pref-width:10;
+}
+
+.slider .thumb {
+    -fx-pref-height: 20;
+    -fx-pref-width: 20;
+}
+
+.label-tour-rempli {
+	-fx-background-color: silver; 
+	-fx-text-fill: black;
+}
+
+.label-tour-vide {
+	-fx-background-color: white; 
+	-fx-text-fill: grey
+}

@@ -1,6 +1,9 @@
 package morpion;
 
+import Mk.Pair;
 import Mk.TextFile;
+import javafx.animation.Animation;
+import javafx.animation.ParallelTransition;
 
 import java.io.IOException;
 
@@ -27,28 +30,30 @@ class Controller {
 		this.ihm.getTourJeu().setTourDeJeu(this.ent.getTourJeu());
 		
 		this.ihm.getMenu().setModeJeu(this.ent.getMode());
+		this.ihm.getMenu().lockDiff((this.ent.getMode() == Mode.P_VS_P));
 	}
 	
-	public void proposerCoup(int id) throws IOException 
+	public boolean proposerCoup(int id) throws IOException
 	{
 		Ent.Grille grille = this.ent.getGrille();
 		
 		if(grille.at(id) == Case.VIDE)
 		{
 			this.jouerCoup(id);
-			
 			if(this.verifierFinDePartie())
-				return;
+				return true;
 			
 			if(this.ent.getMode() == Mode.P_VS_AI)
 			{
 				this.jouerCoup(this.aiPlays());
 				this.verifierFinDePartie();
 			}
-		}	
+			return true;
+		}
+		return false;
 	}
 	
-	public void lancerApprentissage() throws IOException 
+	public static void lancerApprentissage(Ai ai) throws IOException 
 	{
 //		this.ai.reset();
 		if(Main.learningThread != null) {
@@ -57,14 +62,31 @@ class Controller {
 				;
 		}
 		
-		Main.learningThread = new Thread(new Apprentissage_Task<>(this.ai));
+		Main.learningThread = new Thread(new Apprentissage_Task<>(ai));
 		Main.learningThread.setDaemon(true);
 		Main.learningThread.start();
 	}
 	
-	public void editConfigFile() throws IOException
+	public static void lancerConfigThread(Ai ai)
 	{
-		this.ai.editConfigFile();
+		if(Main.configThread != null) {
+			Main.configThread.interrupt();
+			while(Main.configThread.isAlive())
+				;
+		}
+		
+		Main.configThread = new Thread(new Config_Task<>(ai));
+		Main.configThread.setDaemon(true);
+		Main.configThread.start();
+	}
+	
+	public void editConfigFile()
+	{
+		try {
+			this.ai.editConfigFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void changerModeJeu(Mode mode)
@@ -86,7 +108,7 @@ class Controller {
 		this.ai.changeDiff(diff);
 		this.renewGame();
 		
-		this.lancerApprentissage();
+		Controller.lancerApprentissage(this.ai);
 		
 		System.out.println("Difficulte actuelle : " + this.ent.getDiff().getValue());
 	}
@@ -96,7 +118,24 @@ class Controller {
 		Main.dialogRegles.showAndWait();
 	}
 	
-	private void renewGame()
+	public Ai getAi() { return this.ai; }
+	
+	public Joueur getJoueurCourant()
+	{
+		return this.ent.getTourJeu();
+	}
+	
+	public Mode getModeJeu()
+	{
+		return this.ent.getMode();
+	}
+	
+	public boolean caseVide(int id)
+	{
+		return this.ent.getGrille().at(id) == Case.VIDE;
+	}
+	
+	public void renewGame()
 	{
 		this.ent.getGrille().clear();
 		this.ai.data.reset();
@@ -114,33 +153,46 @@ class Controller {
 			this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
 		else
 			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
-		this.incrementerTourDeJeu();
+		this.incrementerTourDeJeu();//
 		this.entToIhm();
 	}
 	
 	private boolean verifierFinDePartie() throws IOException
 	{
 		Ent.Grille grille = this.ent.getGrille();
+		Pair<Joueur,Range> p = grille.finDePartie();
 		
-		Joueur vainqueur = grille.finDePartie();
+		Joueur vainqueur = p.first;
 		boolean partieTerminee = (vainqueur != null) || grille.is_filled();
 		if(partieTerminee)
 		{
 			if(vainqueur != null)
 			{
 				System.out.println("Le vainqueur est " + vainqueur.toString());
+				this.ihm.getTourJeu().setTourDeJeu(vainqueur);
+				Animation animLigne = this.ihm.getGrille().animLigneGagnante(p.second, 500);
+				Animation animCup = this.ihm.getGrille().animCup(vainqueur, 1000);
+				this.ihm.setAnimLigneGagnanteOccuring(true);
+				animLigne.play();
+				animCup.play();
+				animCup.setOnFinished(e -> {
+					grille.clear();
+					this.ent.setTourJeu(Joueur.values()[0]);
+					this.entToIhm();
+					this.ihm.getGrille().clearCanvas();
+					this.ihm.setAnimLigneGagnanteOccuring(false);
+				});
 				TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
 						Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, true);
 				this.ai.learn();
 			}
-			else
+			else {				
 				System.out.println("Aucun gagnant");
-			
-			grille.clear();
+				grille.clear();
+				this.ent.setTourJeu(Joueur.values()[0]);
+				this.entToIhm();
+			}
 			this.ai.data.reset();
-			this.ent.setTourJeu(Joueur.values()[0]);
-			this.entToIhm();
-			
 			return true;
 		}
 		return false;

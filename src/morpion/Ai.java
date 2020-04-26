@@ -48,11 +48,12 @@ public class Ai {
 		this.loadAiModel();
 	}
 	
-	public void learn() throws IOException {
+	public int learn() throws IOException {
 		double[] input, output;
 		BufferedReader reader;
 		reader = new BufferedReader(new FileReader(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME));
 		String line = reader.readLine();
+		int nbDeCoups = 0;
 		while(line != null)
 		{
 			input = new double[Ent.TAILLE_GRILLE];
@@ -67,9 +68,11 @@ public class Ai {
 				output[i] = Double.parseDouble(grilleOutput.get(i));
 			}
 			this.model.backPropagate(input, output);
+			++nbDeCoups;
 			line = reader.readLine();
 		}
 		reader.close();
+		return nbDeCoups;
 	}
 	
 	public void save() throws IOException {
@@ -149,8 +152,15 @@ public class Ai {
 	private void loadAiModel() throws Exception {
 		Pair<Integer,Double> params = this.getModelParams();
 		String filename = params.first + "_" + params.second + ".srl";
-
-		this.model = Ai.Model.load(Ai.DATA_DIRPATH + filename);
+		if(!new File(Ai.DATA_DIRPATH + filename).exists()) 
+		{
+			int[] layers = {Ent.TAILLE_GRILLE, params.second.intValue(), Ent.TAILLE_GRILLE };
+			this.model = new Model(layers, params.second, new SigmoidalTransferFunction());
+			this.save();
+		}
+		else
+			this.model = Ai.Model.load(Ai.DATA_DIRPATH + filename);
+		
 		System.out.println("Modèle chargé : " + filename);
 	}
 	
@@ -176,14 +186,18 @@ public class Ai {
 
 		MultiLayerPerceptron p;
 		int consideredMoves;
+		long fileLastModified;
 		
 		public Model(int[] layers, double learningRate, TransferFunction fun) {
 			this.p = new MultiLayerPerceptron(layers, learningRate, fun);
 			this.consideredMoves = 0;
+			this.fileLastModified = 0;
 		}
 		
 		public int getConsideredMoves() { return this.consideredMoves; }
-		public void incConsideredMoves() { ++this.consideredMoves; }
+		public void setConsideredMoves(int n) { this.consideredMoves = n; }
+		public long getFileLastModified() { return this.fileLastModified; }
+		public void setFileLastModified(long timestamp) { this.fileLastModified = timestamp; } 
 		
 		public double[] forwardPropagation(double[] input){ return this.p.forwardPropagation(input); }
 		public double backPropagate(double[] input, double[] output) { return this.p.backPropagate(input, output); }
