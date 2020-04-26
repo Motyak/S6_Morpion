@@ -122,6 +122,14 @@
             <Insets left="10.0" right="10.0" top="110.0" />
          </GridPane.margin>
       </Canvas>
+      <ImageView fx:id="imgCup" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" translateY="200.0" GridPane.valignment="BOTTOM">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+         <image>
+            <Image url="@../../res/cup.png" />
+         </image>
+      </ImageView>
    </children>
    <columnConstraints>
       <ColumnConstraints />

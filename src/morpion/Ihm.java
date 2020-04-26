@@ -11,7 +11,9 @@ import Mk.Pair;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
+import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -146,6 +148,7 @@ public class Ihm {
 		
 		@FXML private Canvas canvasGrille;
 		@FXML private ImageView imgRenew;
+		@FXML private ImageView imgCup;
 		
 //		cases du morpion
 		@FXML private Label lblCase0; @FXML private Label lblCase1; @FXML private Label lblCase2;
@@ -253,6 +256,21 @@ public class Ihm {
 				}
 			});
 			return pt;
+		}
+		
+		public Animation animCup(Joueur joueur, int duration)
+		{
+			TranslateTransition ttUp = new TranslateTransition(new Duration(duration * 0.3), this.imgCup);
+			TranslateTransition ttDown = new TranslateTransition(new Duration(duration * 0.3), this.imgCup);
+			SequentialTransition anim = new SequentialTransition(ttUp,new PauseTransition(new Duration(duration * 0.4)) , ttDown);
+			if(joueur == Joueur.X) 
+				ttUp.setFromX(180.0);
+			else if(joueur == Joueur.O) 
+				ttUp.setFromX(605.0);
+			ttUp.setByY(-110.0);
+			ttDown.setByY(110.0);
+			
+			return anim;
 		}
 		
 		public void clearCanvas()

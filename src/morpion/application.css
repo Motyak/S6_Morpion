@@ -13,5 +13,6 @@
 }
 
 .label-tour-vide {
+	-fx-background-color: white; 
 	-fx-text-fill: grey
 }

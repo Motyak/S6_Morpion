@@ -3,6 +3,7 @@ package morpion;
 import Mk.Pair;
 import Mk.TextFile;
 import javafx.animation.Animation;
+import javafx.animation.ParallelTransition;
 
 import java.io.IOException;
 
@@ -169,9 +170,11 @@ class Controller {
 			{
 				System.out.println("Le vainqueur est " + vainqueur.toString());
 				this.ihm.getTourJeu().setTourDeJeu(vainqueur);
-				Animation anim = this.ihm.getGrille().animLigneGagnante(p.second, 500);
-				anim.play();
-				anim.setOnFinished(e -> {
+				Animation animLigne = this.ihm.getGrille().animLigneGagnante(p.second, 500);
+				Animation animCup = this.ihm.getGrille().animCup(vainqueur, 1000);
+				animLigne.play();
+				animCup.play();
+				animCup.setOnFinished(e -> {
 					grille.clear();
 					this.ent.setTourJeu(Joueur.values()[0]);
 					this.entToIhm();
