@@ -6,8 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
+import javafx.animation.PathTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.beans.value.WritableValue;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.DropShadow;
@@ -15,6 +23,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 //obligé de mettre en public pour lier le doc FXML
@@ -50,40 +63,63 @@ public class Ihm {
 	public TourJeu getTourJeu() { return this.panelTourJeuController; }
 	public Menu getMenu() { return this.panelMenuController; }
 	
+	private Timeline createMinWidthAnim(Region reg, double minWidth, int duration)
+	{
+		Timeline tl = new Timeline();
+		tl.getKeyFrames().add(new KeyFrame(Duration.millis(duration), 
+				new KeyValue(reg.minWidthProperty(), minWidth)));
+		return tl;
+	}
+	
+	private void openMenuAnim(int duration)
+	{
+		this.panelMenuOpened = true;
+		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.panelMenu);
+		TranslateTransition ttGrille = new TranslateTransition(new Duration(duration), this.panelGrille);
+		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(duration), this.panelTourJeu);
+		
+		ParallelTransition transition = new ParallelTransition(
+				ttMenu, ttGrille, ttTourJeu, 
+				this.createMinWidthAnim(this.panelGrille, 600.0, duration),
+				this.createMinWidthAnim(this.panelTourJeuController.lblX, 300.0, duration),
+				this.createMinWidthAnim(this.panelTourJeuController.lblO, 300.0, duration),
+				this.createMinWidthAnim(this.panelTourJeu, 600.0, duration)
+		);
+		ttMenu.setToX(0.0);
+		ttGrille.setToX(0.0);
+		ttTourJeu.setToX(0.0);
+		
+		transition.play();
+	}
+	
+	private void closeMenuAnim(int duration)
+	{
+		this.panelMenuOpened = false;
+		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.panelMenu);
+		TranslateTransition ttGrille = new TranslateTransition(new Duration(duration), this.panelGrille);
+		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(duration), this.panelTourJeu);
+		
+		ParallelTransition transition = new ParallelTransition(
+				ttMenu, ttGrille, ttTourJeu, 
+				this.createMinWidthAnim(this.panelGrille, 845.0, duration),
+				this.createMinWidthAnim(this.panelTourJeuController.lblX, 423.0, duration),
+				this.createMinWidthAnim(this.panelTourJeuController.lblO, 423.0, duration),
+				this.createMinWidthAnim(this.panelTourJeu, 846.0, duration)
+		);
+		ttMenu.setToX(-250.0);
+		ttGrille.setToX(-250.0);
+		ttTourJeu.setToX(-250.0);
+		
+		transition.play();
+	}
+	
 	//events handlers
 	private void handleMouseHoverOnMenu(MouseEvent event) {
 		String evtType = event.getEventType().toString();
-		TranslateTransition ttMenu = new TranslateTransition(new Duration(200), this.panelMenu);
-		TranslateTransition ttGrille = new TranslateTransition(new Duration(200), this.panelGrille);
-		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(200), this.panelTourJeu);
-		
 		if(evtType.equals("MOUSE_ENTERED") && !this.panelMenuOpened)
-		{
-			this.panelMenuOpened = true;
-			ttMenu.setToX(0.0);
-			this.panelGrille.setMinWidth(600.0);
-			ttGrille.setToX(0.0);
-			this.panelTourJeuController.lblX.setMinWidth(300.0);
-			this.panelTourJeuController.lblO.setMinWidth(300.0);
-			this.panelTourJeu.setMinWidth(600.0);
-			ttTourJeu.setToX(0.0);
-		}
-			
+			this.openMenuAnim(200);
 		else if(evtType.equals("MOUSE_EXITED") && this.panelMenuOpened)
-		{
-			this.panelMenuOpened = false;
-			ttMenu.setToX(-250.0);
-			this.panelGrille.setMinWidth(845.0);
-			ttGrille.setToX(-250.0);
-			this.panelTourJeuController.lblX.setMinWidth(423.0);
-			this.panelTourJeuController.lblO.setMinWidth(423.0);
-			this.panelTourJeu.setMinWidth(846.0);
-			ttTourJeu.setToX(-250.0);
-		}
-		
-		ttMenu.play();
-		ttGrille.play();
-		ttTourJeu.play();
+			this.closeMenuAnim(200);
 	}
 
 	public static class Grille {
