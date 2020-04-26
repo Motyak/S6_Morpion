@@ -11,6 +11,7 @@ import Mk.Pair;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -35,6 +36,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
 //obligé de mettre en public pour lier le doc FXML
@@ -138,6 +140,7 @@ public class Ihm {
 		private HashMap<Range, Label> mapRangeCaseDepart;
 		
 		@FXML private Canvas canvasGrille;
+		@FXML private ImageView imgRenew;
 		
 //		cases du morpion
 		@FXML private Label lblCase0; @FXML private Label lblCase1; @FXML private Label lblCase2;
@@ -166,6 +169,9 @@ public class Ihm {
 				c.setOnMouseEntered(this::handleMouseEventOnCase);
 				c.setOnMouseExited(this::handleMouseEventOnCase);
 			}
+			this.imgRenew.setOnMouseClicked(this::handleMouseEventOnRenew);
+			this.imgRenew.setOnMouseEntered(this::handleMouseEventOnRenew);
+			this.imgRenew.setOnMouseExited(this::handleMouseEventOnRenew);
 				
 		}
 		
@@ -274,6 +280,25 @@ public class Ihm {
 					lbl.setOpacity(1.0);
 				}
 			}
+		}
+		
+		private void handleMouseEventOnRenew(MouseEvent event) {
+			String eventType = event.getEventType().toString();
+			RotateTransition rt = new RotateTransition(new Duration(100), this.imgRenew);
+			
+			if(eventType.equals("MOUSE_CLICKED")) {
+				rt.setByAngle(180.0);
+				this.ihm.getCtrl().renewGame();
+			}
+			else if(eventType.equals("MOUSE_ENTERED" )) {
+				rt.setByAngle(45.0);
+			}
+			else if(eventType.equals("MOUSE_EXITED")) {
+				rt.setFromAngle(225.0);
+				rt.setByAngle(-45.0);
+			}
+			
+			rt.play();
 		}
 	}
 	

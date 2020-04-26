@@ -134,7 +134,7 @@ class Controller {
 		return this.ent.getGrille().at(id) == Case.VIDE;
 	}
 	
-	private void renewGame()
+	public void renewGame()
 	{
 		this.ent.getGrille().clear();
 		this.ai.data.reset();

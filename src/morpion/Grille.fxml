@@ -12,7 +12,7 @@
 
 <GridPane maxHeight="800.0" minHeight="800.0" minWidth="846.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm$Grille">
    <children>
-      <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+      <ImageView fx:id="imgRenew" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets right="40.0" top="15.0" />
          </GridPane.margin>
