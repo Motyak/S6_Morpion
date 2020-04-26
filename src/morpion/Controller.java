@@ -27,6 +27,7 @@ class Controller {
 		this.ihm.getTourJeu().setTourDeJeu(this.ent.getTourJeu());
 		
 		this.ihm.getMenu().setModeJeu(this.ent.getMode());
+		this.ihm.getMenu().lockDiff((this.ent.getMode() == Mode.P_VS_P));
 	}
 	
 	public boolean proposerCoup(int id) throws IOException

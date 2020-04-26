@@ -42,5 +42,5 @@ final public class RES {
 	
 /* Icone application */
 	final static public String APP_ICON = resDirPath + "icon" + ".png";
-	
+
 }

@@ -15,6 +15,7 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.value.WritableValue;
 import javafx.fxml.FXML;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -23,11 +24,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 //obligé de mettre en public pour lier le doc FXML
@@ -62,7 +60,7 @@ public class Ihm {
 	public Grille getGrille() { return this.panelGrilleController; }
 	public TourJeu getTourJeu() { return this.panelTourJeuController; }
 	public Menu getMenu() { return this.panelMenuController; }
-	
+
 	private Timeline createMinWidthAnim(Region reg, double minWidth, int duration)
 	{
 		Timeline tl = new Timeline();
@@ -77,7 +75,6 @@ public class Ihm {
 		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.panelMenu);
 		TranslateTransition ttGrille = new TranslateTransition(new Duration(duration), this.panelGrille);
 		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(duration), this.panelTourJeu);
-		
 		ParallelTransition transition = new ParallelTransition(
 				ttMenu, ttGrille, ttTourJeu, 
 				this.createMinWidthAnim(this.panelGrille, 600.0, duration),
@@ -88,6 +85,7 @@ public class Ihm {
 		ttMenu.setToX(0.0);
 		ttGrille.setToX(0.0);
 		ttTourJeu.setToX(0.0);
+		this.panelMenuController.imgMenuArrow.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		
 		transition.play();
 	}
@@ -101,7 +99,7 @@ public class Ihm {
 		
 		ParallelTransition transition = new ParallelTransition(
 				ttMenu, ttGrille, ttTourJeu, 
-				this.createMinWidthAnim(this.panelGrille, 845.0, duration),
+				this.createMinWidthAnim(this.panelGrille, 846.0, duration),
 				this.createMinWidthAnim(this.panelTourJeuController.lblX, 423.0, duration),
 				this.createMinWidthAnim(this.panelTourJeuController.lblO, 423.0, duration),
 				this.createMinWidthAnim(this.panelTourJeu, 846.0, duration)
@@ -109,6 +107,7 @@ public class Ihm {
 		ttMenu.setToX(-250.0);
 		ttGrille.setToX(-250.0);
 		ttTourJeu.setToX(-250.0);
+		this.panelMenuController.imgMenuArrow.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		
 		transition.play();
 	}
@@ -217,6 +216,8 @@ public class Ihm {
 		@FXML private ImageView imgArrowDown;
 		@FXML private ImageView imgRegles;
 		@FXML private ImageView imgEditConfig;
+		@FXML private ImageView imgMenuArrow;
+		@FXML private HBox subpanelDiff;
 		
 		@FXML private void initialize() {
 			this.imgsModeJeu = Arrays.asList(this.imgModeJeu0, this.imgModeJeu1);
@@ -256,6 +257,14 @@ public class Ihm {
 				this.imgModeJeu0.setImage(new Image(new File(RES.P_VS_AI_UNPRESSED).toURI().toString()));
 				this.imgModeJeu1.setImage(new Image(new File(RES.P_VS_P_PRESSED).toURI().toString()));
 			}
+		}
+		
+		public void lockDiff(boolean lock)
+		{
+			if(lock)
+				this.subpanelDiff.setDisable(true);
+			else
+				this.subpanelDiff.setDisable(false);
 		}
 		
 //		les events handlers
