@@ -77,14 +77,14 @@ public class Ihm {
 		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(duration), this.panelTourJeu);
 		ParallelTransition transition = new ParallelTransition(
 				ttMenu, ttGrille, ttTourJeu, 
-				this.createMinWidthAnim(this.panelGrille, 600.0, duration),
+				this.createMinWidthAnim(this.panelGrille, 595.0, duration),
 				this.createMinWidthAnim(this.panelTourJeuController.lblX, 300.0, duration),
 				this.createMinWidthAnim(this.panelTourJeuController.lblO, 300.0, duration),
-				this.createMinWidthAnim(this.panelTourJeu, 600.0, duration)
+				this.createMinWidthAnim(this.panelTourJeu, 595.0, duration)
 		);
 		ttMenu.setToX(0.0);
 		ttGrille.setToX(0.0);
-		ttTourJeu.setToX(0.0);
+		ttTourJeu.setToX(-1.0);
 		this.panelMenuController.imgMenuArrow.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		
 		transition.play();
@@ -100,13 +100,13 @@ public class Ihm {
 		ParallelTransition transition = new ParallelTransition(
 				ttMenu, ttGrille, ttTourJeu, 
 				this.createMinWidthAnim(this.panelGrille, 846.0, duration),
-				this.createMinWidthAnim(this.panelTourJeuController.lblX, 423.0, duration),
-				this.createMinWidthAnim(this.panelTourJeuController.lblO, 423.0, duration),
-				this.createMinWidthAnim(this.panelTourJeu, 846.0, duration)
+				this.createMinWidthAnim(this.panelTourJeuController.lblX, 424.0, duration),
+				this.createMinWidthAnim(this.panelTourJeuController.lblO, 424.0, duration),
+				this.createMinWidthAnim(this.panelTourJeu, 848.0, duration)
 		);
 		ttMenu.setToX(-250.0);
 		ttGrille.setToX(-250.0);
-		ttTourJeu.setToX(-250.0);
+		ttTourJeu.setToX(-252.0);
 		this.panelMenuController.imgMenuArrow.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		
 		transition.play();

@@ -9,7 +9,7 @@
       <VBox>
          <children>
             <fx:include fx:id="panelGrille" source="Grille.fxml" translateX="-250.0" />
-            <fx:include fx:id="panelTourJeu" source="TourJeu.fxml" translateX="-250.0" />
+            <fx:include fx:id="panelTourJeu" source="TourJeu.fxml" translateX="-252.0" />
          </children>
       </VBox>
    </children>
