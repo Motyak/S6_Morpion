@@ -237,7 +237,7 @@ public class Ihm {
 	                    return;
 	                }
 	                gc.setStroke(Color.RED);
-	                gc.setLineWidth(4);
+	                gc.setLineWidth(8);
 	                gc.strokeLine(oldLocation.first, oldLocation.second, x, y);
 	                oldLocation.first = x;
 	                oldLocation.second = y;

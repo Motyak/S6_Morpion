@@ -20,11 +20,6 @@
             <Insets left="10.0" right="10.0" top="110.0" />
          </GridPane.margin>
       </ImageView>
-      <Canvas fx:id="canvasGrille" height="580.0" width="580.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
-         <GridPane.margin>
-            <Insets left="10.0" right="10.0" top="110.0" />
-         </GridPane.margin>
-      </Canvas>
       <GridPane maxWidth="580.0" GridPane.halignment="CENTER">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
@@ -114,6 +109,11 @@
             <Insets left="10.0" right="10.0" top="110.0" />
          </GridPane.margin>
       </GridPane>
+      <Canvas fx:id="canvasGrille" height="580.0" mouseTransparent="true" width="580.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
+         <GridPane.margin>
+            <Insets left="10.0" right="10.0" top="110.0" />
+         </GridPane.margin>
+      </Canvas>
    </children>
    <columnConstraints>
       <ColumnConstraints />
