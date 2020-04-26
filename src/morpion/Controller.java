@@ -2,6 +2,7 @@ package morpion;
 
 import Mk.Pair;
 import Mk.TextFile;
+import javafx.animation.Animation;
 
 import java.io.IOException;
 
@@ -38,7 +39,6 @@ class Controller {
 		if(grille.at(id) == Case.VIDE)
 		{
 			this.jouerCoup(id);
-			
 			if(this.verifierFinDePartie())
 				return true;
 			
@@ -137,7 +137,7 @@ class Controller {
 			this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
 		else
 			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
-		this.incrementerTourDeJeu();
+		this.incrementerTourDeJeu();//
 		this.entToIhm();
 	}
 	
@@ -153,20 +153,26 @@ class Controller {
 			if(vainqueur != null)
 			{
 				System.out.println("Le vainqueur est " + vainqueur.toString());
-//				afficher ligne gagnante sur l'interface
-				this.ihm.getGrille().animLigneGagnante(p.second, 500, 10);
+				this.ihm.getTourJeu().setTourDeJeu(vainqueur);
+				Animation anim = this.ihm.getGrille().animLigneGagnante(p.second, 500);
+				anim.play();
+				anim.setOnFinished(e -> {
+					grille.clear();
+					this.ent.setTourJeu(Joueur.values()[0]);
+					this.entToIhm();
+					this.ihm.getGrille().clearCanvas();
+				});
 				TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
 						Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, true);
 				this.ai.learn();
 			}
-			else
+			else {				
 				System.out.println("Aucun gagnant");
-			
-			grille.clear();
+				grille.clear();
+				this.ent.setTourJeu(Joueur.values()[0]);
+				this.entToIhm();
+			}
 			this.ai.data.reset();
-			this.ent.setTourJeu(Joueur.values()[0]);
-			this.entToIhm();
-			
 			return true;
 		}
 		return false;

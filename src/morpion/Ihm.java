@@ -11,6 +11,7 @@ import Mk.Pair;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -180,7 +181,7 @@ public class Ihm {
 			this.cases.get(id).setText(c.toString());
 		}
 		
-		public Timeline createAnimLigneGagnante(Range ligne, int duration, double penRadius)
+		public Animation animLigneGagnante(Range ligne, int duration)
 		{
 			Label caseDepart = this.mapRangeCaseDepart.get(ligne);
 			int range = ligne.getValue();
@@ -212,70 +213,50 @@ public class Ihm {
 				yArrivee += 580.0;
 			}
 			
-			System.out.println("(" + xDepart + "," + yDepart + ") ; (" + xArrivee + "," + yArrivee + ")");
-			
 			GraphicsContext gc = this.canvasGrille.getGraphicsContext2D();
-//			gc.setStroke(Color.RED);
-//		    gc.setLineWidth(10.0);
-//
-//		    gc.beginPath();
-//		   
-//		    gc.moveTo(xDepart, yDepart);
-//		    gc.lineTo(xArrivee, yArrivee);
-//		    
-//		    gc.stroke();
-			
-			
 			
 			Path path = new Path();
 			path.setStroke(Color.RED);
 			path.setStrokeWidth(10.0);
 			path.getElements().addAll(new MoveTo(xDepart, yDepart), new LineTo(xArrivee, yArrivee));
-			Circle pen = new Circle(0, 0, penRadius);
+			
+			Circle pen = new Circle(0, 0, 10);
 			PathTransition pt = new PathTransition(new Duration(duration), path, pen);
 			pt.currentTimeProperty().addListener(new ChangeListener<Duration>() {
 				Pair<Double,Double> oldLocation = null;
 				@Override
 				public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
-					// skip starting at 0/0
 	                if( oldValue == Duration.ZERO)
 	                    return;
-
-	                // get current location
 	                double x = pen.getTranslateX();
 	                double y = pen.getTranslateY();
-
-	                // initialize the location
 	                if( oldLocation == null) {
 	                    oldLocation = new Pair<>(0.0, 0.0);
 	                    oldLocation.first = x;
 	                    oldLocation.second = y;
 	                    return;
 	                }
-
-	                // draw line
 	                gc.setStroke(Color.RED);
 	                gc.setLineWidth(4);
 	                gc.strokeLine(oldLocation.first, oldLocation.second, x, y);
-
-	                // update old location with current one
 	                oldLocation.first = x;
 	                oldLocation.second = y;
 				}
 			});
-			pt.play();
-			
-		    
-		    return null;
+			return pt;
+//			pt.play();
+//			pt.setOnFinished(e -> {
+//				gc.clearRect(0, 0, this.canvasGrille.getWidth(), this.canvasGrille.getHeight());
+//			});
 		}
 		
-		public void animLigneGagnante(Range ligne, int duration, double penRadius)
+		public void clearCanvas()
 		{
-//			tracer une ligne
-			this.createAnimLigneGagnante(ligne, duration, penRadius);
-
+			this.canvasGrille.getGraphicsContext2D().clearRect(0, 0, 
+					this.canvasGrille.getWidth(), this.canvasGrille.getHeight());
 		}
 		
+//		events handlers
 		private void handleMouseEventOnCase(MouseEvent event) {
 			Controller ctrl = Grille.this.ihm.getCtrl();
 			Label lbl = (Label)event.getSource();
