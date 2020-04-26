@@ -54,6 +54,7 @@ public class Ihm {
 	@FXML private GridPane panelMenu;
 	
 	private boolean panelMenuOpened = false;
+	private boolean animLigneGagnanteOccuring = false;
 	
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
@@ -72,6 +73,8 @@ public class Ihm {
 	public Grille getGrille() { return this.panelGrilleController; }
 	public TourJeu getTourJeu() { return this.panelTourJeuController; }
 	public Menu getMenu() { return this.panelMenuController; }
+	public boolean getAnimLigneGagnanteOccuring() { return this.animLigneGagnanteOccuring; }
+	public void setAnimLigneGagnanteOccuring(boolean occuring) { this.animLigneGagnanteOccuring = occuring; }
 
 	private Timeline createMinWidthAnim(Region reg, double minWidth, int duration)
 	{
@@ -287,10 +290,13 @@ public class Ihm {
 			String eventType = event.getEventType().toString();
 			
 			if(eventType.equals("MOUSE_CLICKED")) {
-				try {
-					if(Grille.this.ihm.getCtrl().proposerCoup(lblId))
-						lbl.setOpacity(1.0);
-				} catch (IOException e) { e.printStackTrace(); }
+				if(!this.ihm.getAnimLigneGagnanteOccuring())
+				{
+					try {
+						if(Grille.this.ihm.getCtrl().proposerCoup(lblId))
+							lbl.setOpacity(1.0);
+					} catch (IOException e) { e.printStackTrace(); }
+				}
 			}
 			else if(ctrl.caseVide(lblId)) {
 				if(eventType.equals("MOUSE_ENTERED")) {

@@ -172,6 +172,7 @@ class Controller {
 				this.ihm.getTourJeu().setTourDeJeu(vainqueur);
 				Animation animLigne = this.ihm.getGrille().animLigneGagnante(p.second, 500);
 				Animation animCup = this.ihm.getGrille().animCup(vainqueur, 1000);
+				this.ihm.setAnimLigneGagnanteOccuring(true);
 				animLigne.play();
 				animCup.play();
 				animCup.setOnFinished(e -> {
@@ -179,6 +180,7 @@ class Controller {
 					this.ent.setTourJeu(Joueur.values()[0]);
 					this.entToIhm();
 					this.ihm.getGrille().clearCanvas();
+					this.ihm.setAnimLigneGagnanteOccuring(false);
 				});
 				TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
 						Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, true);
