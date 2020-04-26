@@ -193,13 +193,13 @@ public class Ihm {
 		{
 			if(j == Joueur.X)
 			{
-				this.lblX.setStyle(CSS.STYLE_LABEL_TOUR_JEU_REMPLI);
-				this.lblO.setStyle(CSS.STYLE_LABEL_TOUR_JEU_VIDE);
+				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("label-tour-rempli");
+				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("label-tour-vide");
 			}
 			else if(j == Joueur.O)
 			{
-				this.lblX.setStyle(CSS.STYLE_LABEL_TOUR_JEU_VIDE);
-				this.lblO.setStyle(CSS.STYLE_LABEL_TOUR_JEU_REMPLI);
+				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("label-tour-vide");
+				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("label-tour-rempli");
 			}
 		}
 	}

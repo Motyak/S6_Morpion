@@ -6,3 +6,12 @@
     -fx-pref-height: 20;
     -fx-pref-width: 20;
 }
+
+.label-tour-rempli {
+	-fx-background-color: silver; 
+	-fx-text-fill: black;
+}
+
+.label-tour-vide {
+	-fx-text-fill: grey
+}

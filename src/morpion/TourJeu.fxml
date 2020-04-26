@@ -19,7 +19,7 @@
       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Label fx:id="lblX" alignment="CENTER" maxHeight="100.0" maxWidth="300.0" minHeight="100.0" minWidth="424.0" style="-fx-background-color: silver; -fx-border-color: black; -fx-border-width: 2;" text="X" textFill="GREY" GridPane.halignment="CENTER">
+      <Label fx:id="lblX" alignment="CENTER" maxHeight="100.0" maxWidth="300.0" minHeight="100.0" minWidth="424.0" style="-fx-border-color: black; -fx-border-width: 2;" text="X" textFill="GREY" GridPane.halignment="CENTER">
          <font>
             <Font name="Segoe Script Bold" size="90.0" />
          </font>
