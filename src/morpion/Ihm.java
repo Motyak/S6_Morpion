@@ -7,12 +7,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import Mk.Pair;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -212,24 +215,58 @@ public class Ihm {
 			System.out.println("(" + xDepart + "," + yDepart + ") ; (" + xArrivee + "," + yArrivee + ")");
 			
 			GraphicsContext gc = this.canvasGrille.getGraphicsContext2D();
-			gc.setStroke(Color.RED);
-		    gc.setLineWidth(10.0);
+//			gc.setStroke(Color.RED);
+//		    gc.setLineWidth(10.0);
+//
+//		    gc.beginPath();
+//		   
+//		    gc.moveTo(xDepart, yDepart);
+//		    gc.lineTo(xArrivee, yArrivee);
+//		    
+//		    gc.stroke();
+			
+			
+			
+			Path path = new Path();
+			path.setStroke(Color.RED);
+			path.setStrokeWidth(10.0);
+			path.getElements().addAll(new MoveTo(xDepart, yDepart), new LineTo(xArrivee, yArrivee));
+			Circle pen = new Circle(0, 0, penRadius);
+			PathTransition pt = new PathTransition(new Duration(duration), path, pen);
+			pt.currentTimeProperty().addListener(new ChangeListener<Duration>() {
+				Pair<Double,Double> oldLocation = null;
+				@Override
+				public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+					// skip starting at 0/0
+	                if( oldValue == Duration.ZERO)
+	                    return;
 
-		    gc.beginPath();
-		   
-		    gc.moveTo(xDepart, yDepart);
-		    gc.lineTo(xArrivee, yArrivee);
+	                // get current location
+	                double x = pen.getTranslateX();
+	                double y = pen.getTranslateY();
+
+	                // initialize the location
+	                if( oldLocation == null) {
+	                    oldLocation = new Pair<>(0.0, 0.0);
+	                    oldLocation.first = x;
+	                    oldLocation.second = y;
+	                    return;
+	                }
+
+	                // draw line
+	                gc.setStroke(Color.RED);
+	                gc.setLineWidth(4);
+	                gc.strokeLine(oldLocation.first, oldLocation.second, x, y);
+
+	                // update old location with current one
+	                oldLocation.first = x;
+	                oldLocation.second = y;
+				}
+			});
+			pt.play();
+			
 		    
-		    gc.stroke();
-			return null;
-			
-			
-//			Path path = new Path();
-//			path.setStroke(Color.RED);
-//			path.setStrokeWidth(10);
-//			path.getElements().addAll(new MoveTo(xDepart, yDepart), new LineTo(xArrivee, yArrivee));
-//			PathTransition pt = new PathTransition(new Duration(duration), path, new Circle(0, 0, penRadius));
-//			pt.play();
+		    return null;
 		}
 		
 		public void animLigneGagnante(Range ligne, int duration, double penRadius)

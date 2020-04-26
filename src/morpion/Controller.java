@@ -154,7 +154,7 @@ class Controller {
 			{
 				System.out.println("Le vainqueur est " + vainqueur.toString());
 //				afficher ligne gagnante sur l'interface
-				this.ihm.getGrille().animLigneGagnante(p.second, 2000, 10);
+				this.ihm.getGrille().animLigneGagnante(p.second, 500, 10);
 				TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
 						Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, true);
 				this.ai.learn();
