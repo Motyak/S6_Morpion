@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -19,6 +20,11 @@
             <Insets left="10.0" right="10.0" top="110.0" />
          </GridPane.margin>
       </ImageView>
+      <Canvas fx:id="canvasGrille" height="580.0" width="580.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
+         <GridPane.margin>
+            <Insets left="10.0" right="10.0" top="110.0" />
+         </GridPane.margin>
+      </Canvas>
       <GridPane maxWidth="580.0" GridPane.halignment="CENTER">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />

@@ -1,6 +1,6 @@
 package morpion;
 
-public enum Mode {
+enum Mode {
 	P_VS_AI(0),
 	P_VS_P(1);
 	

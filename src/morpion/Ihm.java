@@ -4,19 +4,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
-import javafx.animation.Interpolator;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.beans.value.WritableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.DropShadow;
@@ -26,6 +28,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 //obligé de mettre en public pour lier le doc FXML
@@ -43,6 +50,7 @@ public class Ihm {
 	@FXML private GridPane panelMenu;
 	
 	private boolean panelMenuOpened = false;
+//	private boolean menuAnimLock = false;
 	
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
@@ -125,12 +133,26 @@ public class Ihm {
 		private Ihm ihm;
 		private List<Label> cases;
 		
+		private HashMap<Range, Label> mapRangeCaseDepart;
+		
+		@FXML private Canvas canvasGrille;
+		
 //		cases du morpion
 		@FXML private Label lblCase0; @FXML private Label lblCase1; @FXML private Label lblCase2;
 		@FXML private Label lblCase3; @FXML private Label lblCase4; @FXML private Label lblCase5;
 		@FXML private Label lblCase6; @FXML private Label lblCase7; @FXML private Label lblCase8;
 		
 		@FXML private void initialize() {
+			this.mapRangeCaseDepart = new HashMap<>();
+			this.mapRangeCaseDepart.put(Range.HORIZONTALE_1, Grille.this.lblCase0);
+			this.mapRangeCaseDepart.put(Range.HORIZONTALE_2, Grille.this.lblCase3);
+			this.mapRangeCaseDepart.put(Range.HORIZONTALE_3, Grille.this.lblCase6);
+			this.mapRangeCaseDepart.put(Range.VERTICALE_1, Grille.this.lblCase0);
+			this.mapRangeCaseDepart.put(Range.VERTICALE_2, Grille.this.lblCase1);
+			this.mapRangeCaseDepart.put(Range.VERTICALE_3, Grille.this.lblCase2);
+			this.mapRangeCaseDepart.put(Range.DIAGONALE_1, Grille.this.lblCase0);
+			this.mapRangeCaseDepart.put(Range.DIAGONALE_2, Grille.this.lblCase2);
+			
 			this.cases = new ArrayList<>(Arrays.asList(
 					lblCase0, lblCase1, lblCase2, 
 					lblCase3, lblCase4, lblCase5, 
@@ -153,6 +175,68 @@ public class Ihm {
 		public void writeCase(int id, Case c)
 		{
 			this.cases.get(id).setText(c.toString());
+		}
+		
+		public Timeline createAnimLigneGagnante(Range ligne, int duration, double penRadius)
+		{
+			Label caseDepart = this.mapRangeCaseDepart.get(ligne);
+			int range = ligne.getValue();
+
+			double xDepart = caseDepart.getBoundsInParent().getMinX();
+			double yDepart = caseDepart.getBoundsInParent().getMinY();
+			double xArrivee = xDepart;
+			double yArrivee = yDepart;
+			
+//			ligne horizontale
+			if(range >= 10 && range <= 12) {
+				xArrivee += 580.0;
+				yDepart += 97.0;
+				yArrivee = yDepart;
+			}
+//			ligne verticale
+			else if(range >= 20 && range <= 22) {
+				xDepart += 97.0;
+				xArrivee = xDepart;
+				yArrivee += 580.0;
+			}
+			else if(ligne == Range.DIAGONALE_1) {
+				xArrivee += 580.0;
+				yArrivee += 580.0;
+			}
+			else if(ligne == Range.DIAGONALE_2) {
+				xDepart = caseDepart.getBoundsInParent().getMaxX();
+				xArrivee = xDepart - 580.0;
+				yArrivee += 580.0;
+			}
+			
+			System.out.println("(" + xDepart + "," + yDepart + ") ; (" + xArrivee + "," + yArrivee + ")");
+			
+			GraphicsContext gc = this.canvasGrille.getGraphicsContext2D();
+			gc.setStroke(Color.RED);
+		    gc.setLineWidth(10.0);
+
+		    gc.beginPath();
+		   
+		    gc.moveTo(xDepart, yDepart);
+		    gc.lineTo(xArrivee, yArrivee);
+		    
+		    gc.stroke();
+			return null;
+			
+			
+//			Path path = new Path();
+//			path.setStroke(Color.RED);
+//			path.setStrokeWidth(10);
+//			path.getElements().addAll(new MoveTo(xDepart, yDepart), new LineTo(xArrivee, yArrivee));
+//			PathTransition pt = new PathTransition(new Duration(duration), path, new Circle(0, 0, penRadius));
+//			pt.play();
+		}
+		
+		public void animLigneGagnante(Range ligne, int duration, double penRadius)
+		{
+//			tracer une ligne
+			this.createAnimLigneGagnante(ligne, duration, penRadius);
+
 		}
 		
 		private void handleMouseEventOnCase(MouseEvent event) {

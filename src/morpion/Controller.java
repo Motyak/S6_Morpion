@@ -1,5 +1,6 @@
 package morpion;
 
+import Mk.Pair;
 import Mk.TextFile;
 
 import java.io.IOException;
@@ -143,14 +144,17 @@ class Controller {
 	private boolean verifierFinDePartie() throws IOException
 	{
 		Ent.Grille grille = this.ent.getGrille();
+		Pair<Joueur,Range> p = grille.finDePartie();
 		
-		Joueur vainqueur = grille.finDePartie();
+		Joueur vainqueur = p.first;
 		boolean partieTerminee = (vainqueur != null) || grille.is_filled();
 		if(partieTerminee)
 		{
 			if(vainqueur != null)
 			{
 				System.out.println("Le vainqueur est " + vainqueur.toString());
+//				afficher ligne gagnante sur l'interface
+				this.ihm.getGrille().animLigneGagnante(p.second, 2000, 10);
 				TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
 						Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, true);
 				this.ai.learn();
