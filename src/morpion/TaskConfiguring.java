@@ -7,10 +7,10 @@ import javafx.concurrent.Task;
 @SuppressWarnings("hiding")
 public class TaskConfiguring<Void> extends Task<Void> {
 
-	private Ai ai;
+	private Controller ctrl;
 	
-	public TaskConfiguring(Ai ai) {
-		this.ai = ai;
+	public TaskConfiguring(Controller ctrl) {
+		this.ctrl = ctrl;
 	}
 	
 	@Override
@@ -27,7 +27,7 @@ public class TaskConfiguring<Void> extends Task<Void> {
 			if(lastModifiedNew != lastModifiedOld)
 			{
 				System.out.println("Reloading the ai model..");
-				Controller.launchLearning(this.ai);
+				this.ctrl.launchLearning(this.ctrl.getAi());
 				lastModifiedOld = lastModifiedNew; 
 			}
 			

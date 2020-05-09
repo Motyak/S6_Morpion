@@ -64,8 +64,6 @@ public class View {
 		this.paneMenu.setOnMouseExited(this::handleMouseHoverOnMenu);
 		
 		this.ctrl.entToIhm();
-		Controller.launchConfiguring(this.ctrl.getAi());
-		Controller.launchLearning(this.ctrl.getAi());
 	}
 	
 	public Controller getCtrl() { return this.ctrl; }

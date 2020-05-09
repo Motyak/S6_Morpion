@@ -73,7 +73,7 @@ public class TaskLearning<Void> extends Task<Void> {
 			
 			if(!learningFinished)
 			{
-				System.out.println(DIFFICULTY + "model (" + params.first + ", " + 
+				System.out.println(DIFFICULTY + " model (" + params.first + ", " + 
 						params.second + ") : " + "Learning finished !");
 				learningFinished = true;
 			}

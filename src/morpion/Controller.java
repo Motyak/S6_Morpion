@@ -16,6 +16,9 @@ class Controller {
 		this.ihm = ihm;
 		this.ent = ent;
 		this.ai = new Ai(this.ent.getDiff());
+		
+		this.launchConfiguring(this);
+		this.launchLearning(this.ai);
 	}
 	
 	public void entToIhm() 
@@ -51,7 +54,7 @@ class Controller {
 		return false;
 	}
 	
-	public static void launchLearning(Ai ai) throws IOException 
+	public void launchLearning(Ai ai) throws IOException 
 	{
 //		this.ai.reset();
 		if(Main.learningThread != null) {
@@ -65,7 +68,7 @@ class Controller {
 		Main.learningThread.start();
 	}
 	
-	public static void launchConfiguring(Ai ai)
+	public void launchConfiguring(Controller ctrl)
 	{
 		if(Main.configThread != null) {
 			Main.configThread.interrupt();
@@ -73,7 +76,7 @@ class Controller {
 				;
 		}
 		
-		Main.configThread = new Thread(new TaskConfiguring<>(ai));
+		Main.configThread = new Thread(new TaskConfiguring<>(ctrl));
 		Main.configThread.setDaemon(true);
 		Main.configThread.start();
 	}
@@ -106,7 +109,7 @@ class Controller {
 		this.ai.changeDiff(diff);
 		this.renewGame();
 		
-		Controller.launchLearning(this.ai);
+		this.launchLearning(this.ai);
 		
 		System.out.println("Actual difficulty : " + this.ent.getDiff().getValue());
 	}
