@@ -39,42 +39,41 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
-//obligé de mettre en public pour lier le doc FXML
 public class Ihm {
 	private Controller ctrl;
 	
-//	les controllers des sous-vues
-	@FXML private Grille panelGrilleController;
-	@FXML private TourJeu panelTourJeuController;
-	@FXML private Menu panelMenuController;
+//	sub-views controllers
+	@FXML private Grid paneGridController;
+	@FXML private Turn paneTurnController;
+	@FXML private Menu paneMenuController;
 	
-//	panels
-	@FXML private GridPane panelGrille;
-	@FXML private GridPane panelTourJeu;
-	@FXML private GridPane panelMenu;
+//	panes
+	@FXML private GridPane paneGrid;
+	@FXML private GridPane paneTurn;
+	@FXML private GridPane paneMenu;
 	
-	private boolean panelMenuOpened = false;
-	private boolean animLigneGagnanteOccuring = false;
+	private boolean menuOpened = false;
+	private boolean winningRowAnimOccuring = false;
 	
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
-		this.panelGrilleController.injectMainController(this);
-		this.panelMenuController.injectMainController(this);
+		this.paneGridController.injectMainController(this);
+		this.paneMenuController.injectMainController(this);
 		
-		this.panelMenu.setOnMouseEntered(this::handleMouseHoverOnMenu);
-		this.panelMenu.setOnMouseExited(this::handleMouseHoverOnMenu);
+		this.paneMenu.setOnMouseEntered(this::handleMouseHoverOnMenu);
+		this.paneMenu.setOnMouseExited(this::handleMouseHoverOnMenu);
 		
 		this.ctrl.entToIhm();
-		Controller.lancerConfigThread(this.ctrl.getAi());
+		Controller.launchConfiguring(this.ctrl.getAi());
 		Controller.launchLearning(this.ctrl.getAi());
 	}
 	
 	public Controller getCtrl() { return this.ctrl; }
-	public Grille getGrille() { return this.panelGrilleController; }
-	public TourJeu getTourJeu() { return this.panelTourJeuController; }
-	public Menu getMenu() { return this.panelMenuController; }
-	public boolean getAnimLigneGagnanteOccuring() { return this.animLigneGagnanteOccuring; }
-	public void setAnimLigneGagnanteOccuring(boolean occuring) { this.animLigneGagnanteOccuring = occuring; }
+	public Grid getGrid() { return this.paneGridController; }
+	public Turn getTurn() { return this.paneTurnController; }
+	public Menu getMenu() { return this.paneMenuController; }
+	public boolean getWinningRowAnimOccuring() { return this.winningRowAnimOccuring; }
+	public void setWinningRowAnimOccuring(boolean occuring) { this.winningRowAnimOccuring = occuring; }
 
 	private Timeline createMinWidthAnim(Region reg, double minWidth, int duration)
 	{
@@ -84,52 +83,52 @@ public class Ihm {
 		return tl;
 	}
 	
-	private void openMenuAnim(int duration)
+	private void playOpeningMenuAnim(int duration)
 	{
-		this.panelMenuOpened = true;
-		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.panelMenu);
-		TranslateTransition ttGrille = new TranslateTransition(new Duration(duration), this.panelGrille);
-		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(duration), this.panelTourJeu);
-		TranslateTransition ttImgMenuIcon = new TranslateTransition(new Duration(duration), this.panelMenuController.imgMenuArrowIcon);
-		RotateTransition rtImgMenuArrow = new RotateTransition(new Duration(duration), this.panelMenuController.imgMenuArrow);
+		this.menuOpened = true;
+		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.paneMenu);
+		TranslateTransition ttGrid = new TranslateTransition(new Duration(duration), this.paneGrid);
+		TranslateTransition ttTurn = new TranslateTransition(new Duration(duration), this.paneTurn);
+		TranslateTransition ttImgMenuIcon = new TranslateTransition(new Duration(duration), this.paneMenuController.imgMenuArrowIcon);
+		RotateTransition rtImgMenuArrow = new RotateTransition(new Duration(duration), this.paneMenuController.imgMenuArrow);
 		ParallelTransition transition = new ParallelTransition(
-				ttMenu, ttGrille, ttTourJeu, ttImgMenuIcon, rtImgMenuArrow,
-				this.createMinWidthAnim(this.panelGrille, 595.0, duration),
-				this.createMinWidthAnim(this.panelTourJeuController.lblX, 300.0, duration),
-				this.createMinWidthAnim(this.panelTourJeuController.lblO, 300.0, duration),
-				this.createMinWidthAnim(this.panelTourJeu, 595.0, duration)
+				ttMenu, ttGrid, ttTurn, ttImgMenuIcon, rtImgMenuArrow,
+				this.createMinWidthAnim(this.paneGrid, 595.0, duration),
+				this.createMinWidthAnim(this.paneTurnController.lblX, 300.0, duration),
+				this.createMinWidthAnim(this.paneTurnController.lblO, 300.0, duration),
+				this.createMinWidthAnim(this.paneTurn, 595.0, duration)
 		);
 		ttMenu.setToX(0.0);
-		ttGrille.setToX(0.0);
-		ttTourJeu.setToX(-1.0);
+		ttGrid.setToX(0.0);
+		ttTurn.setToX(-1.0);
 		ttImgMenuIcon.setToX(-23.0);
 		rtImgMenuArrow.setToAngle(180.0);
-		this.panelMenuController.imgMenuArrowIcon.setImage(new Image(new File(RES.GAMEPAD_ICON).toURI().toString()));
+		this.paneMenuController.imgMenuArrowIcon.setImage(new Image(new File(RES.GAMEPAD_ICON).toURI().toString()));
 		
 		transition.play();
 	}
 	
-	private void closeMenuAnim(int duration)
+	private void playClosingMenuAnim(int duration)
 	{
-		this.panelMenuOpened = false;
-		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.panelMenu);
-		TranslateTransition ttGrille = new TranslateTransition(new Duration(duration), this.panelGrille);
-		TranslateTransition ttTourJeu = new TranslateTransition(new Duration(duration), this.panelTourJeu);
-		TranslateTransition ttImgMenuIcon = new TranslateTransition(new Duration(duration), this.panelMenuController.imgMenuArrowIcon);
-		RotateTransition rtImgMenuArrow = new RotateTransition(new Duration(duration), this.panelMenuController.imgMenuArrow);
+		this.menuOpened = false;
+		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.paneMenu);
+		TranslateTransition ttGrid = new TranslateTransition(new Duration(duration), this.paneGrid);
+		TranslateTransition ttTurn = new TranslateTransition(new Duration(duration), this.paneTurn);
+		TranslateTransition ttImgMenuIcon = new TranslateTransition(new Duration(duration), this.paneMenuController.imgMenuArrowIcon);
+		RotateTransition rtImgMenuArrow = new RotateTransition(new Duration(duration), this.paneMenuController.imgMenuArrow);
 		ParallelTransition transition = new ParallelTransition(
-				ttMenu, ttGrille, ttTourJeu, ttImgMenuIcon, rtImgMenuArrow,
-				this.createMinWidthAnim(this.panelGrille, 846.0, duration),
-				this.createMinWidthAnim(this.panelTourJeuController.lblX, 424.0, duration),
-				this.createMinWidthAnim(this.panelTourJeuController.lblO, 424.0, duration),
-				this.createMinWidthAnim(this.panelTourJeu, 848.0, duration)
+				ttMenu, ttGrid, ttTurn, ttImgMenuIcon, rtImgMenuArrow,
+				this.createMinWidthAnim(this.paneGrid, 846.0, duration),
+				this.createMinWidthAnim(this.paneTurnController.lblX, 424.0, duration),
+				this.createMinWidthAnim(this.paneTurnController.lblO, 424.0, duration),
+				this.createMinWidthAnim(this.paneTurn, 848.0, duration)
 		);
 		ttMenu.setToX(-250.0);
-		ttGrille.setToX(-250.0);
-		ttTourJeu.setToX(-252.0);
+		ttGrid.setToX(-250.0);
+		ttTurn.setToX(-252.0);
 		ttImgMenuIcon.setToX(0.0);
 		rtImgMenuArrow.setToAngle(0.0);
-		this.panelMenuController.imgMenuArrowIcon.setImage(new Image(new File(RES.GEAR_ICON).toURI().toString()));
+		this.paneMenuController.imgMenuArrowIcon.setImage(new Image(new File(RES.GEAR_ICON).toURI().toString()));
 		
 		transition.play();
 	}
@@ -137,44 +136,44 @@ public class Ihm {
 	//events handlers
 	private void handleMouseHoverOnMenu(MouseEvent event) {
 		String evtType = event.getEventType().toString();
-		if(evtType.equals("MOUSE_ENTERED") && !this.panelMenuOpened)
-			this.openMenuAnim(200);
-		else if(evtType.equals("MOUSE_EXITED") && this.panelMenuOpened)
-			this.closeMenuAnim(200);
+		if(evtType.equals("MOUSE_ENTERED") && !this.menuOpened)
+			this.playOpeningMenuAnim(200);
+		else if(evtType.equals("MOUSE_EXITED") && this.menuOpened)
+			this.playClosingMenuAnim(200);
 	}
 
-	public static class Grille {
+	public static class Grid {
 		private Ihm ihm;
-		private List<Label> cases;
+		private List<Label> squares;
 		
-		private HashMap<Row, Label> mapRangeCaseDepart;
+		private HashMap<Row, Label> mapRowStartingSquare;
 		
-		@FXML private Canvas canvasGrille;
+		@FXML private Canvas canvasGrid;
 		@FXML private ImageView imgRenew;
 		@FXML private ImageView imgCup;
 		
 //		cases du morpion
-		@FXML private Label lblCase0; @FXML private Label lblCase1; @FXML private Label lblCase2;
-		@FXML private Label lblCase3; @FXML private Label lblCase4; @FXML private Label lblCase5;
-		@FXML private Label lblCase6; @FXML private Label lblCase7; @FXML private Label lblCase8;
+		@FXML private Label lblSquare0; @FXML private Label lblSquare1; @FXML private Label lblSquare2;
+		@FXML private Label lblSquare3; @FXML private Label lblSquare4; @FXML private Label lblSquare5;
+		@FXML private Label lblSquare6; @FXML private Label lblSquare7; @FXML private Label lblSquare8;
 		
 		@FXML private void initialize() {
-			this.mapRangeCaseDepart = new HashMap<>();
-			this.mapRangeCaseDepart.put(Row.HORIZONTAL_1, Grille.this.lblCase0);
-			this.mapRangeCaseDepart.put(Row.HORIZONTAL_2, Grille.this.lblCase3);
-			this.mapRangeCaseDepart.put(Row.HORIZONTAL_3, Grille.this.lblCase6);
-			this.mapRangeCaseDepart.put(Row.VERTICAL_1, Grille.this.lblCase0);
-			this.mapRangeCaseDepart.put(Row.VERTICAL_2, Grille.this.lblCase1);
-			this.mapRangeCaseDepart.put(Row.VERTICAL_3, Grille.this.lblCase2);
-			this.mapRangeCaseDepart.put(Row.DIAGONAL_1, Grille.this.lblCase0);
-			this.mapRangeCaseDepart.put(Row.DIAGONAL_2, Grille.this.lblCase2);
+			this.mapRowStartingSquare = new HashMap<>();
+			this.mapRowStartingSquare.put(Row.HORIZONTAL_1, Grid.this.lblSquare0);
+			this.mapRowStartingSquare.put(Row.HORIZONTAL_2, Grid.this.lblSquare3);
+			this.mapRowStartingSquare.put(Row.HORIZONTAL_3, Grid.this.lblSquare6);
+			this.mapRowStartingSquare.put(Row.VERTICAL_1, Grid.this.lblSquare0);
+			this.mapRowStartingSquare.put(Row.VERTICAL_2, Grid.this.lblSquare1);
+			this.mapRowStartingSquare.put(Row.VERTICAL_3, Grid.this.lblSquare2);
+			this.mapRowStartingSquare.put(Row.DIAGONAL_1, Grid.this.lblSquare0);
+			this.mapRowStartingSquare.put(Row.DIAGONAL_2, Grid.this.lblSquare2);
 			
-			this.cases = new ArrayList<>(Arrays.asList(
-					lblCase0, lblCase1, lblCase2, 
-					lblCase3, lblCase4, lblCase5, 
-					lblCase6, lblCase7, lblCase8
+			this.squares = new ArrayList<>(Arrays.asList(
+					lblSquare0, lblSquare1, lblSquare3, 
+					lblSquare3, lblSquare4, lblSquare5, 
+					lblSquare6, lblSquare7, lblSquare8
 			));
-			for(Label c : this.cases)
+			for(Label c : this.squares)
 			{
 				c.setOnMouseClicked(this::handleMouseEventOnCase);
 				c.setOnMouseEntered(this::handleMouseEventOnCase);
@@ -193,47 +192,47 @@ public class Ihm {
 		
 		public void writeCase(int id, Square c)
 		{
-			this.cases.get(id).setText(c.toString());
+			this.squares.get(id).setText(c.toString());
 		}
 		
-		public Animation animLigneGagnante(Row ligne, int duration)
+		public Animation getWinningRowAnim(Row row, int duration)
 		{
-			Label caseDepart = this.mapRangeCaseDepart.get(ligne);
-			int range = ligne.getValue();
+			Label startingSquare = this.mapRowStartingSquare.get(row);
+			int rowValue = row.getValue();
 
-			double xDepart = caseDepart.getBoundsInParent().getMinX();
-			double yDepart = caseDepart.getBoundsInParent().getMinY();
-			double xArrivee = xDepart;
-			double yArrivee = yDepart;
+			double xFrom = startingSquare.getBoundsInParent().getMinX();
+			double yFrom = startingSquare.getBoundsInParent().getMinY();
+			double xTo = xFrom;
+			double yTo = yFrom;
 			
-//			ligne horizontale
-			if(range >= 10 && range <= 12) {
-				xArrivee += 580.0;
-				yDepart += 97.0;
-				yArrivee = yDepart;
+//			horizontal row
+			if(rowValue >= 10 && rowValue <= 12) {
+				xTo += 580.0;
+				yFrom += 97.0;
+				yTo = yFrom;
 			}
-//			ligne verticale
-			else if(range >= 20 && range <= 22) {
-				xDepart += 97.0;
-				xArrivee = xDepart;
-				yArrivee += 580.0;
+//			vertical row
+			else if(rowValue >= 20 && rowValue <= 22) {
+				xFrom += 97.0;
+				xTo = xFrom;
+				yTo += 580.0;
 			}
-			else if(ligne == Row.DIAGONAL_1) {
-				xArrivee += 580.0;
-				yArrivee += 580.0;
+			else if(row == Row.DIAGONAL_1) {
+				xTo += 580.0;
+				yTo += 580.0;
 			}
-			else if(ligne == Row.DIAGONAL_2) {
-				xDepart = caseDepart.getBoundsInParent().getMaxX();
-				xArrivee = xDepart - 580.0;
-				yArrivee += 580.0;
+			else if(row == Row.DIAGONAL_2) {
+				xFrom = startingSquare.getBoundsInParent().getMaxX();
+				xTo = xFrom - 580.0;
+				yTo += 580.0;
 			}
 			
-			GraphicsContext gc = this.canvasGrille.getGraphicsContext2D();
+			GraphicsContext gc = this.canvasGrid.getGraphicsContext2D();
 			
 			Path path = new Path();
 			path.setStroke(Color.RED);
 			path.setStrokeWidth(10.0);
-			path.getElements().addAll(new MoveTo(xDepart, yDepart), new LineTo(xArrivee, yArrivee));
+			path.getElements().addAll(new MoveTo(xFrom, yFrom), new LineTo(xTo, yTo));
 			
 			Circle pen = new Circle(0, 0, 10);
 			PathTransition pt = new PathTransition(new Duration(duration), path, pen);
@@ -261,14 +260,14 @@ public class Ihm {
 			return pt;
 		}
 		
-		public Animation animCup(Player joueur, int duration)
+		public Animation getCupAnim(Player winner, int duration)
 		{
 			TranslateTransition ttUp = new TranslateTransition(new Duration(duration * 0.3), this.imgCup);
 			TranslateTransition ttDown = new TranslateTransition(new Duration(duration * 0.3), this.imgCup);
 			SequentialTransition anim = new SequentialTransition(ttUp,new PauseTransition(new Duration(duration * 0.4)) , ttDown);
-			if(joueur == Player.X) 
+			if(winner == Player.X) 
 				ttUp.setFromX(180.0);
-			else if(joueur == Player.O) 
+			else if(winner == Player.O) 
 				ttUp.setFromX(605.0);
 			ttUp.setByY(-110.0);
 			ttDown.setByY(110.0);
@@ -278,22 +277,22 @@ public class Ihm {
 		
 		public void clearCanvas()
 		{
-			this.canvasGrille.getGraphicsContext2D().clearRect(0, 0, 
-					this.canvasGrille.getWidth(), this.canvasGrille.getHeight());
+			this.canvasGrid.getGraphicsContext2D().clearRect(0, 0, 
+					this.canvasGrid.getWidth(), this.canvasGrid.getHeight());
 		}
 		
 //		events handlers
 		private void handleMouseEventOnCase(MouseEvent event) {
-			Controller ctrl = Grille.this.ihm.getCtrl();
+			Controller ctrl = Grid.this.ihm.getCtrl();
 			Label lbl = (Label)event.getSource();
 			int lblId = Integer.parseInt(lbl.getId().substring(lbl.getId().length() - 1));
 			String eventType = event.getEventType().toString();
 			
 			if(eventType.equals("MOUSE_CLICKED")) {
-				if(!this.ihm.getAnimLigneGagnanteOccuring())
+				if(!this.ihm.getWinningRowAnimOccuring())
 				{
 					try {
-						if(Grille.this.ihm.getCtrl().proposerCoup(lblId))
+						if(Grid.this.ihm.getCtrl().proposerCoup(lblId))
 							lbl.setOpacity(1.0);
 					} catch (IOException e) { e.printStackTrace(); }
 				}
@@ -331,7 +330,7 @@ public class Ihm {
 		}
 	}
 	
-	public static class TourJeu {
+	public static class Turn {
 		@FXML private Label lblX;
 		@FXML private Label lblO;
 		

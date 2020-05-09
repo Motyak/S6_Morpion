@@ -23,11 +23,11 @@ class Controller {
 	public void entToIhm() 
 	{
 		Ent.Grille grille = this.ent.getGrille();
-		Ihm.Grille grilleIhm = this.ihm.getGrille();
+		Ihm.Grid grilleIhm = this.ihm.getGrid();
 		
 		for(int i = 0 ; i < Ent.GRID_SIZE ; ++i)
 			grilleIhm.writeCase(i, grille.at(i));
-		this.ihm.getTourJeu().setTourDeJeu(this.ent.getTourJeu());
+		this.ihm.getTurn().setTourDeJeu(this.ent.getTourJeu());
 		
 		this.ihm.getMenu().setModeJeu(this.ent.getMode());
 		this.ihm.getMenu().lockDiff((this.ent.getMode() == Mode.P_VS_P));
@@ -67,7 +67,7 @@ class Controller {
 		Main.learningThread.start();
 	}
 	
-	public static void lancerConfigThread(Ai ai)
+	public static void launchConfiguring(Ai ai)
 	{
 		if(Main.configThread != null) {
 			Main.configThread.interrupt();
@@ -169,18 +169,18 @@ class Controller {
 			if(vainqueur != null)
 			{
 				System.out.println("Le vainqueur est " + vainqueur.toString());
-				this.ihm.getTourJeu().setTourDeJeu(vainqueur);
-				Animation animLigne = this.ihm.getGrille().animLigneGagnante(p.second, 500);
-				Animation animCup = this.ihm.getGrille().animCup(vainqueur, 1000);
-				this.ihm.setAnimLigneGagnanteOccuring(true);
+				this.ihm.getTurn().setTourDeJeu(vainqueur);
+				Animation animLigne = this.ihm.getGrid().getWinningRowAnim(p.second, 500);
+				Animation animCup = this.ihm.getGrid().getCupAnim(vainqueur, 1000);
+				this.ihm.setWinningRowAnimOccuring(true);
 				animLigne.play();
 				animCup.play();
 				animCup.setOnFinished(e -> {
 					grille.clear();
 					this.ent.setTourJeu(Player.values()[0]);
 					this.entToIhm();
-					this.ihm.getGrille().clearCanvas();
-					this.ihm.setAnimLigneGagnanteOccuring(false);
+					this.ihm.getGrid().clearCanvas();
+					this.ihm.setWinningRowAnimOccuring(false);
 				});
 				TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
 						Ai.DATA_DIRPATH + Ai.MOVES_FILENAME, true);
