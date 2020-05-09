@@ -26,11 +26,10 @@ class Controller {
 		Ent.Grid grid = this.ent.getGrille();
 		View.Grid gridView = this.ihm.getGrid();
 		
-		for(int i = 0 ; i < Ent.GRID_SIZE ; ++i)
-			gridView.writeCase(i, grid.at(i));
+		gridView.setGrid(grid);
 		this.ihm.getTurn().setTurn(this.ent.getTurn());
 		
-		this.ihm.getMenu().setModeJeu(this.ent.getMode());
+		this.ihm.getMenu().setMode(this.ent.getMode());
 		this.ihm.getMenu().lockDiff((this.ent.getMode() == Mode.P_VS_P));
 	}
 	

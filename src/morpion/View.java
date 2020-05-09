@@ -173,9 +173,9 @@ public class View {
 			));
 			for(Label c : this.squares)
 			{
-				c.setOnMouseClicked(this::handleMouseEventOnCase);
-				c.setOnMouseEntered(this::handleMouseEventOnCase);
-				c.setOnMouseExited(this::handleMouseEventOnCase);
+				c.setOnMouseClicked(this::handleMouseEventOnSquare);
+				c.setOnMouseEntered(this::handleMouseEventOnSquare);
+				c.setOnMouseExited(this::handleMouseEventOnSquare);
 			}
 			this.imgRenew.setOnMouseClicked(this::handleMouseEventOnRenew);
 			this.imgRenew.setOnMouseEntered(this::handleMouseEventOnRenew);
@@ -188,10 +188,16 @@ public class View {
 			this.ihm = ihm;
 		}
 		
-		public void writeCase(int id, Square c)
+		public void setGrid(Ent.Grid grid)
 		{
-			this.squares.get(id).setText(c.toString());
+			for(int i = 0 ; i < Ent.GRID_SIZE ; ++i)
+				this.squares.get(i).setText(grid.at(i).toString());
 		}
+		
+//		public void writeCase(int id, Square c)
+//		{
+//			this.squares.get(id).setText(c.toString());
+//		}
 		
 		public Animation getWinningRowAnim(Row row, int duration)
 		{
@@ -280,7 +286,7 @@ public class View {
 		}
 		
 //		events handlers
-		private void handleMouseEventOnCase(MouseEvent event) {
+		private void handleMouseEventOnSquare(MouseEvent event) {
 			Controller ctrl = Grid.this.ihm.getCtrl();
 			Label lbl = (Label)event.getSource();
 			int lblId = Integer.parseInt(lbl.getId().substring(lbl.getId().length() - 1));
@@ -386,8 +392,8 @@ public class View {
 				iv.setOnMouseExited(this::handleMouseEventOnMode);
 			}
 			for(ImageView iv : this.imgsButtons) {
-				iv.setOnMouseEntered(this::handleMouseHoverOnImgs);
-				iv.setOnMouseExited(this::handleMouseUnhoverOnImgs);
+				iv.setOnMouseEntered(this::handleMouseEventOnImgs);
+				iv.setOnMouseExited(this::handleMouseEventOnImgs);
 			}
 			
 			this.slDiff.valueProperty().addListener((obs, oldVal, newVal) -> this.slDiff.setValue(Math.round(newVal.doubleValue())));
@@ -404,7 +410,7 @@ public class View {
 			this.ihm = ihm;
 		}
 		
-		public void setModeJeu(Mode mode)
+		public void setMode(Mode mode)
 		{
 			if(mode == Mode.P_VS_AI) {
 				this.imgGameMode0.setImage(new Image(new File(RES.P_VS_AI_PRESSED).toURI().toString()));
@@ -419,10 +425,7 @@ public class View {
 		
 		public void lockDiff(boolean lock)
 		{
-			if(lock)
-				this.subpanelDiff.setDisable(true);
-			else
-				this.subpanelDiff.setDisable(false);
+			this.subpanelDiff.setDisable(lock);
 		}
 		
 //		les events handlers
@@ -431,15 +434,15 @@ public class View {
 			ImageView iv = (ImageView)event.getSource();
 			int idMode = Integer.valueOf(iv.getId().substring(iv.getId().length() - 1));
 			Mode mode = Mode.get(idMode);
-			boolean modeActuel = mode == Menu.this.ihm.getCtrl().getMode();
+			boolean actualMode = mode == Menu.this.ihm.getCtrl().getMode();
 
 			if(evtType.equals("MOUSE_CLICKED"))
 				Menu.this.ihm.getCtrl().changeMode(mode);
 			
-			else if(evtType.equals("MOUSE_ENTERED") && !modeActuel)
+			else if(evtType.equals("MOUSE_ENTERED") && !actualMode)
 				iv.setImage(new Image(new File(RES.getHover(mode)).toURI().toString()));
 			
-			else if(evtType.equals("MOUSE_EXITED") && !modeActuel)
+			else if(evtType.equals("MOUSE_EXITED") && !actualMode)
 				iv.setImage(new Image(new File(RES.getUnpressed(mode)).toURI().toString()));
 		}
 		
@@ -468,14 +471,14 @@ public class View {
 			}
 		}
 		
-		private void handleMouseHoverOnImgs(MouseEvent event) {
+		private void handleMouseEventOnImgs(MouseEvent event) {
 			ImageView iv = (ImageView)event.getSource();
-			iv.setEffect(new DropShadow(2.0, javafx.scene.paint.Color.BLACK));
-		}
-		
-		private void handleMouseUnhoverOnImgs(MouseEvent event) {
-			ImageView iv = (ImageView)event.getSource();
-			iv.setEffect(null);
+			String eventType = event.getEventType().toString();
+			
+			if(eventType.equals("MOUSE_ENTERED"))
+				iv.setEffect(new DropShadow(2.0, javafx.scene.paint.Color.BLACK));
+			else if(eventType.equals("MOUSE_EXITED"))
+				iv.setEffect(null);
 		}
 	}
 
