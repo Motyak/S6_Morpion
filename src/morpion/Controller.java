@@ -166,8 +166,8 @@ class Controller {
 			{
 				System.out.println("Winner is " + winner.toString());
 				this.view.getTurn().setTurn(winner);
-				Animation rowAnim = this.view.getGrid().getWinningRowAnim(p.second, 500);
-				Animation cupAnim = this.view.getGrid().getCupAnim(winner, 1000);
+				Animation rowAnim = this.view.getGrid().getWinningRowAnim(p.second);
+				Animation cupAnim = this.view.getGrid().getCupAnim(winner);
 				this.view.setWinningRowAnimOccuring(true);
 				rowAnim.play();
 				cupAnim.play();

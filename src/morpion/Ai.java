@@ -79,7 +79,7 @@ public class Ai {
 		Pair<Integer,Double> params = this.getModelParams();
 		String filename = params.first + "_" + params.second + ".srl";
 		this.model.save(Ai.DATA_DIRPATH + filename);
-		System.out.println("Modèle sauvegardé : " + filename);
+		System.out.println("Model saved : " + filename);
 	}
 	
 	public void changeDiff(Difficulty diff) throws Exception

@@ -4,25 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
-import Mk.Pair;
-import javafx.animation.KeyValue;
-import javafx.animation.ParallelTransition;
-import javafx.animation.PathTransition;
-import javafx.animation.PauseTransition;
+
 import javafx.animation.RotateTransition;
-import javafx.animation.SequentialTransition;
 import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.DropShadow;
@@ -31,16 +19,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 public class View {
 	private Controller ctrl;
+	private AnimationFactory animFactory;
 	
 //	sub-views controllers
 	@FXML private Grid paneGridController;
@@ -57,94 +40,53 @@ public class View {
 	
 	@FXML private void initialize() throws Exception {
 		this.ctrl = new Controller(this, new Ent());
+		
+		
 		this.paneGridController.injectMainController(this);
 		this.paneMenuController.injectMainController(this);
 		
+		this.animFactory = new AnimationFactory(this);
+		
 		this.paneMenu.setOnMouseEntered(this::handleMouseHoverOnMenu);
 		this.paneMenu.setOnMouseExited(this::handleMouseHoverOnMenu);
-		
-//		this.ctrl.updateView();
 	}
 	
 	public Controller getCtrl() { return this.ctrl; }
 	public Grid getGrid() { return this.paneGridController; }
 	public Turn getTurn() { return this.paneTurnController; }
 	public Menu getMenu() { return this.paneMenuController; }
+	public GridPane getPaneGrid() { return this.paneGrid; }
+	public GridPane getPaneTurn() { return this.paneTurn; }
+	public GridPane getPaneMenu() { return this.paneMenu; }
 	public boolean getWinningRowAnimOccuring() { return this.winningRowAnimOccuring; }
 	public void setWinningRowAnimOccuring(boolean occuring) { this.winningRowAnimOccuring = occuring; }
-
-	private Timeline createMinWidthAnim(Region reg, double minWidth, int duration)
-	{
-		Timeline tl = new Timeline();
-		tl.getKeyFrames().add(new KeyFrame(Duration.millis(duration), 
-				new KeyValue(reg.minWidthProperty(), minWidth)));
-		return tl;
-	}
 	
-	private void playOpeningMenuAnim(int duration)
+	private void playOpeningMenuAnim()
 	{
 		this.menuOpened = true;
-		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.paneMenu);
-		TranslateTransition ttGrid = new TranslateTransition(new Duration(duration), this.paneGrid);
-		TranslateTransition ttTurn = new TranslateTransition(new Duration(duration), this.paneTurn);
-		TranslateTransition ttImgMenuIcon = new TranslateTransition(new Duration(duration), this.paneMenuController.imgMenuArrowIcon);
-		RotateTransition rtImgMenuArrow = new RotateTransition(new Duration(duration), this.paneMenuController.imgMenuArrow);
-		ParallelTransition transition = new ParallelTransition(
-				ttMenu, ttGrid, ttTurn, ttImgMenuIcon, rtImgMenuArrow,
-				this.createMinWidthAnim(this.paneGrid, 595.0, duration),
-				this.createMinWidthAnim(this.paneTurnController.lblX, 300.0, duration),
-				this.createMinWidthAnim(this.paneTurnController.lblO, 300.0, duration),
-				this.createMinWidthAnim(this.paneTurn, 595.0, duration)
-		);
-		ttMenu.setToX(0.0);
-		ttGrid.setToX(0.0);
-		ttTurn.setToX(-1.0);
-		ttImgMenuIcon.setToX(-23.0);
-		rtImgMenuArrow.setToAngle(180.0);
 		this.paneMenuController.imgMenuArrowIcon.setImage(new Image(new File(RES.GAMEPAD_ICON).toURI().toString()));
-		
-		transition.play();
+		this.animFactory.getOpeningMenu().play();
 	}
 	
-	private void playClosingMenuAnim(int duration)
+	private void playClosingMenuAnim()
 	{
 		this.menuOpened = false;
-		TranslateTransition ttMenu = new TranslateTransition(new Duration(duration), this.paneMenu);
-		TranslateTransition ttGrid = new TranslateTransition(new Duration(duration), this.paneGrid);
-		TranslateTransition ttTurn = new TranslateTransition(new Duration(duration), this.paneTurn);
-		TranslateTransition ttImgMenuIcon = new TranslateTransition(new Duration(duration), this.paneMenuController.imgMenuArrowIcon);
-		RotateTransition rtImgMenuArrow = new RotateTransition(new Duration(duration), this.paneMenuController.imgMenuArrow);
-		ParallelTransition transition = new ParallelTransition(
-				ttMenu, ttGrid, ttTurn, ttImgMenuIcon, rtImgMenuArrow,
-				this.createMinWidthAnim(this.paneGrid, 846.0, duration),
-				this.createMinWidthAnim(this.paneTurnController.lblX, 424.0, duration),
-				this.createMinWidthAnim(this.paneTurnController.lblO, 424.0, duration),
-				this.createMinWidthAnim(this.paneTurn, 848.0, duration)
-		);
-		ttMenu.setToX(-250.0);
-		ttGrid.setToX(-250.0);
-		ttTurn.setToX(-252.0);
-		ttImgMenuIcon.setToX(0.0);
-		rtImgMenuArrow.setToAngle(0.0);
 		this.paneMenuController.imgMenuArrowIcon.setImage(new Image(new File(RES.GEAR_ICON).toURI().toString()));
-		
-		transition.play();
+		this.animFactory.getClosingMenu().play();
 	}
 	
 	//events handlers
 	private void handleMouseHoverOnMenu(MouseEvent event) {
 		String evtType = event.getEventType().toString();
 		if(evtType.equals("MOUSE_ENTERED") && !this.menuOpened)
-			this.playOpeningMenuAnim(200);
+			this.playOpeningMenuAnim();
 		else if(evtType.equals("MOUSE_EXITED") && this.menuOpened)
-			this.playClosingMenuAnim(200);
+			this.playClosingMenuAnim();
 	}
 
 	public static class Grid {
 		private View ihm;
 		private List<Label> squares;
-		
-		private HashMap<Row, Label> mapRowStartingSquare;
 		
 		@FXML private Canvas canvasGrid;
 		@FXML private ImageView imgRenew;
@@ -156,16 +98,6 @@ public class View {
 		@FXML private Label lblSquare6; @FXML private Label lblSquare7; @FXML private Label lblSquare8;
 		
 		@FXML private void initialize() {
-			this.mapRowStartingSquare = new HashMap<>();
-			this.mapRowStartingSquare.put(Row.HORIZONTAL_1, Grid.this.lblSquare0);
-			this.mapRowStartingSquare.put(Row.HORIZONTAL_2, Grid.this.lblSquare3);
-			this.mapRowStartingSquare.put(Row.HORIZONTAL_3, Grid.this.lblSquare6);
-			this.mapRowStartingSquare.put(Row.VERTICAL_1, Grid.this.lblSquare0);
-			this.mapRowStartingSquare.put(Row.VERTICAL_2, Grid.this.lblSquare1);
-			this.mapRowStartingSquare.put(Row.VERTICAL_3, Grid.this.lblSquare2);
-			this.mapRowStartingSquare.put(Row.DIAGONAL_1, Grid.this.lblSquare0);
-			this.mapRowStartingSquare.put(Row.DIAGONAL_2, Grid.this.lblSquare2);
-			
 			this.squares = new ArrayList<>(Arrays.asList(
 					lblSquare0, lblSquare1, lblSquare2, 
 					lblSquare3, lblSquare4, lblSquare5, 
@@ -183,6 +115,10 @@ public class View {
 				
 		}
 		
+		public List<Label> getSquares() { return this.squares; }
+		public Canvas getCanvasGrid() { return this.canvasGrid; }
+		public ImageView getImgCup() { return this.imgCup; }
+		
 		public void injectMainController(View ihm)
 		{
 			this.ihm = ihm;
@@ -194,89 +130,18 @@ public class View {
 				this.squares.get(i).setText(grid.at(i).toString());
 		}
 		
-//		public void writeCase(int id, Square c)
-//		{
-//			this.squares.get(id).setText(c.toString());
-//		}
-		
-		public Animation getWinningRowAnim(Row row, int duration)
+		public Animation getWinningRowAnim(Row row)
 		{
-			Label startingSquare = this.mapRowStartingSquare.get(row);
-			int rowValue = row.getValue();
-
-			double xFrom = startingSquare.getBoundsInParent().getMinX();
-			double yFrom = startingSquare.getBoundsInParent().getMinY();
-			double xTo = xFrom;
-			double yTo = yFrom;
-			
-//			horizontal row
-			if(rowValue >= 10 && rowValue <= 12) {
-				xTo += 580.0;
-				yFrom += 97.0;
-				yTo = yFrom;
-			}
-//			vertical row
-			else if(rowValue >= 20 && rowValue <= 22) {
-				xFrom += 97.0;
-				xTo = xFrom;
-				yTo += 580.0;
-			}
-			else if(row == Row.DIAGONAL_1) {
-				xTo += 580.0;
-				yTo += 580.0;
-			}
-			else if(row == Row.DIAGONAL_2) {
-				xFrom = startingSquare.getBoundsInParent().getMaxX();
-				xTo = xFrom - 580.0;
-				yTo += 580.0;
-			}
-			
-			GraphicsContext gc = this.canvasGrid.getGraphicsContext2D();
-			
-			Path path = new Path();
-			path.setStroke(Color.RED);
-			path.setStrokeWidth(10.0);
-			path.getElements().addAll(new MoveTo(xFrom, yFrom), new LineTo(xTo, yTo));
-			
-			Circle pen = new Circle(0, 0, 10);
-			PathTransition pt = new PathTransition(new Duration(duration), path, pen);
-			pt.currentTimeProperty().addListener(new ChangeListener<Duration>() {
-				Pair<Double,Double> oldLocation = null;
-				@Override
-				public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
-	                if( oldValue == Duration.ZERO)
-	                    return;
-	                double x = pen.getTranslateX();
-	                double y = pen.getTranslateY();
-	                if( oldLocation == null) {
-	                    oldLocation = new Pair<>(0.0, 0.0);
-	                    oldLocation.first = x;
-	                    oldLocation.second = y;
-	                    return;
-	                }
-	                gc.setStroke(Color.RED);
-	                gc.setLineWidth(8);
-	                gc.strokeLine(oldLocation.first, oldLocation.second, x, y);
-	                oldLocation.first = x;
-	                oldLocation.second = y;
-				}
-			});
-			return pt;
+			return this.ihm.animFactory.getDrawingWinningRow(row);
 		}
 		
-		public Animation getCupAnim(Player winner, int duration)
+		public Animation getCupAnim(Player winner)
 		{
-			TranslateTransition ttUp = new TranslateTransition(new Duration(duration * 0.3), this.imgCup);
-			TranslateTransition ttDown = new TranslateTransition(new Duration(duration * 0.3), this.imgCup);
-			SequentialTransition anim = new SequentialTransition(ttUp,new PauseTransition(new Duration(duration * 0.4)) , ttDown);
-			if(winner == Player.X) 
-				ttUp.setFromX(180.0);
-			else if(winner == Player.O) 
-				ttUp.setFromX(605.0);
-			ttUp.setByY(-110.0);
-			ttDown.setByY(110.0);
-			
-			return anim;
+			if(winner == Player.X)
+				return this.ihm.animFactory.getMovingCupWinnerX();
+			else if(winner == Player.O)
+				return this.ihm.animFactory.getMovingCupWinnerO();
+			return null;
 		}
 		
 		public void clearCanvas()
@@ -343,6 +208,10 @@ public class View {
 			this.setTurn(Player.X);
 		}
 		
+		public Label getLblX() { return this.lblX; }
+		public Label getLblO() { return this.lblO; }
+		
+		
 		public void setTurn(Player p)
 		{
 			if(p == Player.X)
@@ -404,6 +273,9 @@ public class View {
 			this.imgRules.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().showRules());
 			this.imgEditConfig.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().editAiConf());
 		}
+		
+		public ImageView getImgMenuArrowIcon() { return this.imgMenuArrowIcon; }
+		public ImageView getImgMenuArrow() { return this.imgMenuArrow; }
 		
 		public void injectMainController(View ihm)
 		{
