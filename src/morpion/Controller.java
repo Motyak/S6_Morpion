@@ -25,7 +25,7 @@ class Controller {
 		Ent.Grille grille = this.ent.getGrille();
 		Ihm.Grille grilleIhm = this.ihm.getGrille();
 		
-		for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
+		for(int i = 0 ; i < Ent.GRID_SIZE ; ++i)
 			grilleIhm.writeCase(i, grille.at(i));
 		this.ihm.getTourJeu().setTourDeJeu(this.ent.getTourJeu());
 		
@@ -37,7 +37,7 @@ class Controller {
 	{
 		Ent.Grille grille = this.ent.getGrille();
 		
-		if(grille.at(id) == Case.VIDE)
+		if(grille.at(id) == Square.VIDE)
 		{
 			this.jouerCoup(id);
 			if(this.verifierFinDePartie())
@@ -99,7 +99,7 @@ class Controller {
 		System.out.println("Mode de jeu actuel : " + this.ent.getMode());
 	}
 	
-	public void changerDiff(Difficulte diff) throws Exception
+	public void changerDiff(Difficulty diff) throws Exception
 	{
 		if(this.ent.getDiff() == diff)
 			return;
@@ -120,7 +120,7 @@ class Controller {
 	
 	public Ai getAi() { return this.ai; }
 	
-	public Joueur getJoueurCourant()
+	public Player getJoueurCourant()
 	{
 		return this.ent.getTourJeu();
 	}
@@ -132,14 +132,14 @@ class Controller {
 	
 	public boolean caseVide(int id)
 	{
-		return this.ent.getGrille().at(id) == Case.VIDE;
+		return this.ent.getGrille().at(id) == Square.VIDE;
 	}
 	
 	public void renewGame()
 	{
 		this.ent.getGrille().clear();
 		this.ai.data.reset();
-		this.ent.setTourJeu(Joueur.values()[0]);
+		this.ent.setTourJeu(Player.values()[0]);
 		this.entToIhm();
 	}
 	
@@ -148,8 +148,8 @@ class Controller {
 		Ent.Grille grille = this.ent.getGrille();
 		
 		Ent.Grille save = new Ent.Grille(grille);
-		grille.set(id, Case.valueOf(this.ent.getTourJeu().toString()));
-		if(this.ent.getTourJeu() == Joueur.X)
+		grille.set(id, Square.valueOf(this.ent.getTourJeu().toString()));
+		if(this.ent.getTourJeu() == Player.X)
 			this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
 		else
 			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
@@ -160,9 +160,9 @@ class Controller {
 	private boolean verifierFinDePartie() throws IOException
 	{
 		Ent.Grille grille = this.ent.getGrille();
-		Pair<Joueur,Range> p = grille.finDePartie();
+		Pair<Player,Row> p = grille.finDePartie();
 		
-		Joueur vainqueur = p.first;
+		Player vainqueur = p.first;
 		boolean partieTerminee = (vainqueur != null) || grille.is_filled();
 		if(partieTerminee)
 		{
@@ -177,7 +177,7 @@ class Controller {
 				animCup.play();
 				animCup.setOnFinished(e -> {
 					grille.clear();
-					this.ent.setTourJeu(Joueur.values()[0]);
+					this.ent.setTourJeu(Player.values()[0]);
 					this.entToIhm();
 					this.ihm.getGrille().clearCanvas();
 					this.ihm.setAnimLigneGagnanteOccuring(false);
@@ -189,7 +189,7 @@ class Controller {
 			else {				
 				System.out.println("Aucun gagnant");
 				grille.clear();
-				this.ent.setTourJeu(Joueur.values()[0]);
+				this.ent.setTourJeu(Player.values()[0]);
 				this.entToIhm();
 			}
 			this.ai.data.reset();
@@ -205,7 +205,7 @@ class Controller {
 		double[] input = this.grilleToDoubles(grille);
 		int[] output = this.ai.genOutput(input);
 		int i = 0;
-		while(grille.at(output[i]) != Case.VIDE)
+		while(grille.at(output[i]) != Square.VIDE)
 			++i;
 
 		return output[i];
@@ -213,17 +213,17 @@ class Controller {
 	
 	private void incrementerTourDeJeu()
 	{
-		Joueur j = this.ent.getTourJeu();
+		Player j = this.ent.getTourJeu();
 		j = j.next();
 		this.ent.setTourJeu(j);
 	}
 	
 	private double[] grilleToDoubles(Ent.Grille grille)
 	{
-		double[] res = new double[Ent.TAILLE_GRILLE];
-		for(int i = 0 ; i < Ent.DIM_GRILLE ; ++i)
-			for(int j = 0 ; j < Ent.DIM_GRILLE ; ++j)
-				res[Ent.DIM_GRILLE * i + j] = grille.at(i, j).getValue();
+		double[] res = new double[Ent.GRID_SIZE];
+		for(int i = 0 ; i < Ent.GRID_DIM ; ++i)
+			for(int j = 0 ; j < Ent.GRID_DIM ; ++j)
+				res[Ent.GRID_DIM * i + j] = grille.at(i, j).getValue();
 		
 		return res;
 	}

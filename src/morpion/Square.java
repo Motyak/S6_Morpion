@@ -1,6 +1,6 @@
 package morpion;
 
-enum Case {
+enum Square {
 	VIDE(0) {
 		@Override
 		public String toString() {
@@ -12,7 +12,7 @@ enum Case {
 	
 	
 	private final int value;
-	private Case(int value) {
+	private Square(int value) {
 		this.value = value;
 	}
 	

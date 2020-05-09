@@ -30,7 +30,7 @@ public class Ai {
 	public Model model;
 	public Data data;
 	
-	private Difficulte diff;
+	private Difficulty diff;
 	
 	public final static String DATA_DIRPATH = 
 			System.getProperty("user.dir") + File.separator + "data" + File.separator;
@@ -41,7 +41,7 @@ public class Ai {
 	public final static String CONF_FILENAME = "config.txt";
 	public final static String COUPS_FILENAME = "coups.txt";
 	
-	public Ai(Difficulte diff) throws Exception {
+	public Ai(Difficulty diff) throws Exception {
 		this.diff = diff;
 		this.data = new Data();
 		this.initDataFiles();
@@ -56,13 +56,13 @@ public class Ai {
 		int nbDeCoups = 0;
 		while(line != null)
 		{
-			input = new double[Ent.TAILLE_GRILLE];
-			output = new double[Ent.TAILLE_GRILLE];
+			input = new double[Ent.GRID_SIZE];
+			output = new double[Ent.GRID_SIZE];
 			Matcher mat = Pattern.compile("([^;]+);([^;]+)").matcher(line);
 			mat.find();
 			List<String> grilleInput = Arrays.asList(mat.group(1).split("\\s*,\\s*"));
 			List<String> grilleOutput = Arrays.asList(mat.group(2).split("\\s*,\\s*"));
-			for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
+			for(int i = 0 ; i < Ent.GRID_SIZE ; ++i)
 			{
 				input[i] = Double.parseDouble(grilleInput.get(i));
 				output[i] = Double.parseDouble(grilleOutput.get(i));
@@ -82,7 +82,7 @@ public class Ai {
 		System.out.println("Modèle sauvegardé : " + filename);
 	}
 	
-	public void changeDiff(Difficulte diff) throws Exception
+	public void changeDiff(Difficulty diff) throws Exception
 	{
 		this.diff = diff;
 		this.data.reset();
@@ -100,7 +100,7 @@ public class Ai {
 	
 	public Pair<Integer,Double> getModelParams() throws IOException
 	{
-		Difficulte diff = this.diff;
+		Difficulty diff = this.diff;
 		String conf = TextFile.fileToString(Ai.DATA_DIRPATH + Ai.CONF_FILENAME);
 		Matcher mat = Pattern.compile(diff.getValue() + "=(.*?)\n").matcher(conf);
 		mat.find();
@@ -113,7 +113,7 @@ public class Ai {
 	
 	public void reset() throws IOException {
 		Pair<Integer,Double> params = this.getModelParams();
-		int[] layers = {Ent.TAILLE_GRILLE, params.second.intValue(), Ent.TAILLE_GRILLE };
+		int[] layers = {Ent.GRID_SIZE, params.second.intValue(), Ent.GRID_SIZE };
 		this.model = new Model(layers, params.second, new SigmoidalTransferFunction());
 		this.save();
 	}
@@ -124,7 +124,7 @@ public class Ai {
 		return 10000;
 	}
 	
-	public Difficulte getDiff() { return this.diff; }
+	public Difficulty getDiff() { return this.diff; }
 	
 //	check any missing file, create them with default values if so
 	private void initDataFiles() throws Exception {
@@ -142,7 +142,7 @@ public class Ai {
 				config.find();
 				int abstractionLevel = Integer.parseInt(config.group(1));
 				double learningRate = Double.parseDouble(config.group(2));
-				int[] layers = new int[]{Ent.TAILLE_GRILLE, abstractionLevel, Ent.TAILLE_GRILLE};
+				int[] layers = new int[]{Ent.GRID_SIZE, abstractionLevel, Ent.GRID_SIZE};
 				Model mod = new Model(layers, learningRate, new SigmoidalTransferFunction());
 				mod.save(Ai.DATA_DIRPATH + abstractionLevel + "_" + learningRate + ".srl");
 			}
@@ -154,7 +154,7 @@ public class Ai {
 		String filename = params.first + "_" + params.second + ".srl";
 		if(!new File(Ai.DATA_DIRPATH + filename).exists()) 
 		{
-			int[] layers = {Ent.TAILLE_GRILLE, params.second.intValue(), Ent.TAILLE_GRILLE };
+			int[] layers = {Ent.GRID_SIZE, params.second.intValue(), Ent.GRID_SIZE };
 			this.model = new Model(layers, params.second, new SigmoidalTransferFunction());
 			this.save();
 		}
@@ -235,13 +235,13 @@ public class Ai {
 			this.coupsY.clear();
 		}
 
-		public String getCoups(Joueur j)
+		public String getCoups(Player j)
 		{
 			String res = "";
 			List<Coup> coups = null;
-			if(j == Joueur.X)
+			if(j == Player.X)
 				coups = this.coupsX;
-			else if(j == Joueur.O)
+			else if(j == Player.O)
 				coups = this.coupsY;
 			
 			for(int i = 0 ; i < coups.size() ; ++i)

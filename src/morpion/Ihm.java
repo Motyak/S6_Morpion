@@ -147,7 +147,7 @@ public class Ihm {
 		private Ihm ihm;
 		private List<Label> cases;
 		
-		private HashMap<Range, Label> mapRangeCaseDepart;
+		private HashMap<Row, Label> mapRangeCaseDepart;
 		
 		@FXML private Canvas canvasGrille;
 		@FXML private ImageView imgRenew;
@@ -160,14 +160,14 @@ public class Ihm {
 		
 		@FXML private void initialize() {
 			this.mapRangeCaseDepart = new HashMap<>();
-			this.mapRangeCaseDepart.put(Range.HORIZONTALE_1, Grille.this.lblCase0);
-			this.mapRangeCaseDepart.put(Range.HORIZONTALE_2, Grille.this.lblCase3);
-			this.mapRangeCaseDepart.put(Range.HORIZONTALE_3, Grille.this.lblCase6);
-			this.mapRangeCaseDepart.put(Range.VERTICALE_1, Grille.this.lblCase0);
-			this.mapRangeCaseDepart.put(Range.VERTICALE_2, Grille.this.lblCase1);
-			this.mapRangeCaseDepart.put(Range.VERTICALE_3, Grille.this.lblCase2);
-			this.mapRangeCaseDepart.put(Range.DIAGONALE_1, Grille.this.lblCase0);
-			this.mapRangeCaseDepart.put(Range.DIAGONALE_2, Grille.this.lblCase2);
+			this.mapRangeCaseDepart.put(Row.HORIZONTAL_1, Grille.this.lblCase0);
+			this.mapRangeCaseDepart.put(Row.HORIZONTAL_2, Grille.this.lblCase3);
+			this.mapRangeCaseDepart.put(Row.HORIZONTAL_3, Grille.this.lblCase6);
+			this.mapRangeCaseDepart.put(Row.VERTICAL_1, Grille.this.lblCase0);
+			this.mapRangeCaseDepart.put(Row.VERTICAL_2, Grille.this.lblCase1);
+			this.mapRangeCaseDepart.put(Row.VERTICAL_3, Grille.this.lblCase2);
+			this.mapRangeCaseDepart.put(Row.DIAGONAL_1, Grille.this.lblCase0);
+			this.mapRangeCaseDepart.put(Row.DIAGONAL_2, Grille.this.lblCase2);
 			
 			this.cases = new ArrayList<>(Arrays.asList(
 					lblCase0, lblCase1, lblCase2, 
@@ -191,12 +191,12 @@ public class Ihm {
 			this.ihm = ihm;
 		}
 		
-		public void writeCase(int id, Case c)
+		public void writeCase(int id, Square c)
 		{
 			this.cases.get(id).setText(c.toString());
 		}
 		
-		public Animation animLigneGagnante(Range ligne, int duration)
+		public Animation animLigneGagnante(Row ligne, int duration)
 		{
 			Label caseDepart = this.mapRangeCaseDepart.get(ligne);
 			int range = ligne.getValue();
@@ -218,11 +218,11 @@ public class Ihm {
 				xArrivee = xDepart;
 				yArrivee += 580.0;
 			}
-			else if(ligne == Range.DIAGONALE_1) {
+			else if(ligne == Row.DIAGONAL_1) {
 				xArrivee += 580.0;
 				yArrivee += 580.0;
 			}
-			else if(ligne == Range.DIAGONALE_2) {
+			else if(ligne == Row.DIAGONAL_2) {
 				xDepart = caseDepart.getBoundsInParent().getMaxX();
 				xArrivee = xDepart - 580.0;
 				yArrivee += 580.0;
@@ -261,14 +261,14 @@ public class Ihm {
 			return pt;
 		}
 		
-		public Animation animCup(Joueur joueur, int duration)
+		public Animation animCup(Player joueur, int duration)
 		{
 			TranslateTransition ttUp = new TranslateTransition(new Duration(duration * 0.3), this.imgCup);
 			TranslateTransition ttDown = new TranslateTransition(new Duration(duration * 0.3), this.imgCup);
 			SequentialTransition anim = new SequentialTransition(ttUp,new PauseTransition(new Duration(duration * 0.4)) , ttDown);
-			if(joueur == Joueur.X) 
+			if(joueur == Player.X) 
 				ttUp.setFromX(180.0);
-			else if(joueur == Joueur.O) 
+			else if(joueur == Player.O) 
 				ttUp.setFromX(605.0);
 			ttUp.setByY(-110.0);
 			ttDown.setByY(110.0);
@@ -300,12 +300,12 @@ public class Ihm {
 			}
 			else if(ctrl.caseVide(lblId)) {
 				if(eventType.equals("MOUSE_ENTERED")) {
-					Joueur j = ctrl.getJoueurCourant();
+					Player j = ctrl.getJoueurCourant();
 					lbl.setOpacity(0.3);
 					lbl.setText(j.toString());
 				}
 				else if(eventType.equals("MOUSE_EXITED")) {
-					lbl.setText(Case.VIDE.toString());
+					lbl.setText(Square.VIDE.toString());
 					lbl.setOpacity(1.0);
 				}
 			}
@@ -336,17 +336,17 @@ public class Ihm {
 		@FXML private Label lblO;
 		
 		@FXML private void initialize() {
-			this.setTourDeJeu(Joueur.X);
+			this.setTourDeJeu(Player.X);
 		}
 		
-		public void setTourDeJeu(Joueur j)
+		public void setTourDeJeu(Player j)
 		{
-			if(j == Joueur.X)
+			if(j == Player.X)
 			{
 				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("label-tour-rempli");
 				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("label-tour-vide");
 			}
-			else if(j == Joueur.O)
+			else if(j == Player.O)
 			{
 				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("label-tour-vide");
 				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("label-tour-rempli");
@@ -437,7 +437,7 @@ public class Ihm {
 		}
 		
 		private void handleMouseEventOnSlider(MouseEvent event) {
-			Difficulte diff = Difficulte.values()[(int)Menu.this.slDiff.getValue()];
+			Difficulty diff = Difficulty.values()[(int)Menu.this.slDiff.getValue()];
 			try {
 				Menu.this.ihm.getCtrl().changerDiff(diff);
 			} catch (Exception e) {
@@ -447,7 +447,7 @@ public class Ihm {
 		
 		private void handleMouseEventOnUpArrow(MouseEvent event) {
 			int value = (int)Menu.this.slDiff.getValue() + 1;
-			if(value < Difficulte.values().length) {
+			if(value < Difficulty.values().length) {
 				Menu.this.slDiff.setValue(value);
 				Menu.this.handleMouseEventOnSlider(event);
 			}
