@@ -39,14 +39,14 @@ class Controller {
 		
 		if(grille.at(id) == Square.EMPTY)
 		{
-			this.jouerCoup(id);
-			if(this.verifierFinDePartie())
+			this.playMove(id);
+			if(this.checkOnWin())
 				return true;
 			
 			if(this.ent.getMode() == Mode.P_VS_AI)
 			{
-				this.jouerCoup(this.aiPlays());
-				this.verifierFinDePartie();
+				this.playMove(this.aiPlays());
+				this.checkOnWin();
 			}
 			return true;
 		}
@@ -89,17 +89,17 @@ class Controller {
 		}
 	}
 	
-	public void changerModeJeu(Mode mode)
+	public void changeMode(Mode mode)
 	{
 		if(this.ent.getMode() == mode)
 			return;
 		
 		this.ent.setMode(mode);
 		this.renewGame();
-		System.out.println("Mode de jeu actuel : " + this.ent.getMode());
+		System.out.println("Actual game mode : " + this.ent.getMode());
 	}
 	
-	public void changerDiff(Difficulty diff) throws Exception
+	public void changeDiff(Difficulty diff) throws Exception
 	{
 		if(this.ent.getDiff() == diff)
 			return;
@@ -110,27 +110,27 @@ class Controller {
 		
 		Controller.launchLearning(this.ai);
 		
-		System.out.println("Difficulte actuelle : " + this.ent.getDiff().getValue());
+		System.out.println("Actual difficulty : " + this.ent.getDiff().getValue());
 	}
 	
-	public void showDialogRegles()
+	public void showRulesDialog()
 	{
 		Main.rulesDialog.showAndWait();
 	}
 	
 	public Ai getAi() { return this.ai; }
 	
-	public Player getJoueurCourant()
+	public Player getTurn()
 	{
 		return this.ent.getTurn();
 	}
 	
-	public Mode getModeJeu()
+	public Mode getMode()
 	{
 		return this.ent.getMode();
 	}
 	
-	public boolean caseVide(int id)
+	public boolean emptySquare(int id)
 	{
 		return this.ent.getGrille().at(id) == Square.EMPTY;
 	}
@@ -143,7 +143,7 @@ class Controller {
 		this.entToIhm();
 	}
 	
-	private void jouerCoup(int id)
+	private void playMove(int id)
 	{
 		Ent.Grid grille = this.ent.getGrille();
 		
@@ -153,11 +153,11 @@ class Controller {
 			this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Ent.Grid(grille)));
 		else
 			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Ent.Grid(grille)));
-		this.incrementerTourDeJeu();//
+		this.incrementTurn();
 		this.entToIhm();
 	}
 	
-	private boolean verifierFinDePartie() throws IOException
+	private boolean checkOnWin() throws IOException
 	{
 		Ent.Grid grille = this.ent.getGrille();
 		Pair<Player,Row> p = grille.finDePartie();
@@ -202,7 +202,7 @@ class Controller {
 	{
 		Ent.Grid grille = this.ent.getGrille();
 		
-		double[] input = this.grilleToDoubles(grille);
+		double[] input = this.gridToDoubles(grille);
 		int[] output = this.ai.genOutput(input);
 		int i = 0;
 		while(grille.at(output[i]) != Square.EMPTY)
@@ -211,14 +211,14 @@ class Controller {
 		return output[i];
 	}
 	
-	private void incrementerTourDeJeu()
+	private void incrementTurn()
 	{
 		Player j = this.ent.getTurn();
 		j = j.next();
 		this.ent.setTurn(j);
 	}
 	
-	private double[] grilleToDoubles(Ent.Grid grille)
+	private double[] gridToDoubles(Ent.Grid grille)
 	{
 		double[] res = new double[Ent.GRID_SIZE];
 		for(int i = 0 ; i < Ent.GRID_DIM ; ++i)
