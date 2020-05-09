@@ -304,7 +304,7 @@ public class View {
 					lbl.setText(j.toString());
 				}
 				else if(eventType.equals("MOUSE_EXITED")) {
-					lbl.setText(Square.VIDE.toString());
+					lbl.setText(Square.EMPTY.toString());
 					lbl.setOpacity(1.0);
 				}
 			}

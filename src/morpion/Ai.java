@@ -251,10 +251,10 @@ public class Ai {
 		}
 		
 		static class Coup {
-			public Ent.Grille avant;
-			public Ent.Grille apres;
+			public Ent.Grid avant;
+			public Ent.Grid apres;
 			
-			public Coup(Ent.Grille avant, Ent.Grille apres)
+			public Coup(Ent.Grid avant, Ent.Grid apres)
 			{
 				this.avant = avant;
 				this.apres = apres;

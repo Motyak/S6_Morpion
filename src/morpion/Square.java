@@ -1,7 +1,7 @@
 package morpion;
 
 enum Square {
-	VIDE(0) {
+	EMPTY(0) {
 		@Override
 		public String toString() {
 			return "";

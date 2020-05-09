@@ -22,12 +22,12 @@ class Controller {
 	
 	public void entToIhm() 
 	{
-		Ent.Grille grille = this.ent.getGrille();
-		View.Grid grilleIhm = this.ihm.getGrid();
+		Ent.Grid grid = this.ent.getGrille();
+		View.Grid gridView = this.ihm.getGrid();
 		
 		for(int i = 0 ; i < Ent.GRID_SIZE ; ++i)
-			grilleIhm.writeCase(i, grille.at(i));
-		this.ihm.getTurn().setTurn(this.ent.getTourJeu());
+			gridView.writeCase(i, grid.at(i));
+		this.ihm.getTurn().setTurn(this.ent.getTurn());
 		
 		this.ihm.getMenu().setModeJeu(this.ent.getMode());
 		this.ihm.getMenu().lockDiff((this.ent.getMode() == Mode.P_VS_P));
@@ -35,9 +35,9 @@ class Controller {
 	
 	public boolean proposerCoup(int id) throws IOException
 	{
-		Ent.Grille grille = this.ent.getGrille();
+		Ent.Grid grille = this.ent.getGrille();
 		
-		if(grille.at(id) == Square.VIDE)
+		if(grille.at(id) == Square.EMPTY)
 		{
 			this.jouerCoup(id);
 			if(this.verifierFinDePartie())
@@ -122,7 +122,7 @@ class Controller {
 	
 	public Player getJoueurCourant()
 	{
-		return this.ent.getTourJeu();
+		return this.ent.getTurn();
 	}
 	
 	public Mode getModeJeu()
@@ -132,38 +132,38 @@ class Controller {
 	
 	public boolean caseVide(int id)
 	{
-		return this.ent.getGrille().at(id) == Square.VIDE;
+		return this.ent.getGrille().at(id) == Square.EMPTY;
 	}
 	
 	public void renewGame()
 	{
 		this.ent.getGrille().clear();
 		this.ai.data.reset();
-		this.ent.setTourJeu(Player.values()[0]);
+		this.ent.setTurn(Player.values()[0]);
 		this.entToIhm();
 	}
 	
 	private void jouerCoup(int id)
 	{
-		Ent.Grille grille = this.ent.getGrille();
+		Ent.Grid grille = this.ent.getGrille();
 		
-		Ent.Grille save = new Ent.Grille(grille);
-		grille.set(id, Square.valueOf(this.ent.getTourJeu().toString()));
-		if(this.ent.getTourJeu() == Player.X)
-			this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
+		Ent.Grid save = new Ent.Grid(grille);
+		grille.set(id, Square.valueOf(this.ent.getTurn().toString()));
+		if(this.ent.getTurn() == Player.X)
+			this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Ent.Grid(grille)));
 		else
-			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Ent.Grille(grille)));
+			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Ent.Grid(grille)));
 		this.incrementerTourDeJeu();//
 		this.entToIhm();
 	}
 	
 	private boolean verifierFinDePartie() throws IOException
 	{
-		Ent.Grille grille = this.ent.getGrille();
+		Ent.Grid grille = this.ent.getGrille();
 		Pair<Player,Row> p = grille.finDePartie();
 		
 		Player vainqueur = p.first;
-		boolean partieTerminee = (vainqueur != null) || grille.is_filled();
+		boolean partieTerminee = (vainqueur != null) || grille.isFilled();
 		if(partieTerminee)
 		{
 			if(vainqueur != null)
@@ -177,7 +177,7 @@ class Controller {
 				animCup.play();
 				animCup.setOnFinished(e -> {
 					grille.clear();
-					this.ent.setTourJeu(Player.values()[0]);
+					this.ent.setTurn(Player.values()[0]);
 					this.entToIhm();
 					this.ihm.getGrid().clearCanvas();
 					this.ihm.setWinningRowAnimOccuring(false);
@@ -189,7 +189,7 @@ class Controller {
 			else {				
 				System.out.println("Aucun gagnant");
 				grille.clear();
-				this.ent.setTourJeu(Player.values()[0]);
+				this.ent.setTurn(Player.values()[0]);
 				this.entToIhm();
 			}
 			this.ai.data.reset();
@@ -200,12 +200,12 @@ class Controller {
 	
 	private int aiPlays()
 	{
-		Ent.Grille grille = this.ent.getGrille();
+		Ent.Grid grille = this.ent.getGrille();
 		
 		double[] input = this.grilleToDoubles(grille);
 		int[] output = this.ai.genOutput(input);
 		int i = 0;
-		while(grille.at(output[i]) != Square.VIDE)
+		while(grille.at(output[i]) != Square.EMPTY)
 			++i;
 
 		return output[i];
@@ -213,12 +213,12 @@ class Controller {
 	
 	private void incrementerTourDeJeu()
 	{
-		Player j = this.ent.getTourJeu();
+		Player j = this.ent.getTurn();
 		j = j.next();
-		this.ent.setTourJeu(j);
+		this.ent.setTurn(j);
 	}
 	
-	private double[] grilleToDoubles(Ent.Grille grille)
+	private double[] grilleToDoubles(Ent.Grid grille)
 	{
 		double[] res = new double[Ent.GRID_SIZE];
 		for(int i = 0 ; i < Ent.GRID_DIM ; ++i)
