@@ -46,5 +46,10 @@ final public class RES {
 /* Menu icons (below the arrow) */
 	final static public String GEAR_ICON = resDirPath + "gear" + ".png";
 	final static public String GAMEPAD_ICON = resDirPath + "gamepad" + ".png";
+	
+/* Opponent images */
+	
+	final static public String OPPONENT_AI = resDirPath + "computer_64x64" + ".png";
+	final static public String OPPONENT_PERSON = resDirPath + "user_64x64" + ".png";
 
 }

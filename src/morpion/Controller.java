@@ -3,8 +3,6 @@ package morpion;
 import Mk.Pair;
 import Mk.TextFile;
 import javafx.animation.Animation;
-import javafx.animation.ParallelTransition;
-
 import java.io.IOException;
 
 class Controller {

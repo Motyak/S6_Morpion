@@ -333,6 +333,7 @@ public class View {
 	public static class Turn {
 		@FXML private Label lblX;
 		@FXML private Label lblO;
+		@FXML private ImageView imgOpponent;
 		
 		@FXML private void initialize() {
 			this.setTurn(Player.X);
@@ -350,6 +351,14 @@ public class View {
 				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("empty-turn-label");
 				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("filled-turn-label");
 			}
+		}
+		
+		public void setOpponent(Mode mode)
+		{
+			if(mode == Mode.P_VS_AI)
+				this.imgOpponent.setImage(new Image(new File(RES.OPPONENT_AI).toURI().toString()));
+			else if(mode == Mode.P_VS_P)
+				this.imgOpponent.setImage(new Image(new File(RES.OPPONENT_PERSON).toURI().toString()));
 		}
 	}
 	
@@ -407,6 +416,7 @@ public class View {
 				this.imgGameMode0.setImage(new Image(new File(RES.P_VS_AI_UNPRESSED).toURI().toString()));
 				this.imgGameMode1.setImage(new Image(new File(RES.P_VS_P_PRESSED).toURI().toString()));
 			}
+			this.ihm.paneTurnController.setOpponent(mode);
 		}
 		
 		public void lockDiff(boolean lock)

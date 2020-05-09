@@ -49,12 +49,12 @@
             <Insets top="-37.0" />
          </padding>
       </Label>
-      <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+      <ImageView fx:id="imgOpponent" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
          <image>
             <Image url="@../../res/computer_64x64.png" />
          </image>
          <GridPane.margin>
-            <Insets right="4.0" />
+            <Insets bottom="3.0" right="4.0" />
          </GridPane.margin>
          <effect>
             <ColorAdjust brightness="0.2" />
