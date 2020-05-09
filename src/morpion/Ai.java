@@ -67,7 +67,7 @@ public class Ai {
 				input[i] = Double.parseDouble(grilleInput.get(i));
 				output[i] = Double.parseDouble(grilleOutput.get(i));
 			}
-			this.model.backPropagate(input, output);
+			this.model.propagateBackward(input, output);
 			++nbDeCoups;
 			line = reader.readLine();
 		}
@@ -91,7 +91,7 @@ public class Ai {
 	}
 	
 	public int[] genOutput(double[] input) {
-		return this.sortedOutput(this.model.forwardPropagation(input));
+		return this.sortOutput(this.model.propagateForward(input));
 	}
 	
 	public void editConfigFile() throws IOException {
@@ -100,9 +100,8 @@ public class Ai {
 	
 	public Pair<Integer,Double> getModelParams() throws IOException
 	{
-		Difficulty diff = this.diff;
 		String conf = TextFile.fileToString(Ai.DATA_DIRPATH + Ai.CONF_FILENAME);
-		Matcher mat = Pattern.compile(diff.getValue() + "=(.*?)\n").matcher(conf);
+		Matcher mat = Pattern.compile(this.diff.getValue() + "=(.*?)\n").matcher(conf);
 		mat.find();
 		Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
 		config.find();
@@ -164,7 +163,7 @@ public class Ai {
 		System.out.println("Modèle chargé : " + filename);
 	}
 	
-	private int[] sortedOutput(double[] output)
+	private int[] sortOutput(double[] output)
 	{
 		int[] sortedIndexes = new int[output.length];
 		TreeMap<Double,Integer> map = new TreeMap<Double,Integer>(Collections.reverseOrder());
@@ -199,8 +198,8 @@ public class Ai {
 		public long getFileLastModified() { return this.fileLastModified; }
 		public void setFileLastModified(long timestamp) { this.fileLastModified = timestamp; } 
 		
-		public double[] forwardPropagation(double[] input){ return this.p.forwardPropagation(input); }
-		public double backPropagate(double[] input, double[] output) { return this.p.backPropagate(input, output); }
+		public double[] propagateForward(double[] input){ return this.p.forwardPropagation(input); }
+		public double propagateBackward(double[] input, double[] output) { return this.p.backPropagate(input, output); }
 		
 		public void save(String filePath) throws IOException {
 			FileOutputStream fos = new FileOutputStream(filePath);
@@ -221,8 +220,8 @@ public class Ai {
 	}
 	
 	static class Data {
-		public List<Coup> coupsX;
-		public List<Coup> coupsY;
+		public List<Move> coupsX;
+		public List<Move> coupsY;
 		
 		public Data() {
 			this.coupsX = new ArrayList<>();
@@ -235,10 +234,10 @@ public class Ai {
 			this.coupsY.clear();
 		}
 
-		public String getCoups(Player j)
+		public String getMoves(Player j)
 		{
 			String res = "";
-			List<Coup> coups = null;
+			List<Move> coups = null;
 			if(j == Player.X)
 				coups = this.coupsX;
 			else if(j == Player.O)
@@ -250,30 +249,30 @@ public class Ai {
 			return res;
 		}
 		
-		static class Coup {
-			public Ent.Grid avant;
-			public Ent.Grid apres;
+		static class Move {
+			public Ent.Grid before;
+			public Ent.Grid after;
 			
-			public Coup(Ent.Grid avant, Ent.Grid apres)
+			public Move(Ent.Grid before, Ent.Grid after)
 			{
-				this.avant = avant;
-				this.apres = apres;
+				this.before = before;
+				this.after = after;
 			}
 			
-			public int getNumCaseJouee()
+			public int getPlayedSquare()
 			{
-				int dim = this.avant.getDim();
+				int dim = this.before.getDim();
 				int j;
 				for(int i = 0 ; i < dim ; ++i)
 					for(j = 0 ; j < dim ; ++j)
-						if(this.avant.at(i, j) != this.apres.at(i, j))
+						if(this.before.at(i, j) != this.after.at(i, j))
 							return i;
 				return -1;
 			}
 			
 			@Override
 			public String toString() {
-				return this.avant + ";" + this.apres;
+				return this.before + ";" + this.after;
 			}
 		}
 	}

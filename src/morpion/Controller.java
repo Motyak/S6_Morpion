@@ -146,9 +146,9 @@ class Controller {
 		Ent.Grid save = new Ent.Grid(grille);
 		grille.set(id, Square.valueOf(this.ent.getTurn().toString()));
 		if(this.ent.getTurn() == Player.X)
-			this.ai.data.coupsX.add(new Ai.Data.Coup(save, new Ent.Grid(grille)));
+			this.ai.data.coupsX.add(new Ai.Data.Move(save, new Ent.Grid(grille)));
 		else
-			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Ent.Grid(grille)));
+			this.ai.data.coupsY.add(new Ai.Data.Move(save, new Ent.Grid(grille)));
 		this.incrementTurn();
 		this.updateView();
 	}
@@ -178,7 +178,7 @@ class Controller {
 					this.view.getGrid().clearCanvas();
 					this.view.setWinningRowAnimOccuring(false);
 				});
-				TextFile.stringToFile(this.ai.data.getCoups(winner), 
+				TextFile.stringToFile(this.ai.data.getMoves(winner), 
 						Ai.DATA_DIRPATH + Ai.MOVES_FILENAME, true);
 				this.ai.learn();
 			}
