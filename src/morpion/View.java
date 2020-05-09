@@ -63,7 +63,7 @@ public class View {
 		this.paneMenu.setOnMouseEntered(this::handleMouseHoverOnMenu);
 		this.paneMenu.setOnMouseExited(this::handleMouseHoverOnMenu);
 		
-		this.ctrl.entToIhm();
+//		this.ctrl.updateView();
 	}
 	
 	public Controller getCtrl() { return this.ctrl; }
@@ -296,7 +296,7 @@ public class View {
 				if(!this.ihm.getWinningRowAnimOccuring())
 				{
 					try {
-						if(Grid.this.ihm.getCtrl().proposerCoup(lblId))
+						if(Grid.this.ihm.getCtrl().submitMove(lblId))
 							lbl.setOpacity(1.0);
 					} catch (IOException e) { e.printStackTrace(); }
 				}

@@ -21,19 +21,7 @@ class Controller {
 		this.launchLearning(this.ai);
 	}
 	
-	public void entToIhm() 
-	{
-		Ent.Grid grid = this.ent.getGrille();
-		View.Grid gridView = this.ihm.getGrid();
-		
-		gridView.setGrid(grid);
-		this.ihm.getTurn().setTurn(this.ent.getTurn());
-		
-		this.ihm.getMenu().setMode(this.ent.getMode());
-		this.ihm.getMenu().lockDiff((this.ent.getMode() == Mode.P_VS_P));
-	}
-	
-	public boolean proposerCoup(int id) throws IOException
+	public boolean submitMove(int id) throws IOException
 	{
 		Ent.Grid grille = this.ent.getGrille();
 		
@@ -140,7 +128,19 @@ class Controller {
 		this.ent.getGrille().clear();
 		this.ai.data.reset();
 		this.ent.setTurn(Player.values()[0]);
-		this.entToIhm();
+		this.updateView();
+	}
+	
+	private void updateView() 
+	{
+		Ent.Grid grid = this.ent.getGrille();
+		View.Grid gridView = this.ihm.getGrid();
+		
+		gridView.setGrid(grid);
+		this.ihm.getTurn().setTurn(this.ent.getTurn());
+		
+		this.ihm.getMenu().setMode(this.ent.getMode());
+		this.ihm.getMenu().lockDiff((this.ent.getMode() == Mode.P_VS_P));
 	}
 	
 	private void playMove(int id)
@@ -154,7 +154,7 @@ class Controller {
 		else
 			this.ai.data.coupsY.add(new Ai.Data.Coup(save, new Ent.Grid(grille)));
 		this.incrementTurn();
-		this.entToIhm();
+		this.updateView();
 	}
 	
 	private boolean checkOnWin() throws IOException
@@ -178,7 +178,7 @@ class Controller {
 				animCup.setOnFinished(e -> {
 					grille.clear();
 					this.ent.setTurn(Player.values()[0]);
-					this.entToIhm();
+					this.updateView();
 					this.ihm.getGrid().clearCanvas();
 					this.ihm.setWinningRowAnimOccuring(false);
 				});
@@ -190,7 +190,7 @@ class Controller {
 				System.out.println("Aucun gagnant");
 				grille.clear();
 				this.ent.setTurn(Player.values()[0]);
-				this.entToIhm();
+				this.updateView();
 			}
 			this.ai.data.reset();
 			return true;
