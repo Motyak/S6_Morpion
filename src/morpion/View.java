@@ -401,8 +401,8 @@ public class View {
 			this.imgArrowUp.setOnMouseClicked(this::handleMouseEventOnUpArrow);
 			this.imgArrowDown.setOnMouseClicked(this::handleMouseEventOnDownArrow);
 			
-			this.imgRules.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().showRulesDialog());
-			this.imgEditConfig.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().editConfigFile());
+			this.imgRules.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().showRules());
+			this.imgEditConfig.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().editAiConf());
 		}
 		
 		public void injectMainController(View ihm)

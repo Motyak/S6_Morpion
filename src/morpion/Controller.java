@@ -6,19 +6,33 @@ import javafx.animation.Animation;
 import java.io.IOException;
 
 class Controller {
-	private View ihm;
+	private View view;
 	private Ent ent;
 	
 	private Ai ai;
 
-	Controller(View ihm, Ent ent) throws Exception 
+	Controller(View view, Ent ent) throws Exception 
 	{
-		this.ihm = ihm;
+		this.view = view;
 		this.ent = ent;
 		this.ai = new Ai(this.ent.getDiff());
 		
 		this.launchConfiguring(this);
 		this.launchLearning();
+	}
+	
+	public void launchLearning() throws IOException 
+	{
+//		this.ai.reset();
+		if(Main.learningThread != null) {
+			Main.learningThread.interrupt();
+			while(Main.learningThread.isAlive())
+				;
+		}
+		
+		Main.learningThread = new Thread(new TaskLearning<>(this.ai));
+		Main.learningThread.setDaemon(true);
+		Main.learningThread.start();
 	}
 	
 	public boolean submitMove(int id) throws IOException
@@ -39,42 +53,6 @@ class Controller {
 			return true;
 		}
 		return false;
-	}
-	
-	public void launchLearning() throws IOException 
-	{
-//		this.ai.reset();
-		if(Main.learningThread != null) {
-			Main.learningThread.interrupt();
-			while(Main.learningThread.isAlive())
-				;
-		}
-		
-		Main.learningThread = new Thread(new TaskLearning<>(this.ai));
-		Main.learningThread.setDaemon(true);
-		Main.learningThread.start();
-	}
-	
-	private void launchConfiguring(Controller ctrl)
-	{
-		if(Main.configThread != null) {
-			Main.configThread.interrupt();
-			while(Main.configThread.isAlive())
-				;
-		}
-		
-		Main.configThread = new Thread(new TaskConfiguring<>(ctrl));
-		Main.configThread.setDaemon(true);
-		Main.configThread.start();
-	}
-	
-	public void editConfigFile()
-	{
-		try {
-			this.ai.editConfigFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public void changeMode(Mode mode)
@@ -101,12 +79,25 @@ class Controller {
 		System.out.println("Actual difficulty : " + this.ent.getDiff().getValue());
 	}
 	
-	public void showRulesDialog()
+	public void showRules()
 	{
 		Main.rulesDialog.showAndWait();
 	}
 	
-//	public Ai getAi() { return this.ai; }
+	public void renewGame()
+	{
+		this.ent.getGrille().clear();
+		this.ai.data.reset();
+		this.ent.setTurn(Player.values()[0]);
+		this.updateView();
+	}
+	
+	public void editAiConf()
+	{
+		try {
+			this.ai.editConfigFile();
+		} catch (IOException e) { e.printStackTrace(); }
+	}
 	
 	public Player getCurrentPlayer()
 	{
@@ -123,24 +114,29 @@ class Controller {
 		return this.ent.getGrille().at(id) == Square.EMPTY;
 	}
 	
-	public void renewGame()
+	private void launchConfiguring(Controller ctrl)
 	{
-		this.ent.getGrille().clear();
-		this.ai.data.reset();
-		this.ent.setTurn(Player.values()[0]);
-		this.updateView();
+		if(Main.configThread != null) {
+			Main.configThread.interrupt();
+			while(Main.configThread.isAlive())
+				;
+		}
+		
+		Main.configThread = new Thread(new TaskConfiguring<>(ctrl));
+		Main.configThread.setDaemon(true);
+		Main.configThread.start();
 	}
 	
 	private void updateView() 
 	{
 		Ent.Grid grid = this.ent.getGrille();
-		View.Grid gridView = this.ihm.getGrid();
+		View.Grid gridView = this.view.getGrid();
 		
 		gridView.setGrid(grid);
-		this.ihm.getTurn().setTurn(this.ent.getTurn());
+		this.view.getTurn().setTurn(this.ent.getTurn());
 		
-		this.ihm.getMenu().setMode(this.ent.getMode());
-		this.ihm.getMenu().lockDiff((this.ent.getMode() == Mode.P_VS_P));
+		this.view.getMenu().setMode(this.ent.getMode());
+		this.view.getMenu().lockDiff((this.ent.getMode() == Mode.P_VS_P));
 	}
 	
 	private void playMove(int id)
@@ -169,18 +165,18 @@ class Controller {
 			if(vainqueur != null)
 			{
 				System.out.println("Le vainqueur est " + vainqueur.toString());
-				this.ihm.getTurn().setTurn(vainqueur);
-				Animation animLigne = this.ihm.getGrid().getWinningRowAnim(p.second, 500);
-				Animation animCup = this.ihm.getGrid().getCupAnim(vainqueur, 1000);
-				this.ihm.setWinningRowAnimOccuring(true);
+				this.view.getTurn().setTurn(vainqueur);
+				Animation animLigne = this.view.getGrid().getWinningRowAnim(p.second, 500);
+				Animation animCup = this.view.getGrid().getCupAnim(vainqueur, 1000);
+				this.view.setWinningRowAnimOccuring(true);
 				animLigne.play();
 				animCup.play();
 				animCup.setOnFinished(e -> {
 					grille.clear();
 					this.ent.setTurn(Player.values()[0]);
 					this.updateView();
-					this.ihm.getGrid().clearCanvas();
-					this.ihm.setWinningRowAnimOccuring(false);
+					this.view.getGrid().clearCanvas();
+					this.view.setWinningRowAnimOccuring(false);
 				});
 				TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
 						Ai.DATA_DIRPATH + Ai.MOVES_FILENAME, true);
