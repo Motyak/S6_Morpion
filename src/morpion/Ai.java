@@ -36,10 +36,10 @@ public class Ai {
 			System.getProperty("user.dir") + File.separator + "data" + File.separator;
 	
 	public final static String CONF_FILE_DEFCONTENT = 
-			"Facile=3,0.1\nNormal=6,0.75\nDifficile=9,0.9\n\n";
+			"Easy=3,0.1\nNormal=6,0.75\nHard=9,0.9\n\n";
 	
 	public final static String CONF_FILENAME = "config.txt";
-	public final static String COUPS_FILENAME = "coups.txt";
+	public final static String MOVES_FILENAME = "moves.txt";
 	
 	public Ai(Difficulty diff) throws Exception {
 		this.diff = diff;
@@ -51,7 +51,7 @@ public class Ai {
 	public int learn() throws IOException {
 		double[] input, output;
 		BufferedReader reader;
-		reader = new BufferedReader(new FileReader(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME));
+		reader = new BufferedReader(new FileReader(Ai.DATA_DIRPATH + Ai.MOVES_FILENAME));
 		String line = reader.readLine();
 		int nbDeCoups = 0;
 		while(line != null)
@@ -132,7 +132,7 @@ public class Ai {
 		if(!dataDir.exists())
 		{
 			dataDir.mkdir();
-			TextFile.stringToFile("", Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, false);
+			TextFile.stringToFile("", Ai.DATA_DIRPATH + Ai.MOVES_FILENAME, false);
 			TextFile.stringToFile(Ai.CONF_FILE_DEFCONTENT, Ai.DATA_DIRPATH + Ai.CONF_FILENAME, false);
 
 			Matcher mat = Pattern.compile("=(.*?)\n").matcher(Ai.CONF_FILE_DEFCONTENT);

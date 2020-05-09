@@ -62,7 +62,7 @@ class Controller {
 				;
 		}
 		
-		Main.learningThread = new Thread(new Apprentissage_Task<>(ai));
+		Main.learningThread = new Thread(new LearningTask<>(ai));
 		Main.learningThread.setDaemon(true);
 		Main.learningThread.start();
 	}
@@ -75,7 +75,7 @@ class Controller {
 				;
 		}
 		
-		Main.configThread = new Thread(new Config_Task<>(ai));
+		Main.configThread = new Thread(new ConfiguringTask<>(ai));
 		Main.configThread.setDaemon(true);
 		Main.configThread.start();
 	}
@@ -183,7 +183,7 @@ class Controller {
 					this.ihm.setAnimLigneGagnanteOccuring(false);
 				});
 				TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
-						Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, true);
+						Ai.DATA_DIRPATH + Ai.MOVES_FILENAME, true);
 				this.ai.learn();
 			}
 			else {				

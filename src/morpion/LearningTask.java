@@ -5,11 +5,11 @@ import Mk.Pair;
 import javafx.concurrent.Task;
 
 @SuppressWarnings("hiding")
-public class Apprentissage_Task<Void> extends Task<Void> {
+public class LearningTask<Void> extends Task<Void> {
 	
 	private Ai ai;
 	
-	public Apprentissage_Task(Ai ai) {
+	public LearningTask(Ai ai) {
 		this.ai = ai;
 	}
 
@@ -17,7 +17,7 @@ public class Apprentissage_Task<Void> extends Task<Void> {
 	protected Void call() throws Exception {
 		System.out.println("Thread apprentissage lancé");
 		
-		final File FILE_COUPS = new File(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME);
+		final File FILE_COUPS = new File(Ai.DATA_DIRPATH + Ai.MOVES_FILENAME);
 		final double PERCENTAGE_STAGE = 10.0;
 		final Pair<Integer,Double> params = this.ai.getModelParams();
 		final double optNb = (double)this.ai.calcOptNb(params.first, params.second);
