@@ -8,12 +8,12 @@ import javafx.animation.ParallelTransition;
 import java.io.IOException;
 
 class Controller {
-	private Ihm ihm;
+	private View ihm;
 	private Ent ent;
 	
 	private Ai ai;
 
-	Controller(Ihm ihm, Ent ent) throws Exception 
+	Controller(View ihm, Ent ent) throws Exception 
 	{
 		this.ihm = ihm;
 		this.ent = ent;
@@ -23,7 +23,7 @@ class Controller {
 	public void entToIhm() 
 	{
 		Ent.Grille grille = this.ent.getGrille();
-		Ihm.Grid grilleIhm = this.ihm.getGrid();
+		View.Grid grilleIhm = this.ihm.getGrid();
 		
 		for(int i = 0 ; i < Ent.GRID_SIZE ; ++i)
 			grilleIhm.writeCase(i, grille.at(i));

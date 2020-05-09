@@ -39,7 +39,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
-public class Ihm {
+public class View {
 	private Controller ctrl;
 	
 //	sub-views controllers
@@ -143,7 +143,7 @@ public class Ihm {
 	}
 
 	public static class Grid {
-		private Ihm ihm;
+		private View ihm;
 		private List<Label> squares;
 		
 		private HashMap<Row, Label> mapRowStartingSquare;
@@ -169,7 +169,7 @@ public class Ihm {
 			this.mapRowStartingSquare.put(Row.DIAGONAL_2, Grid.this.lblSquare2);
 			
 			this.squares = new ArrayList<>(Arrays.asList(
-					lblSquare0, lblSquare1, lblSquare3, 
+					lblSquare0, lblSquare1, lblSquare2, 
 					lblSquare3, lblSquare4, lblSquare5, 
 					lblSquare6, lblSquare7, lblSquare8
 			));
@@ -185,7 +185,7 @@ public class Ihm {
 				
 		}
 		
-		public void injectMainController(Ihm ihm)
+		public void injectMainController(View ihm)
 		{
 			this.ihm = ihm;
 		}
@@ -354,7 +354,7 @@ public class Ihm {
 	}
 	
 	public static class Menu {
-		private Ihm ihm;
+		private View ihm;
 		private List<ImageView> imgsGameMode;
 		private List<ImageView> imgsButtons;
 		
@@ -392,7 +392,7 @@ public class Ihm {
 			this.imgEditConfig.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().editConfigFile());
 		}
 		
-		public void injectMainController(Ihm ihm)
+		public void injectMainController(View ihm)
 		{
 			this.ihm = ihm;
 		}

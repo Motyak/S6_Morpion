@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm">
+<HBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.View">
    <children>
       <fx:include fx:id="paneMenu" source="Menu.fxml" translateX="-250.0" />
       <VBox>
