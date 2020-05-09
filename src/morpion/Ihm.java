@@ -66,7 +66,7 @@ public class Ihm {
 		
 		this.ctrl.entToIhm();
 		Controller.lancerConfigThread(this.ctrl.getAi());
-		Controller.lancerApprentissage(this.ctrl.getAi());
+		Controller.launchLearning(this.ctrl.getAi());
 	}
 	
 	public Controller getCtrl() { return this.ctrl; }

@@ -15,25 +15,25 @@ public class ConfiguringTask<Void> extends Task<Void> {
 	
 	@Override
 	protected Void call() throws Exception {
-		System.out.println("Thread config lancé");
+		System.out.println("Config thread launched");
 		
-		final File FILE_CONFIG = new File(Ai.DATA_DIRPATH + Ai.CONF_FILENAME);
-		long lastModifiedOld = FILE_CONFIG.lastModified();
-		long lastModifierNew;
+		final File CONFIG_FILE = new File(Ai.DATA_DIRPATH + Ai.CONF_FILENAME);
+		long lastModifiedOld = CONFIG_FILE.lastModified();
+		long lastModifiedNew;
 		
 		while(true)
 		{
-			lastModifierNew = FILE_CONFIG.lastModified();
-			if(lastModifierNew != lastModifiedOld)
+			lastModifiedNew = CONFIG_FILE.lastModified();
+			if(lastModifiedNew != lastModifiedOld)
 			{
-				System.out.println("Rechargement du modèle..");
-				Controller.lancerApprentissage(this.ai);
-				lastModifiedOld = lastModifierNew; 
+				System.out.println("Reloading the ai model..");
+				Controller.launchLearning(this.ai);
+				lastModifiedOld = lastModifiedNew; 
 			}
 			
 			
 			if(Main.configThread.isInterrupted()) {
-				System.out.println("Thread config interrompu");
+				System.out.println("Config thread interrupted");
 				if(Main.learningThread != null)
 					Main.learningThread.interrupt();
 				return null;

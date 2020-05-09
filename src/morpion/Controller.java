@@ -53,7 +53,7 @@ class Controller {
 		return false;
 	}
 	
-	public static void lancerApprentissage(Ai ai) throws IOException 
+	public static void launchLearning(Ai ai) throws IOException 
 	{
 //		this.ai.reset();
 		if(Main.learningThread != null) {
@@ -108,7 +108,7 @@ class Controller {
 		this.ai.changeDiff(diff);
 		this.renewGame();
 		
-		Controller.lancerApprentissage(this.ai);
+		Controller.launchLearning(this.ai);
 		
 		System.out.println("Difficulte actuelle : " + this.ent.getDiff().getValue());
 	}
