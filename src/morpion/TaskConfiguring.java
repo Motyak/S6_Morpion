@@ -27,7 +27,7 @@ public class TaskConfiguring<Void> extends Task<Void> {
 			if(lastModifiedNew != lastModifiedOld)
 			{
 				System.out.println("Reloading the ai model..");
-				this.ctrl.launchLearning(this.ctrl.getAi());
+				this.ctrl.launchLearning();
 				lastModifiedOld = lastModifiedNew; 
 			}
 			

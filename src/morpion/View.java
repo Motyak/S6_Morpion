@@ -301,9 +301,9 @@ public class View {
 					} catch (IOException e) { e.printStackTrace(); }
 				}
 			}
-			else if(ctrl.emptySquare(lblId)) {
+			else if(ctrl.isEmptySquare(lblId)) {
 				if(eventType.equals("MOUSE_ENTERED")) {
-					Player j = ctrl.getTurn();
+					Player j = ctrl.getCurrentPlayer();
 					lbl.setOpacity(0.3);
 					lbl.setText(j.toString());
 				}
@@ -434,15 +434,15 @@ public class View {
 			ImageView iv = (ImageView)event.getSource();
 			int idMode = Integer.valueOf(iv.getId().substring(iv.getId().length() - 1));
 			Mode mode = Mode.get(idMode);
-			boolean actualMode = mode == Menu.this.ihm.getCtrl().getMode();
+			boolean isActualMode = Menu.this.ihm.getCtrl().isActualMode(mode);
 
 			if(evtType.equals("MOUSE_CLICKED"))
 				Menu.this.ihm.getCtrl().changeMode(mode);
 			
-			else if(evtType.equals("MOUSE_ENTERED") && !actualMode)
+			else if(evtType.equals("MOUSE_ENTERED") && !isActualMode)
 				iv.setImage(new Image(new File(RES.getHover(mode)).toURI().toString()));
 			
-			else if(evtType.equals("MOUSE_EXITED") && !actualMode)
+			else if(evtType.equals("MOUSE_EXITED") && !isActualMode)
 				iv.setImage(new Image(new File(RES.getUnpressed(mode)).toURI().toString()));
 		}
 		

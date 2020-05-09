@@ -18,7 +18,7 @@ class Controller {
 		this.ai = new Ai(this.ent.getDiff());
 		
 		this.launchConfiguring(this);
-		this.launchLearning(this.ai);
+		this.launchLearning();
 	}
 	
 	public boolean submitMove(int id) throws IOException
@@ -41,7 +41,7 @@ class Controller {
 		return false;
 	}
 	
-	public void launchLearning(Ai ai) throws IOException 
+	public void launchLearning() throws IOException 
 	{
 //		this.ai.reset();
 		if(Main.learningThread != null) {
@@ -50,12 +50,12 @@ class Controller {
 				;
 		}
 		
-		Main.learningThread = new Thread(new TaskLearning<>(ai));
+		Main.learningThread = new Thread(new TaskLearning<>(this.ai));
 		Main.learningThread.setDaemon(true);
 		Main.learningThread.start();
 	}
 	
-	public void launchConfiguring(Controller ctrl)
+	private void launchConfiguring(Controller ctrl)
 	{
 		if(Main.configThread != null) {
 			Main.configThread.interrupt();
@@ -96,7 +96,7 @@ class Controller {
 		this.ai.changeDiff(diff);
 		this.renewGame();
 		
-		this.launchLearning(this.ai);
+		this.launchLearning();
 		
 		System.out.println("Actual difficulty : " + this.ent.getDiff().getValue());
 	}
@@ -106,19 +106,19 @@ class Controller {
 		Main.rulesDialog.showAndWait();
 	}
 	
-	public Ai getAi() { return this.ai; }
+//	public Ai getAi() { return this.ai; }
 	
-	public Player getTurn()
+	public Player getCurrentPlayer()
 	{
 		return this.ent.getTurn();
 	}
 	
-	public Mode getMode()
+	public boolean isActualMode(Mode mode)
 	{
-		return this.ent.getMode();
+		return this.ent.getMode() == mode;
 	}
 	
-	public boolean emptySquare(int id)
+	public boolean isEmptySquare(int id)
 	{
 		return this.ent.getGrille().at(id) == Square.EMPTY;
 	}
