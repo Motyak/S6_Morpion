@@ -335,17 +335,17 @@ public class Ihm {
 		@FXML private Label lblO;
 		
 		@FXML private void initialize() {
-			this.setTourDeJeu(Player.X);
+			this.setTurn(Player.X);
 		}
 		
-		public void setTourDeJeu(Player j)
+		public void setTurn(Player p)
 		{
-			if(j == Player.X)
+			if(p == Player.X)
 			{
 				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("filled-turn-label");
 				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("empty-turn-label");
 			}
-			else if(j == Player.O)
+			else if(p == Player.O)
 			{
 				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("empty-turn-label");
 				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("filled-turn-label");
@@ -355,30 +355,30 @@ public class Ihm {
 	
 	public static class Menu {
 		private Ihm ihm;
-		private List<ImageView> imgsModeJeu;
-		private List<ImageView> imgsBoutons;
+		private List<ImageView> imgsGameMode;
+		private List<ImageView> imgsButtons;
 		
-		@FXML private ImageView imgModeJeu0;
-		@FXML private ImageView imgModeJeu1;
+		@FXML private ImageView imgGameMode0;
+		@FXML private ImageView imgGameMode1;
 		@FXML private Slider slDiff;
 		@FXML private ImageView imgArrowUp;
 		@FXML private ImageView imgArrowDown;
-		@FXML private ImageView imgRegles;
+		@FXML private ImageView imgRules;
 		@FXML private ImageView imgEditConfig;
 		@FXML private ImageView imgMenuArrow;
 		@FXML private ImageView imgMenuArrowIcon;
 		@FXML private HBox subpanelDiff;
 		
 		@FXML private void initialize() {
-			this.imgsModeJeu = Arrays.asList(this.imgModeJeu0, this.imgModeJeu1);
-			this.imgsBoutons = Arrays.asList(this.imgRegles, this.imgEditConfig);
+			this.imgsGameMode = Arrays.asList(this.imgGameMode0, this.imgGameMode1);
+			this.imgsButtons = Arrays.asList(this.imgRules, this.imgEditConfig);
 			
-			for(ImageView iv : this.imgsModeJeu) {
+			for(ImageView iv : this.imgsGameMode) {
 				iv.setOnMouseClicked(this::handleMouseEventOnMode);
 				iv.setOnMouseEntered(this::handleMouseEventOnMode);
 				iv.setOnMouseExited(this::handleMouseEventOnMode);
 			}
-			for(ImageView iv : this.imgsBoutons) {
+			for(ImageView iv : this.imgsButtons) {
 				iv.setOnMouseEntered(this::handleMouseHoverOnImgs);
 				iv.setOnMouseExited(this::handleMouseUnhoverOnImgs);
 			}
@@ -388,7 +388,7 @@ public class Ihm {
 			this.imgArrowUp.setOnMouseClicked(this::handleMouseEventOnUpArrow);
 			this.imgArrowDown.setOnMouseClicked(this::handleMouseEventOnDownArrow);
 			
-			this.imgRegles.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().showDialogRegles());
+			this.imgRules.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().showDialogRegles());
 			this.imgEditConfig.setOnMouseClicked(event -> Menu.this.ihm.getCtrl().editConfigFile());
 		}
 		
@@ -400,12 +400,12 @@ public class Ihm {
 		public void setModeJeu(Mode mode)
 		{
 			if(mode == Mode.P_VS_AI) {
-				this.imgModeJeu0.setImage(new Image(new File(RES.P_VS_AI_PRESSED).toURI().toString()));
-				this.imgModeJeu1.setImage(new Image(new File(RES.P_VS_P_UNPRESSED).toURI().toString()));
+				this.imgGameMode0.setImage(new Image(new File(RES.P_VS_AI_PRESSED).toURI().toString()));
+				this.imgGameMode1.setImage(new Image(new File(RES.P_VS_P_UNPRESSED).toURI().toString()));
 			}
 			else if(mode == Mode.P_VS_P) {
-				this.imgModeJeu0.setImage(new Image(new File(RES.P_VS_AI_UNPRESSED).toURI().toString()));
-				this.imgModeJeu1.setImage(new Image(new File(RES.P_VS_P_PRESSED).toURI().toString()));
+				this.imgGameMode0.setImage(new Image(new File(RES.P_VS_AI_UNPRESSED).toURI().toString()));
+				this.imgGameMode1.setImage(new Image(new File(RES.P_VS_P_PRESSED).toURI().toString()));
 			}
 		}
 		
