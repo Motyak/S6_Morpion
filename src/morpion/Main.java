@@ -17,7 +17,7 @@ public class Main extends Application {
 	
 	public static Thread learningThread;
 	public static Thread configThread;
-	public static Stage dialogRegles;
+	public static Stage rulesDialog;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -27,7 +27,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("View.fxml"));
-			Scene scene = new Scene(root,890,890);	//900x900 taille réelle
+			Scene scene = new Scene(root,890,890);	//900x900 real size
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.setResizable(false);
@@ -35,7 +35,7 @@ public class Main extends Application {
 			primaryStage.getIcons().add(new Image(new File(RES.APP_ICON).toURI().toString()));
 			primaryStage.show();
 			
-			this.createDialogRegles(primaryStage);
+			this.createRulesDialog(primaryStage);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -47,19 +47,19 @@ public class Main extends Application {
 			Main.configThread.interrupt();
 	}
 	
-	private void createDialogRegles(Stage parent)
+	private void createRulesDialog(Stage parent)
 	{
-		Main.dialogRegles = new Stage();
+		Main.rulesDialog = new Stage();
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("DialogRegles.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("RulesDialog.fxml"));
 			Scene scene = new Scene(root,810,810);
-			Main.dialogRegles.setScene(scene);
+			Main.rulesDialog.setScene(scene);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		Main.dialogRegles.initOwner(parent);
-		Main.dialogRegles.initModality(Modality.APPLICATION_MODAL);
-		Main.dialogRegles.initStyle(StageStyle.UTILITY);
+		Main.rulesDialog.initOwner(parent);
+		Main.rulesDialog.initModality(Modality.APPLICATION_MODAL);
+		Main.rulesDialog.initStyle(StageStyle.UTILITY);
 	}
 }

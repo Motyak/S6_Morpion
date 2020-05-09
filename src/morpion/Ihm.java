@@ -343,13 +343,13 @@ public class Ihm {
 		{
 			if(j == Player.X)
 			{
-				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("label-tour-rempli");
-				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("label-tour-vide");
+				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("filled-turn-label");
+				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("empty-turn-label");
 			}
 			else if(j == Player.O)
 			{
-				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("label-tour-vide");
-				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("label-tour-rempli");
+				this.lblX.getStyleClass().clear(); this.lblX.getStyleClass().add("empty-turn-label");
+				this.lblO.getStyleClass().clear(); this.lblO.getStyleClass().add("filled-turn-label");
 			}
 		}
 	}

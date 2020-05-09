@@ -115,7 +115,7 @@ class Controller {
 	
 	public void showDialogRegles()
 	{
-		Main.dialogRegles.showAndWait();
+		Main.rulesDialog.showAndWait();
 	}
 	
 	public Ai getAi() { return this.ai; }
