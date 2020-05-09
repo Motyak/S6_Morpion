@@ -5,11 +5,11 @@ import Mk.Pair;
 import javafx.concurrent.Task;
 
 @SuppressWarnings("hiding")
-public class LearningTask<Void> extends Task<Void> {
+public class TaskLearning<Void> extends Task<Void> {
 	
 	private Ai ai;
 	
-	public LearningTask(Ai ai) {
+	public TaskLearning(Ai ai) {
 		this.ai = ai;
 	}
 

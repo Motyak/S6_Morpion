@@ -5,11 +5,11 @@ import java.io.File;
 import javafx.concurrent.Task;
 
 @SuppressWarnings("hiding")
-public class ConfiguringTask<Void> extends Task<Void> {
+public class TaskConfiguring<Void> extends Task<Void> {
 
 	private Ai ai;
 	
-	public ConfiguringTask(Ai ai) {
+	public TaskConfiguring(Ai ai) {
 		this.ai = ai;
 	}
 	

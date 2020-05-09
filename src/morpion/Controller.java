@@ -62,7 +62,7 @@ class Controller {
 				;
 		}
 		
-		Main.learningThread = new Thread(new LearningTask<>(ai));
+		Main.learningThread = new Thread(new TaskLearning<>(ai));
 		Main.learningThread.setDaemon(true);
 		Main.learningThread.start();
 	}
@@ -75,7 +75,7 @@ class Controller {
 				;
 		}
 		
-		Main.configThread = new Thread(new ConfiguringTask<>(ai));
+		Main.configThread = new Thread(new TaskConfiguring<>(ai));
 		Main.configThread.setDaemon(true);
 		Main.configThread.start();
 	}
