@@ -23,9 +23,9 @@ public class Ent {
 		this.setDiff(Difficulty.NORMAL);
 	}
 
-	public Grid getGrille() {return grid;}
+	public Grid getGrid() {return grid;}
 	
-	public void setGrille(Grid grid) {this.grid = grid;}
+	public void setGrid(Grid grid) {this.grid = grid;}
 	
 	public Player getTurn() {return this.turn;}
 	
@@ -100,7 +100,7 @@ public class Ent {
 			System.out.println("--------------------");
 		}
 
-		public Pair<Player,Row> finDePartie() 
+		public Pair<Player,Row> calculateOutcome() 
 		{
 			List<Pair<Integer,Row>> sumsRows = new ArrayList<>();
 			for(int i = 0 ; i < this.dim ; ++i) 

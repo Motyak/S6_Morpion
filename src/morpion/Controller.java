@@ -37,7 +37,7 @@ class Controller {
 	
 	public boolean submitMove(int id) throws IOException
 	{
-		Ent.Grid grille = this.ent.getGrille();
+		Ent.Grid grille = this.ent.getGrid();
 		
 		if(grille.at(id) == Square.EMPTY)
 		{
@@ -86,7 +86,7 @@ class Controller {
 	
 	public void renewGame()
 	{
-		this.ent.getGrille().clear();
+		this.ent.getGrid().clear();
 		this.ai.data.reset();
 		this.ent.setTurn(Player.values()[0]);
 		this.updateView();
@@ -111,7 +111,7 @@ class Controller {
 	
 	public boolean isEmptySquare(int id)
 	{
-		return this.ent.getGrille().at(id) == Square.EMPTY;
+		return this.ent.getGrid().at(id) == Square.EMPTY;
 	}
 	
 	private void launchConfiguring(Controller ctrl)
@@ -129,7 +129,7 @@ class Controller {
 	
 	private void updateView() 
 	{
-		Ent.Grid grid = this.ent.getGrille();
+		Ent.Grid grid = this.ent.getGrid();
 		View.Grid gridView = this.view.getGrid();
 		
 		gridView.setGrid(grid);
@@ -141,7 +141,7 @@ class Controller {
 	
 	private void playMove(int id)
 	{
-		Ent.Grid grille = this.ent.getGrille();
+		Ent.Grid grille = this.ent.getGrid();
 		
 		Ent.Grid save = new Ent.Grid(grille);
 		grille.set(id, Square.valueOf(this.ent.getTurn().toString()));
@@ -155,36 +155,36 @@ class Controller {
 	
 	private boolean checkOnWin() throws IOException
 	{
-		Ent.Grid grille = this.ent.getGrille();
-		Pair<Player,Row> p = grille.finDePartie();
+		Ent.Grid grid = this.ent.getGrid();
+		Pair<Player,Row> p = grid.calculateOutcome();
 		
-		Player vainqueur = p.first;
-		boolean partieTerminee = (vainqueur != null) || grille.isFilled();
-		if(partieTerminee)
+		Player winner = p.first;
+		boolean gameEnded = (winner != null) || grid.isFilled();
+		if(gameEnded)
 		{
-			if(vainqueur != null)
+			if(winner != null)
 			{
-				System.out.println("Le vainqueur est " + vainqueur.toString());
-				this.view.getTurn().setTurn(vainqueur);
-				Animation animLigne = this.view.getGrid().getWinningRowAnim(p.second, 500);
-				Animation animCup = this.view.getGrid().getCupAnim(vainqueur, 1000);
+				System.out.println("Winner is " + winner.toString());
+				this.view.getTurn().setTurn(winner);
+				Animation rowAnim = this.view.getGrid().getWinningRowAnim(p.second, 500);
+				Animation cupAnim = this.view.getGrid().getCupAnim(winner, 1000);
 				this.view.setWinningRowAnimOccuring(true);
-				animLigne.play();
-				animCup.play();
-				animCup.setOnFinished(e -> {
-					grille.clear();
+				rowAnim.play();
+				cupAnim.play();
+				cupAnim.setOnFinished(e -> {
+					grid.clear();
 					this.ent.setTurn(Player.values()[0]);
 					this.updateView();
 					this.view.getGrid().clearCanvas();
 					this.view.setWinningRowAnimOccuring(false);
 				});
-				TextFile.stringToFile(this.ai.data.getCoups(vainqueur), 
+				TextFile.stringToFile(this.ai.data.getCoups(winner), 
 						Ai.DATA_DIRPATH + Ai.MOVES_FILENAME, true);
 				this.ai.learn();
 			}
 			else {				
-				System.out.println("Aucun gagnant");
-				grille.clear();
+				System.out.println("No winner");
+				grid.clear();
 				this.ent.setTurn(Player.values()[0]);
 				this.updateView();
 			}
@@ -196,7 +196,7 @@ class Controller {
 	
 	private int aiPlays()
 	{
-		Ent.Grid grille = this.ent.getGrille();
+		Ent.Grid grille = this.ent.getGrid();
 		
 		double[] input = this.gridToDoubles(grille);
 		int[] output = this.ai.genOutput(input);
