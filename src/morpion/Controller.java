@@ -146,9 +146,9 @@ class Controller {
 		Ent.Grid save = new Ent.Grid(grille);
 		grille.set(id, Square.valueOf(this.ent.getTurn().toString()));
 		if(this.ent.getTurn() == Player.X)
-			this.ai.data.coupsX.add(new Ai.Data.Move(save, new Ent.Grid(grille)));
+			this.ai.data.Xmoves.add(new Ai.Data.Move(save, new Ent.Grid(grille)));
 		else
-			this.ai.data.coupsY.add(new Ai.Data.Move(save, new Ent.Grid(grille)));
+			this.ai.data.Omoves.add(new Ai.Data.Move(save, new Ent.Grid(grille)));
 		this.incrementTurn();
 		this.updateView();
 	}
