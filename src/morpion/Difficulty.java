@@ -1,5 +1,10 @@
 package morpion;
 
+/**
+ * Represent the different level of difficulty in the game
+ * @author Tommy 'Motyak'
+ *
+ */
 enum Difficulty {
 	EASY("Easy"),
 	NORMAL("Normal"),

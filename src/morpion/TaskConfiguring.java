@@ -4,6 +4,12 @@ import java.io.File;
 
 import javafx.concurrent.Task;
 
+/**
+ * Is responsible for detecting whenever the configuration file has changed and informing the learning thread
+ * @author Tommy 'Motyak'
+ *
+ * @param <Void> none
+ */
 @SuppressWarnings("hiding")
 public class TaskConfiguring<Void> extends Task<Void> {
 

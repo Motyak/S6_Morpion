@@ -1,5 +1,10 @@
 package morpion;
 
+/**
+ * Represent the players
+ * @author Tommy 'Motyak'
+ *
+ */
 enum Player {
 	X(-1),
 	O(1) {

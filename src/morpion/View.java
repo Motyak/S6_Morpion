@@ -21,6 +21,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 
+/**
+ * Is responsible for handling events, calling the controller use cases and playing animations
+ * @author Tommy 'Motyak'
+ *
+ */
 public class View {
 	private Controller ctrl;
 	private AnimationFactory animFactory;
@@ -84,6 +89,11 @@ public class View {
 			this.playClosingMenuAnim();
 	}
 
+	/**
+	 * Represent the grid in the view
+	 * @author Tommy 'Motyak'
+	 *
+	 */
 	public static class Grid {
 		private View ihm;
 		private List<Label> squares;
@@ -119,22 +129,39 @@ public class View {
 		public Canvas getCanvasGrid() { return this.canvasGrid; }
 		public ImageView getImgCup() { return this.imgCup; }
 		
+		/**
+		 * inject the main view to the grid sub-view
+		 * @param ihm the main interface/view
+		 */
 		public void injectMainController(View ihm)
 		{
 			this.ihm = ihm;
 		}
 		
+		/**
+		 * Update the grid view from a grid
+		 * @param grid a grid
+		 */
 		public void setGrid(Ent.Grid grid)
 		{
 			for(int i = 0 ; i < Ent.GRID_SIZE ; ++i)
 				this.squares.get(i).setText(grid.at(i).toString());
 		}
 		
+		/**
+		 * 
+		 * @param row a row considered being the winning row
+		 * @return the matching winning row animation
+		 */
 		public Animation getWinningRowAnim(Row row)
 		{
 			return this.ihm.animFactory.getDrawingWinningRow(row);
 		}
 		
+		/**
+		 * @param winner a player considered being the winner of a game
+		 * @return the matching cup animation
+		 */
 		public Animation getCupAnim(Player winner)
 		{
 			if(winner == Player.X)
@@ -199,6 +226,11 @@ public class View {
 		}
 	}
 	
+	/**
+	 * Represent the turn in the view
+	 * @author Tommy 'Motyak'
+	 *
+	 */
 	public static class Turn {
 		@FXML private Label lblX;
 		@FXML private Label lblO;
@@ -212,6 +244,10 @@ public class View {
 		public Label getLblO() { return this.lblO; }
 		
 		
+		/**
+		 * Update the turn view from a turn
+		 * @param p the current player, the player whose turn it is to play
+		 */
 		public void setTurn(Player p)
 		{
 			if(p == Player.X)
@@ -226,6 +262,10 @@ public class View {
 			}
 		}
 		
+		/**
+		 * Adapt the opponent image based on the game mode
+		 * @param mode a mode
+		 */
 		public void setOpponent(Mode mode)
 		{
 			if(mode == Mode.P_VS_AI)
@@ -235,6 +275,11 @@ public class View {
 		}
 	}
 	
+	/**
+	 * Represent the menu in the view
+	 * @author Tommy 'Motyak'
+	 *
+	 */
 	public static class Menu {
 		private View ihm;
 		private List<ImageView> imgsGameMode;
@@ -277,11 +322,19 @@ public class View {
 		public ImageView getImgMenuArrowIcon() { return this.imgMenuArrowIcon; }
 		public ImageView getImgMenuArrow() { return this.imgMenuArrow; }
 		
+		/**
+		 * Inject the main view to the menu sub-view
+		 * @param ihm the main view
+		 */
 		public void injectMainController(View ihm)
 		{
 			this.ihm = ihm;
 		}
 		
+		/**
+		 * Update the view game mode from a game mode
+		 * @param mode a game mode
+		 */
 		public void setMode(Mode mode)
 		{
 			if(mode == Mode.P_VS_AI) {
@@ -295,6 +348,10 @@ public class View {
 			this.ihm.paneTurnController.setOpponent(mode);
 		}
 		
+		/**
+		 * Lock the difficulty access from the view
+		 * @param lock if should be lock
+		 */
 		public void lockDiff(boolean lock)
 		{
 			this.subpanelDiff.setDisable(lock);

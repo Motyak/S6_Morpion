@@ -4,6 +4,12 @@ import java.io.File;
 import Mk.Pair;
 import javafx.concurrent.Task;
 
+/**
+ * Is responsible for making the ai model learn about new moves
+ * @author Tommy 'Motyak'
+ *
+ * @param <Void> none
+ */
 @SuppressWarnings("hiding")
 public class TaskLearning<Void> extends Task<Void> {
 	

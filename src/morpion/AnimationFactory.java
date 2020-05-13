@@ -25,6 +25,11 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+/**
+ * Has the responsibility to create and give access to every animation used in the main interface
+ * @author Tommy 'Motyak'
+ *
+ */
 class AnimationFactory {
 	
 	final private int OPENING_MENU_DURATION = 200;
@@ -41,6 +46,9 @@ class AnimationFactory {
 	private SequentialTransition movingCupWinnerO = null;
 	private PathTransition drawingWinningRow;
 	
+	/**
+	 * @param view the main interface
+	 */
 	public AnimationFactory(View view) {
 		this.view = view;
 		
@@ -56,35 +64,56 @@ class AnimationFactory {
 		this.mapRowStartingSquare.put(Row.DIAGONAL_2, sq.get(2));
 	}
 	
+	/**
+	 * Create if needed and get the opening menu animation
+	 * @return the opening menu animation
+	 */
 	public ParallelTransition getOpeningMenu() { 
 		if(this.openingMenu == null)
 			this.createOpeningMenu();
 		return openingMenu; 
 	}
 	
+	/**
+	 * Create if needed and get the closing menu animation
+	 * @return the closing menu animation
+	 */
 	public ParallelTransition getClosingMenu() { 
 		if(this.closingMenu == null)
 			this.createClosingMenu();
 		return closingMenu; 
 	}
 	
+	/**
+	 * Create if needed and get the moving cup for the winner X animation
+	 * @return the moving cup for the winner X animation
+	 */
 	public SequentialTransition getMovingCupWinnerX() { 
 		if(this.movingCupWinnerX == null)
 			this.createMovingCupWinnerX();
 		return this.movingCupWinnerX; 
 	}
 	
+	/**
+	 * Create if needed and get the the moving cup for the winner O animation
+	 * @return the moving cup for the winner O animation
+	 */
 	public SequentialTransition getMovingCupWinnerO() { 
 		if(this.movingCupWinnerO == null)
 			this.createMovingCupWinnerO();
 		return this.movingCupWinnerO; 
 	}
 	
+	/**
+	 * Create if needed and get the drawing winning row animation
+	 * @param row the row considered to be the winning row to apply the animation to
+	 * @return the drawing winning row animation
+	 */
 	public PathTransition getDrawingWinningRow(Row row) {
 		this.createDrawingWinningRow(row);
 		return this.drawingWinningRow;
 	}
-	
+
 	private void createOpeningMenu() {
 		TranslateTransition ttMenu = new TranslateTransition(new Duration(OPENING_MENU_DURATION), this.view.getPaneMenu());
 		TranslateTransition ttGrid = new TranslateTransition(new Duration(OPENING_MENU_DURATION), this.view.getPaneGrid());
@@ -213,6 +242,13 @@ class AnimationFactory {
 		this.drawingWinningRow = pt;
 	}
 	
+	/**
+	 * Create the animation minimizing the width of a region
+	 * @param reg the region to apply the animation to
+	 * @param minWidth the min width wanted
+	 * @param duration the duration of the animation
+	 * @return the animation minimizing the width of the region
+	 */
 	private Timeline createMinWidthAnim(Region reg, double minWidth, int duration) {
 		Timeline tl = new Timeline();
 		tl.getKeyFrames().add(new KeyFrame(Duration.millis(duration), 

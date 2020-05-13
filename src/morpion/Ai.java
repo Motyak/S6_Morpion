@@ -25,6 +25,11 @@ import ai.MultiLayerPerceptron;
 import ai.SigmoidalTransferFunction;
 import ai.TransferFunction;
 
+/**
+ * Represent the ai model manager and game data 
+ * @author Tommy 'Motyak'
+ *
+ */
 public class Ai {
 	
 	public Model model;
@@ -41,19 +46,29 @@ public class Ai {
 	public final static String CONF_FILENAME = "config.txt";
 	public final static String MOVES_FILENAME = "moves.txt";
 	
-	public Ai(Difficulty diff) throws Exception {
+	/**
+	 * @param diff the difficulty to apply
+	 * @throws IOException in case there is a problem writing files in the user directory or writing/reading the ai model file
+	 * @throws ClassNotFoundException in case the serialized object doesn't match the ai model class
+	 */
+	public Ai(Difficulty diff) throws IOException, ClassNotFoundException {
 		this.diff = diff;
 		this.data = new Data();
 		this.initDataFiles();
 		this.loadAiModel();
 	}
 	
+	/**
+	 * Make the ai model learn from the moves file
+	 * @return the number of learnt moves
+	 * @throws IOException in case the file storing the moves cannot be found
+	 */
 	public int learn() throws IOException {
 		double[] input, output;
 		BufferedReader reader;
 		reader = new BufferedReader(new FileReader(Ai.DATA_DIRPATH + Ai.MOVES_FILENAME));
 		String line = reader.readLine();
-		int nbDeCoups = 0;
+		int nbOfMoves = 0;
 		while(line != null)
 		{
 			input = new double[Ent.GRID_SIZE];
@@ -68,13 +83,17 @@ public class Ai {
 				output[i] = Double.parseDouble(grilleOutput.get(i));
 			}
 			this.model.propagateBackward(input, output);
-			++nbDeCoups;
+			++nbOfMoves;
 			line = reader.readLine();
 		}
 		reader.close();
-		return nbDeCoups;
+		return nbOfMoves;
 	}
 	
+	/**
+	 * Serialize the ai model to its related file
+	 * @throws IOException in case the ai model file cannot be written/overwritten
+	 */
 	public void save() throws IOException {
 		Pair<Integer,Double> params = this.getModelParams();
 		String filename = params.first + "_" + params.second + ".srl";
@@ -82,24 +101,42 @@ public class Ai {
 		System.out.println("Model saved : " + filename);
 	}
 	
-	public void changeDiff(Difficulty diff) throws Exception
-	{
+	/**
+	 * Change the ai difficulty
+	 * @param diff the difficulty to apply
+	 * @throws IOException in case the file storing the configuration cannot be found
+	 * @throws ClassNotFoundException in case the serialized object doesn't match the ai model class
+	 */
+	public void changeDiff(Difficulty diff) throws IOException, ClassNotFoundException {
 		this.diff = diff;
 		this.data.reset();
 		this.initDataFiles();
 		this.loadAiModel();
 	}
 	
+	/**
+	 * Generate ai output, sorted from best to worst based on the greatest decimal values
+	 * @param input the ai input in the form of decimal values
+	 * @return the indexes of the ai output sorted based on the greatest decimal values
+	 */
 	public int[] genOutput(double[] input) {
 		return this.sortOutput(this.model.propagateForward(input));
 	}
 	
+	/**
+	 * Open the conf file with system's default text editor
+	 * @throws IOException in case the configuration file cannot be found
+	 */
 	public void editConfigFile() throws IOException {
 		Desktop.getDesktop().open(new File(Ai.DATA_DIRPATH + Ai.CONF_FILENAME));
 	}
 	
-	public Pair<Integer,Double> getModelParams() throws IOException
-	{
+	/**
+	 * Get the model parameters based on the configuration file
+	 * @return the model parameters : the abstraction level and the learning rate.
+	 * @throws IOException in case the configuration file cannot be found
+	 */
+	public Pair<Integer,Double> getModelParams() throws IOException {
 		String conf = TextFile.fileToString(Ai.DATA_DIRPATH + Ai.CONF_FILENAME);
 		Matcher mat = Pattern.compile(this.diff.getValue() + "=(.*?)\n").matcher(conf);
 		mat.find();
@@ -110,6 +147,10 @@ public class Ai {
 		return new Pair<>(abstractionLevel, learningRate);
 	}
 	
+	/**
+	 * Overwrite the ai model with default values
+	 * @throws IOException in case the ai model file cannot be found
+	 */
 	public void reset() throws IOException {
 		Pair<Integer,Double> params = this.getModelParams();
 		int[] layers = {Ent.GRID_SIZE, params.second.intValue(), Ent.GRID_SIZE };
@@ -117,7 +158,12 @@ public class Ai {
 		this.save();
 	}
 	
-//	return the number of needed elements to learn for optimal usage, depending on the model params
+	/**
+	 * Calculate the number of needed elements for the ai model to learn
+	 * @param abstractionLevel ai model first parameter : the abstraction level
+	 * @param learningRate ai model second parameter : the learning rate
+	 * @return the number of needed elements to learn for optimal usage, depending on the model parameters
+	 */
 	public int calcOptNb(int abstractionLevel, double learningRate) {
 //		hardcoded for the moment
 		return 10000;
@@ -125,8 +171,11 @@ public class Ai {
 	
 	public Difficulty getDiff() { return this.diff; }
 	
-//	check any missing file, create them with default values if so
-	private void initDataFiles() throws Exception {
+	/**
+	 * Check for any missing data file, create them with default values if missing
+	 * @throws IOException in case there is a problem writing files in the user directory
+	 */
+	private void initDataFiles() throws IOException  {
 		File dataDir = new File(Ai.DATA_DIRPATH);
 		if(!dataDir.exists())
 		{
@@ -148,7 +197,12 @@ public class Ai {
 		}
 	}
 
-	private void loadAiModel() throws Exception {
+	/**
+	 * Unserialize the ai model file
+	 * @throws IOException in case there is a problem writing or reading the ai model file
+	 * @throws ClassNotFoundException in case the serialized object doesn't match the ai model class
+	 */
+	private void loadAiModel() throws IOException, ClassNotFoundException {
 		Pair<Integer,Double> params = this.getModelParams();
 		String filename = params.first + "_" + params.second + ".srl";
 		if(!new File(Ai.DATA_DIRPATH + filename).exists()) 
@@ -160,9 +214,14 @@ public class Ai {
 		else
 			this.model = Ai.Model.load(Ai.DATA_DIRPATH + filename);
 		
-		System.out.println("Modèle chargé : " + filename);
+		System.out.println("Loaded model : " + filename);
 	}
 	
+	/**
+	 * Sort the ai output indexes from best to worst based on the greatest decimal values
+	 * @param output the ai output in the form of decimal values
+	 * @return the indexes of the ai output sorted based on the greatest decimal values
+	 */
 	private int[] sortOutput(double[] output)
 	{
 		int[] sortedIndexes = new int[output.length];
@@ -181,12 +240,22 @@ public class Ai {
 		return sortedIndexes;
 	}
 	
+	/**
+	 * Represent the ai model
+	 * @author Tommy 'Motyak'
+	 *
+	 */
 	static class Model implements Serializable{
 
 		MultiLayerPerceptron p;
 		int consideredMoves;
 		long fileLastModified;
 		
+		/**
+		 * @param layers the layers
+		 * @param learningRate the learning rate
+		 * @param fun the transfer function
+		 */
 		public Model(int[] layers, double learningRate, TransferFunction fun) {
 			this.p = new MultiLayerPerceptron(layers, learningRate, fun);
 			this.consideredMoves = 0;
@@ -198,9 +267,27 @@ public class Ai {
 		public long getFileLastModified() { return this.fileLastModified; }
 		public void setFileLastModified(long timestamp) { this.fileLastModified = timestamp; } 
 		
+		/**
+		 * Make the ai model generate an output from an input
+		 * @param input the ai input
+		 * @return the ai output in the form of decimal values
+		 */
 		public double[] propagateForward(double[] input){ return this.p.forwardPropagation(input); }
+		
+		
+		/**
+		 * Make the ai model train from an input and an output
+		 * @param input an input
+		 * @param output an output
+		 * @return the error rate
+		 */
 		public double propagateBackward(double[] input, double[] output) { return this.p.backPropagate(input, output); }
 		
+		/**
+		 * Serialize the ai model to a file path
+		 * @param filePath the file path in which the ai model will be save
+		 * @throws IOException in case there is a problem serializing the model
+		 */
 		public void save(String filePath) throws IOException {
 			FileOutputStream fos = new FileOutputStream(filePath);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -208,7 +295,14 @@ public class Ai {
 			oos.close();
 		}
 		
-		public static Model load(String filePath) throws Exception {
+		/**
+		 * Unserialize the ai model from a file path
+		 * @param filePath the serialized ai model filepath
+		 * @return the ai model unserialized
+		 * @throws IOException in case the ai model cannot be found or read
+		 * @throws ClassNotFoundException in case the serialized object doesn't match the ai model class
+		 */
+		public static Model load(String filePath) throws IOException, ClassNotFoundException {
 			FileInputStream fis = new FileInputStream(filePath);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			Model mod = (Model) ois.readObject();
@@ -219,46 +313,72 @@ public class Ai {
 		
 	}
 	
+	/**
+	 * Represent the list of played moves from each player during a game
+	 * @author Tommy 'Motyak'
+	 *
+	 */
 	static class Data {
-		public List<Move> coupsX;
-		public List<Move> coupsY;
+		public List<Move> Xmoves;
+		public List<Move> Omoves;
 		
 		public Data() {
-			this.coupsX = new ArrayList<>();
-			this.coupsY = new ArrayList<>();
+			this.Xmoves = new ArrayList<>();
+			this.Omoves = new ArrayList<>();
 		}
 		
+		/**
+		 * Clear the list of moves played by each player
+		 */
 		public void reset()
 		{
-			this.coupsX.clear();
-			this.coupsY.clear();
+			this.Xmoves.clear();
+			this.Omoves.clear();
 		}
 
-		public String getMoves(Player j)
+		/**
+		 * Get all the moves played by a player during the game
+		 * @param p the concerned player
+		 * @return the moves of the player during the entire game, in a textual form
+		 */
+		public String getMoves(Player p)
 		{
 			String res = "";
-			List<Move> coups = null;
-			if(j == Player.X)
-				coups = this.coupsX;
-			else if(j == Player.O)
-				coups = this.coupsY;
+			List<Move> moves = null;
+			if(p == Player.X)
+				moves = this.Xmoves;
+			else if(p == Player.O)
+				moves = this.Omoves;
 			
-			for(int i = 0 ; i < coups.size() ; ++i)
-				res += coups.get(i) + "\n";
+			for(int i = 0 ; i < moves.size() ; ++i)
+				res += moves.get(i) + "\n";
 			
 			return res;
 		}
 		
+		/**
+		 * Represent a move played by a player on the grid
+		 * @author Tommy 'Motyak'
+		 *
+		 */
 		static class Move {
 			public Ent.Grid before;
 			public Ent.Grid after;
 			
+			/**
+			 * @param before the state of the grid before the move being played
+			 * @param after the state of the grid after the move being played
+			 */
 			public Move(Ent.Grid before, Ent.Grid after)
 			{
 				this.before = before;
 				this.after = after;
 			}
 			
+			/**
+			 * Return the square that has been played in the move
+			 * @return the square that has been played in the move
+			 */
 			public int getPlayedSquare()
 			{
 				int dim = this.before.getDim();

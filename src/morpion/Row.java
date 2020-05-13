@@ -1,5 +1,10 @@
 package morpion;
 
+/**
+ * Represent a row in a grid
+ * @author Tommy 'Motyak'
+ *
+ */
 enum Row {
 	HORIZONTAL_1(10),
 	HORIZONTAL_2(11),
