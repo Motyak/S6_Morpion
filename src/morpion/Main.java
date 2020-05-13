@@ -13,6 +13,11 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 
 
+/**
+ * Represent the application launcher
+ * @author Tommy 'Motyak'
+ *
+ */
 public class Main extends Application {
 	
 	public static Thread learningThread;
@@ -47,6 +52,10 @@ public class Main extends Application {
 			Main.configThread.interrupt();
 	}
 	
+	/**
+	 * Create the rules dialog
+	 * @param parent the parent stage
+	 */
 	private void createRulesDialog(Stage parent)
 	{
 		Main.rulesDialog = new Stage();

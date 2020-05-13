@@ -1,5 +1,10 @@
 package morpion;
 
+/**
+ * Represent a square, meaning its content, in the grid
+ * @author Tommy 'Motyak'
+ *
+ */
 enum Square {
 	EMPTY(0) {
 		@Override
