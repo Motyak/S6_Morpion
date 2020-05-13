@@ -7,6 +7,11 @@ import java.util.List;
 import Mk.Math;
 import Mk.Pair;
 
+/**
+ * Represent the entity, the state of the game at a certain moment
+ * @author Tommy 'Motyak'
+ *
+ */
 public class Ent {
 	public static final int GRID_DIM = 3;
 	public static final int GRID_SIZE = Ent.GRID_DIM * Ent.GRID_DIM; 
@@ -39,6 +44,11 @@ public class Ent {
 
 	public void setDiff(Difficulty diff) { this.diff = diff; }
 	
+	/**
+	 * Represent a grid with a fixed dimension
+	 * @author Tommy 'Motyak'
+	 *
+	 */
 	static class Grid {
 		
 		private Square[][] squares;
@@ -52,7 +62,7 @@ public class Ent {
 				for(int j = 0 ; j < this.dim ; ++j)
 					this.squares[i][j] = Square.EMPTY;
 		}
-		
+
 		public Grid(Grid grid)
 		{
 			this.dim = grid.getDim();
@@ -72,12 +82,18 @@ public class Ent {
 		
 		public void set(int id, Square s) { this.squares[id / this.dim][id % this.dim] = s; }
 		
+		/**
+		 * clear the grid (fill it with EMPTY state) 
+		 */
 		public void clear()
 		{
 			for(int i = 0 ; i < this.dim ; ++i)
 				Arrays.fill(this.squares[i], Square.EMPTY);
 		}
 		
+		/**
+		 * @return true if the grid doesnt have any EMPTY square, false otherwise
+		 */
 		public boolean isFilled()
 		{
 			for(int i = 0 ; i < this.dim ; ++i)
@@ -87,6 +103,9 @@ public class Ent {
 			return true;
 		}
 		
+		/**
+		 * print the grid into the terminal in a more representative way
+		 */
 		public void print()
 		{	
 			int j;
@@ -100,6 +119,10 @@ public class Ent {
 			System.out.println("--------------------");
 		}
 
+		/**
+		 * Calculate the outcome of the game at the moment
+		 * @return A non-null player if there's a winner and what appears to be the winning row
+		 */
 		public Pair<Player,Row> calculateOutcome() 
 		{
 			List<Pair<Integer,Row>> sumsRows = new ArrayList<>();
