@@ -5,39 +5,39 @@ import Mk.Pair;
 import javafx.concurrent.Task;
 
 @SuppressWarnings("hiding")
-public class Apprentissage_Task<Void> extends Task<Void> {
+public class TaskLearning<Void> extends Task<Void> {
 	
 	private Ai ai;
 	
-	public Apprentissage_Task(Ai ai) {
+	public TaskLearning(Ai ai) {
 		this.ai = ai;
 	}
 
 	@Override
 	protected Void call() throws Exception {
-		System.out.println("Thread apprentissage lancé");
+		System.out.println("Learning thread launched");
 		
-		final File FILE_COUPS = new File(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME);
-		final double PERCENTAGE_STAGE = 10.0;
+		final File MOVES_FILE = new File(Ai.DATA_DIRPATH + Ai.MOVES_FILENAME);
+		final double STAGE_PERCENTAGE = 10.0;
 		final Pair<Integer,Double> params = this.ai.getModelParams();
 		final double optNb = (double)this.ai.calcOptNb(params.first, params.second);
-		final long stage = Math.round(optNb / PERCENTAGE_STAGE);
+		final long stage = Math.round(optNb / STAGE_PERCENTAGE);
 		final String DIFFICULTY = this.ai.getDiff().getValue();
 		
-		int nbCoupsAppris;
+		int nbLearntMoves;
 		double percentage;
 		int i = this.ai.model.getConsideredMoves();
 		int stageIteration = 1;
 		
 		boolean reached = (i >= optNb);
-		boolean needUpdate = (this.ai.model.getFileLastModified() != FILE_COUPS.lastModified());
-		boolean apprentissageTerminee = false;
+		boolean needUpdate = (this.ai.model.getFileLastModified() != MOVES_FILE.lastModified());
+		boolean learningFinished = false;
 
 		while(true)
 		{
 			while(!reached || needUpdate)
 			{
-				apprentissageTerminee = false;
+				learningFinished = false;
 
 				if(needUpdate)
 				{
@@ -46,40 +46,40 @@ public class Apprentissage_Task<Void> extends Task<Void> {
 					needUpdate = false;
 				}
 
-				nbCoupsAppris = this.ai.learn();
-				i += nbCoupsAppris;
+				nbLearntMoves = this.ai.learn();
+				i += nbLearntMoves;
 				this.ai.model.setConsideredMoves(i);
-				this.ai.model.setFileLastModified(FILE_COUPS.lastModified());
+				this.ai.model.setFileLastModified(MOVES_FILE.lastModified());
 				
 				reached = (i >= optNb);
 			
 				if(i >= stageIteration * stage)
 				{
 					this.ai.save();
-					percentage = stageIteration * PERCENTAGE_STAGE;
-					System.out.println("Modèle " + DIFFICULTY + " (" + params.first + 
+					percentage = stageIteration * STAGE_PERCENTAGE;
+					System.out.println(DIFFICULTY + " model (" + params.first + 
 							", " + params.second + ") : " + percentage + "% of " + (int)optNb);
 					++stageIteration;
 				}
 					
 				if (Main.learningThread.isInterrupted()) {
-					System.out.println("Thread apprentissage interrompu");
+					System.out.println("Learning thread interrupted");
 					return null;
 				}
 			}
 			stageIteration = 1;
-			needUpdate = (this.ai.model.getFileLastModified() != FILE_COUPS.lastModified());
+			needUpdate = (this.ai.model.getFileLastModified() != MOVES_FILE.lastModified());
 			
 			
-			if(!apprentissageTerminee)
+			if(!learningFinished)
 			{
-				System.out.println("Modèle " + DIFFICULTY + " (" + params.first + ", " + 
-						params.second + ") : " + "Apprentissage terminée !");
-				apprentissageTerminee = true;
+				System.out.println(DIFFICULTY + " model (" + params.first + ", " + 
+						params.second + ") : " + "Learning finished !");
+				learningFinished = true;
 			}
 			
 			if (Main.learningThread.isInterrupted()) {
-				System.out.println("Thread apprentissage interrompu");
+				System.out.println("Learning thread interrupted");
 				return null;
 			}
 		}

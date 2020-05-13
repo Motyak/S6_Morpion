@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="800.0" minHeight="800.0" minWidth="846.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm$Grille">
+<GridPane maxHeight="800.0" minHeight="800.0" minWidth="846.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.View$Grid">
    <children>
       <ImageView fx:id="imgRenew" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
          <GridPane.margin>
@@ -40,7 +40,7 @@
             <RowConstraints minHeight="120.0" prefHeight="120.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label fx:id="lblCase0" alignment="CENTER" maxHeight="194.0" maxWidth="194.0">
+            <Label fx:id="lblSquare0" alignment="CENTER" maxHeight="194.0" maxWidth="194.0">
                <font>
                   <Font name="Segoe Script Bold" size="96.0" />
                </font>
@@ -48,7 +48,7 @@
                   <Insets right="-5.0" top="-15.0" />
                </padding>
             </Label>
-            <Label fx:id="lblCase1" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="1">
+            <Label fx:id="lblSquare1" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="1">
                <font>
                   <Font name="Segoe Script Bold" size="96.0" />
                </font>
@@ -56,7 +56,7 @@
                   <Insets right="-5.0" top="-15.0" />
                </padding>
             </Label>
-            <Label fx:id="lblCase2" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="2">
+            <Label fx:id="lblSquare2" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="2">
                <font>
                   <Font name="Segoe Script Bold" size="96.0" />
                </font>
@@ -64,7 +64,7 @@
                   <Insets right="-5.0" top="-15.0" />
                </padding>
             </Label>
-            <Label fx:id="lblCase3" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.rowIndex="1">
+            <Label fx:id="lblSquare3" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.rowIndex="1">
                <font>
                   <Font name="Segoe Script Bold" size="96.0" />
                </font>
@@ -72,7 +72,7 @@
                   <Insets right="-5.0" top="-15.0" />
                </padding>
             </Label>
-            <Label fx:id="lblCase4" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label fx:id="lblSquare4" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <font>
                   <Font name="Segoe Script Bold" size="96.0" />
                </font>
@@ -80,7 +80,7 @@
                   <Insets right="-5.0" top="-15.0" />
                </padding>
             </Label>
-            <Label fx:id="lblCase5" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Label fx:id="lblSquare5" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <font>
                   <Font name="Segoe Script Bold" size="96.0" />
                </font>
@@ -88,7 +88,7 @@
                   <Insets right="-5.0" top="-15.0" />
                </padding>
             </Label>
-            <Label fx:id="lblCase6" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.rowIndex="2">
+            <Label fx:id="lblSquare6" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.rowIndex="2">
                <font>
                   <Font name="Segoe Script Bold" size="96.0" />
                </font>
@@ -96,7 +96,7 @@
                   <Insets right="-5.0" top="-15.0" />
                </padding>
             </Label>
-            <Label fx:id="lblCase7" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Label fx:id="lblSquare7" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <font>
                   <Font name="Segoe Script Bold" size="96.0" />
                </font>
@@ -104,7 +104,7 @@
                   <Insets right="-5.0" top="-15.0" />
                </padding>
             </Label>
-            <Label fx:id="lblCase8" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <Label fx:id="lblSquare8" alignment="CENTER" maxHeight="194.0" maxWidth="194.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <font>
                   <Font name="Segoe Script Bold" size="96.0" />
                </font>
@@ -117,7 +117,7 @@
             <Insets left="10.0" right="10.0" top="110.0" />
          </GridPane.margin>
       </GridPane>
-      <Canvas fx:id="canvasGrille" height="580.0" mouseTransparent="true" width="580.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
+      <Canvas fx:id="canvasGrid" height="580.0" mouseTransparent="true" width="580.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
          <GridPane.margin>
             <Insets left="10.0" right="10.0" top="110.0" />
          </GridPane.margin>

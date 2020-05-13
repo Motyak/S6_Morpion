@@ -1,28 +1,28 @@
 package morpion;
 
-enum Joueur {
+enum Player {
 	X(-1),
 	O(1) {
 		@Override
-		public Joueur next() {
-			return Joueur.values()[0];
+		public Player next() {
+			return Player.values()[0];
 		}
 	};
 	
 	private final int value;
 	
-	public Joueur next() {
+	public Player next() {
 		return values()[ordinal() + 1];
 	}
 	
-	public static Joueur get(int value) {
-		for(Joueur j : Joueur.values())
+	public static Player get(int value) {
+		for(Player j : Player.values())
 			if(j.getValue() == value)
 				return j;
 		return null;
 	}
 	
-	private Joueur(int value) {
+	private Player(int value) {
 		this.value = value;
 	}
 	

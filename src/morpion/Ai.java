@@ -30,18 +30,18 @@ public class Ai {
 	public Model model;
 	public Data data;
 	
-	private Difficulte diff;
+	private Difficulty diff;
 	
 	public final static String DATA_DIRPATH = 
 			System.getProperty("user.dir") + File.separator + "data" + File.separator;
 	
 	public final static String CONF_FILE_DEFCONTENT = 
-			"Facile=3,0.1\nNormal=6,0.75\nDifficile=9,0.9\n\n";
+			"Easy=3,0.1\nNormal=6,0.75\nHard=9,0.9\n\n";
 	
 	public final static String CONF_FILENAME = "config.txt";
-	public final static String COUPS_FILENAME = "coups.txt";
+	public final static String MOVES_FILENAME = "moves.txt";
 	
-	public Ai(Difficulte diff) throws Exception {
+	public Ai(Difficulty diff) throws Exception {
 		this.diff = diff;
 		this.data = new Data();
 		this.initDataFiles();
@@ -51,23 +51,23 @@ public class Ai {
 	public int learn() throws IOException {
 		double[] input, output;
 		BufferedReader reader;
-		reader = new BufferedReader(new FileReader(Ai.DATA_DIRPATH + Ai.COUPS_FILENAME));
+		reader = new BufferedReader(new FileReader(Ai.DATA_DIRPATH + Ai.MOVES_FILENAME));
 		String line = reader.readLine();
 		int nbDeCoups = 0;
 		while(line != null)
 		{
-			input = new double[Ent.TAILLE_GRILLE];
-			output = new double[Ent.TAILLE_GRILLE];
+			input = new double[Ent.GRID_SIZE];
+			output = new double[Ent.GRID_SIZE];
 			Matcher mat = Pattern.compile("([^;]+);([^;]+)").matcher(line);
 			mat.find();
 			List<String> grilleInput = Arrays.asList(mat.group(1).split("\\s*,\\s*"));
 			List<String> grilleOutput = Arrays.asList(mat.group(2).split("\\s*,\\s*"));
-			for(int i = 0 ; i < Ent.TAILLE_GRILLE ; ++i)
+			for(int i = 0 ; i < Ent.GRID_SIZE ; ++i)
 			{
 				input[i] = Double.parseDouble(grilleInput.get(i));
 				output[i] = Double.parseDouble(grilleOutput.get(i));
 			}
-			this.model.backPropagate(input, output);
+			this.model.propagateBackward(input, output);
 			++nbDeCoups;
 			line = reader.readLine();
 		}
@@ -79,10 +79,10 @@ public class Ai {
 		Pair<Integer,Double> params = this.getModelParams();
 		String filename = params.first + "_" + params.second + ".srl";
 		this.model.save(Ai.DATA_DIRPATH + filename);
-		System.out.println("Modèle sauvegardé : " + filename);
+		System.out.println("Model saved : " + filename);
 	}
 	
-	public void changeDiff(Difficulte diff) throws Exception
+	public void changeDiff(Difficulty diff) throws Exception
 	{
 		this.diff = diff;
 		this.data.reset();
@@ -91,7 +91,7 @@ public class Ai {
 	}
 	
 	public int[] genOutput(double[] input) {
-		return this.sortedOutput(this.model.forwardPropagation(input));
+		return this.sortOutput(this.model.propagateForward(input));
 	}
 	
 	public void editConfigFile() throws IOException {
@@ -100,9 +100,8 @@ public class Ai {
 	
 	public Pair<Integer,Double> getModelParams() throws IOException
 	{
-		Difficulte diff = this.diff;
 		String conf = TextFile.fileToString(Ai.DATA_DIRPATH + Ai.CONF_FILENAME);
-		Matcher mat = Pattern.compile(diff.getValue() + "=(.*?)\n").matcher(conf);
+		Matcher mat = Pattern.compile(this.diff.getValue() + "=(.*?)\n").matcher(conf);
 		mat.find();
 		Matcher config = Pattern.compile("([^,]+),([^,]+)").matcher(mat.group(1));
 		config.find();
@@ -113,7 +112,7 @@ public class Ai {
 	
 	public void reset() throws IOException {
 		Pair<Integer,Double> params = this.getModelParams();
-		int[] layers = {Ent.TAILLE_GRILLE, params.second.intValue(), Ent.TAILLE_GRILLE };
+		int[] layers = {Ent.GRID_SIZE, params.second.intValue(), Ent.GRID_SIZE };
 		this.model = new Model(layers, params.second, new SigmoidalTransferFunction());
 		this.save();
 	}
@@ -124,7 +123,7 @@ public class Ai {
 		return 10000;
 	}
 	
-	public Difficulte getDiff() { return this.diff; }
+	public Difficulty getDiff() { return this.diff; }
 	
 //	check any missing file, create them with default values if so
 	private void initDataFiles() throws Exception {
@@ -132,7 +131,7 @@ public class Ai {
 		if(!dataDir.exists())
 		{
 			dataDir.mkdir();
-			TextFile.stringToFile("", Ai.DATA_DIRPATH + Ai.COUPS_FILENAME, false);
+			TextFile.stringToFile("", Ai.DATA_DIRPATH + Ai.MOVES_FILENAME, false);
 			TextFile.stringToFile(Ai.CONF_FILE_DEFCONTENT, Ai.DATA_DIRPATH + Ai.CONF_FILENAME, false);
 
 			Matcher mat = Pattern.compile("=(.*?)\n").matcher(Ai.CONF_FILE_DEFCONTENT);
@@ -142,7 +141,7 @@ public class Ai {
 				config.find();
 				int abstractionLevel = Integer.parseInt(config.group(1));
 				double learningRate = Double.parseDouble(config.group(2));
-				int[] layers = new int[]{Ent.TAILLE_GRILLE, abstractionLevel, Ent.TAILLE_GRILLE};
+				int[] layers = new int[]{Ent.GRID_SIZE, abstractionLevel, Ent.GRID_SIZE};
 				Model mod = new Model(layers, learningRate, new SigmoidalTransferFunction());
 				mod.save(Ai.DATA_DIRPATH + abstractionLevel + "_" + learningRate + ".srl");
 			}
@@ -154,7 +153,7 @@ public class Ai {
 		String filename = params.first + "_" + params.second + ".srl";
 		if(!new File(Ai.DATA_DIRPATH + filename).exists()) 
 		{
-			int[] layers = {Ent.TAILLE_GRILLE, params.second.intValue(), Ent.TAILLE_GRILLE };
+			int[] layers = {Ent.GRID_SIZE, params.second.intValue(), Ent.GRID_SIZE };
 			this.model = new Model(layers, params.second, new SigmoidalTransferFunction());
 			this.save();
 		}
@@ -164,7 +163,7 @@ public class Ai {
 		System.out.println("Modèle chargé : " + filename);
 	}
 	
-	private int[] sortedOutput(double[] output)
+	private int[] sortOutput(double[] output)
 	{
 		int[] sortedIndexes = new int[output.length];
 		TreeMap<Double,Integer> map = new TreeMap<Double,Integer>(Collections.reverseOrder());
@@ -199,8 +198,8 @@ public class Ai {
 		public long getFileLastModified() { return this.fileLastModified; }
 		public void setFileLastModified(long timestamp) { this.fileLastModified = timestamp; } 
 		
-		public double[] forwardPropagation(double[] input){ return this.p.forwardPropagation(input); }
-		public double backPropagate(double[] input, double[] output) { return this.p.backPropagate(input, output); }
+		public double[] propagateForward(double[] input){ return this.p.forwardPropagation(input); }
+		public double propagateBackward(double[] input, double[] output) { return this.p.backPropagate(input, output); }
 		
 		public void save(String filePath) throws IOException {
 			FileOutputStream fos = new FileOutputStream(filePath);
@@ -221,8 +220,8 @@ public class Ai {
 	}
 	
 	static class Data {
-		public List<Coup> coupsX;
-		public List<Coup> coupsY;
+		public List<Move> coupsX;
+		public List<Move> coupsY;
 		
 		public Data() {
 			this.coupsX = new ArrayList<>();
@@ -235,13 +234,13 @@ public class Ai {
 			this.coupsY.clear();
 		}
 
-		public String getCoups(Joueur j)
+		public String getMoves(Player j)
 		{
 			String res = "";
-			List<Coup> coups = null;
-			if(j == Joueur.X)
+			List<Move> coups = null;
+			if(j == Player.X)
 				coups = this.coupsX;
-			else if(j == Joueur.O)
+			else if(j == Player.O)
 				coups = this.coupsY;
 			
 			for(int i = 0 ; i < coups.size() ; ++i)
@@ -250,30 +249,30 @@ public class Ai {
 			return res;
 		}
 		
-		static class Coup {
-			public Ent.Grille avant;
-			public Ent.Grille apres;
+		static class Move {
+			public Ent.Grid before;
+			public Ent.Grid after;
 			
-			public Coup(Ent.Grille avant, Ent.Grille apres)
+			public Move(Ent.Grid before, Ent.Grid after)
 			{
-				this.avant = avant;
-				this.apres = apres;
+				this.before = before;
+				this.after = after;
 			}
 			
-			public int getNumCaseJouee()
+			public int getPlayedSquare()
 			{
-				int dim = this.avant.getDim();
+				int dim = this.before.getDim();
 				int j;
 				for(int i = 0 ; i < dim ; ++i)
 					for(j = 0 ; j < dim ; ++j)
-						if(this.avant.at(i, j) != this.apres.at(i, j))
+						if(this.before.at(i, j) != this.after.at(i, j))
 							return i;
 				return -1;
 			}
 			
 			@Override
 			public String toString() {
-				return this.avant + ";" + this.apres;
+				return this.before + ";" + this.after;
 			}
 		}
 	}

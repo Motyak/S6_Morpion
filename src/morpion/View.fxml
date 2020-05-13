@@ -3,13 +3,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm">
+<HBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.View">
    <children>
-      <fx:include fx:id="panelMenu" source="Menu.fxml" translateX="-250.0" />
+      <fx:include fx:id="paneMenu" source="Menu.fxml" translateX="-250.0" />
       <VBox>
          <children>
-            <fx:include fx:id="panelGrille" source="Grille.fxml" translateX="-250.0" />
-            <fx:include fx:id="panelTourJeu" source="TourJeu.fxml" translateX="-252.0" />
+            <fx:include fx:id="paneGrid" source="Grid.fxml" translateX="-250.0" />
+            <fx:include fx:id="paneTurn" source="Turn.fxml" translateX="-252.0" />
          </children>
       </VBox>
    </children>

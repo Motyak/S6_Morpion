@@ -7,12 +7,12 @@
     -fx-pref-width: 20;
 }
 
-.label-tour-rempli {
+.filled-turn-label {
 	-fx-background-color: silver; 
 	-fx-text-fill: black;
 }
 
-.label-tour-vide {
+.empty-turn-label {
 	-fx-background-color: white; 
 	-fx-text-fill: grey
 }

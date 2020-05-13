@@ -8,151 +8,126 @@ import Mk.Math;
 import Mk.Pair;
 
 public class Ent {
-	public static final int DIM_GRILLE = 3;
-	public static final int TAILLE_GRILLE = Ent.DIM_GRILLE * Ent.DIM_GRILLE; 
+	public static final int GRID_DIM = 3;
+	public static final int GRID_SIZE = Ent.GRID_DIM * Ent.GRID_DIM; 
 	
-	private Grille grille;
-	private Joueur tourJeu;
+	private Grid grid;
+	private Player turn;
 	private Mode mode;
-	private Difficulte diff;
+	private Difficulty diff;
 	
 	Ent() {
-		this.grille = new Grille();
-		this.tourJeu = Joueur.values()[0];
+		this.grid = new Grid();
+		this.turn = Player.values()[0];
 		this.mode = Mode.P_VS_AI;
-		this.setDiff(Difficulte.NORMAL);
+		this.setDiff(Difficulty.NORMAL);
 	}
 
-	public Grille getGrille() {return grille;}
+	public Grid getGrid() {return grid;}
 	
-	public void setGrille(Grille grille) {this.grille = grille;}
+	public void setGrid(Grid grid) {this.grid = grid;}
 	
-	public Joueur getTourJeu() {return tourJeu;}
+	public Player getTurn() {return this.turn;}
 	
-	public void setTourJeu(Joueur tourJeu) {this.tourJeu = tourJeu;}
+	public void setTurn(Player turn) {this.turn = turn;}
 
 	public Mode getMode() { return mode; }
 
 	public void setMode(Mode mode) { this.mode = mode; }
 
-	public Difficulte getDiff() { return diff; }
+	public Difficulty getDiff() { return diff; }
 
-	public void setDiff(Difficulte diff) { this.diff = diff; }
+	public void setDiff(Difficulty diff) { this.diff = diff; }
 	
-	static class Grille {
+	static class Grid {
 		
-		private Case[][] cases;
+		private Square[][] squares;
 		private int dim;
 		
-		public Grille()
+		public Grid()
 		{
-			this.dim = Ent.DIM_GRILLE;
-			this.cases = new Case[this.dim][this.dim];
+			this.dim = Ent.GRID_DIM;
+			this.squares = new Square[this.dim][this.dim];
 			for(int i = 0 ; i < this.dim ; ++i)
 				for(int j = 0 ; j < this.dim ; ++j)
-					this.cases[i][j] = Case.VIDE;
+					this.squares[i][j] = Square.EMPTY;
 		}
 		
-		public Grille(Grille grille)
+		public Grid(Grid grid)
 		{
-			this.dim = grille.getDim();
-			this.cases = new Case[this.dim][this.dim];
+			this.dim = grid.getDim();
+			this.squares = new Square[this.dim][this.dim];
 			for(int i = 0 ; i < this.dim ; ++i)
 				for(int j = 0 ; j < this.dim ; ++j)
-					this.cases[i][j] = grille.at(i, j);
+					this.squares[i][j] = grid.at(i, j);
 		}
 		
 		public int getDim() { return this.dim; }
 		
-		public Case at(int i, int j) { return this.cases[i][j]; }
+		public Square at(int i, int j) { return this.squares[i][j]; }
 		
-		public Case at(int id) { return this.cases[id / this.dim][id % this.dim]; }
+		public Square at(int id) { return this.squares[id / this.dim][id % this.dim]; }
 		
-		public void set(int i, int j, Case c) { this.cases[i][j] = c; }
+		public void set(int i, int j, Square s) { this.squares[i][j] = s; }
 		
-		public void set(int id, Case c) { this.cases[id / this.dim][id % this.dim] = c; }
+		public void set(int id, Square s) { this.squares[id / this.dim][id % this.dim] = s; }
 		
 		public void clear()
 		{
 			for(int i = 0 ; i < this.dim ; ++i)
-				Arrays.fill(this.cases[i], Case.VIDE);
+				Arrays.fill(this.squares[i], Square.EMPTY);
 		}
 		
-		public boolean is_filled()
+		public boolean isFilled()
 		{
 			for(int i = 0 ; i < this.dim ; ++i)
 				for(int j = 0 ; j < this.dim ; ++j)
-					if(this.cases[i][j] == Case.VIDE)
+					if(this.squares[i][j] == Square.EMPTY)
 						return false;
 			return true;
 		}
 		
-		public void afficher()
+		public void print()
 		{	
 			int j;
 			System.out.println("--------------------");
 			for(int i = 0 ; i < this.dim ; ++i)
 			{
 				for(j = 0 ; j < this.dim - 1 ; ++j)
-					System.out.print(this.cases[i][j] + "\t");
-				System.out.print(this.cases[i][j] + "\n\n");
+					System.out.print(this.squares[i][j] + "\t");
+				System.out.print(this.squares[i][j] + "\n\n");
 			}
 			System.out.println("--------------------");
 		}
 
-		public Pair<Joueur,Range> finDePartie() 
+		public Pair<Player,Row> calculateOutcome() 
 		{
-			List<Pair<Integer,Range>> sumsRanges = new ArrayList<>();
+			List<Pair<Integer,Row>> sumsRows = new ArrayList<>();
 			for(int i = 0 ; i < this.dim ; ++i) 
 			{
-				List<Pair<Integer,Range>> sumLineCol = Arrays.asList(new Pair<>(0, null), new Pair<>(0, null));
+				List<Pair<Integer,Row>> sumLineCol = Arrays.asList(new Pair<>(0, null), new Pair<>(0, null));
 				for(int j = 0 ; j < this.dim ; ++j) 
 				{
-					sumLineCol.set(0, new Pair<>(sumLineCol.get(0).first + this.cases[i][j].getValue(), Range.get(10 + i)));
-					sumLineCol.set(1, new Pair<>(sumLineCol.get(1).first + this.cases[j][i].getValue(), Range.get(20 + i)));
+					sumLineCol.set(0, new Pair<>(sumLineCol.get(0).first + this.squares[i][j].getValue(), Row.get(10 + i)));
+					sumLineCol.set(1, new Pair<>(sumLineCol.get(1).first + this.squares[j][i].getValue(), Row.get(20 + i)));
 				}
-				sumsRanges.addAll(sumLineCol);
+				sumsRows.addAll(sumLineCol);
 			}
-			List<Pair<Integer,Range>> sumDiags = Arrays.asList(new Pair<>(0, null), new Pair<>(0, null));
+			List<Pair<Integer,Row>> sumDiags = Arrays.asList(new Pair<>(0, null), new Pair<>(0, null));
 			for(int i = 0 ; i < this.dim ; ++i)
 			{
-				sumDiags.set(0, new Pair<>(sumDiags.get(0).first + this.cases[i][i].getValue(), Range.DIAGONALE_1));
-				sumDiags.set(1, new Pair<>(sumDiags.get(1).first + this.cases[i][this.dim - 1 - i].getValue(), Range.DIAGONALE_2));
+				sumDiags.set(0, new Pair<>(sumDiags.get(0).first + this.squares[i][i].getValue(), Row.DIAGONAL_1));
+				sumDiags.set(1, new Pair<>(sumDiags.get(1).first + this.squares[i][this.dim - 1 - i].getValue(), Row.DIAGONAL_2));
 			}
-			sumsRanges.addAll(sumDiags);
-			sumsRanges.sort((Pair<Integer,Range> i1, Pair<Integer,Range> i2) -> Math.square(i2.first).compareTo(Math.square(i1.first)));
+			sumsRows.addAll(sumDiags);
+			sumsRows.sort((Pair<Integer,Row> i1, Pair<Integer,Row> i2) -> Math.square(i2.first).compareTo(Math.square(i1.first)));
 			
-			int bestRange = sumsRanges.get(0).first;
-			Joueur vainqueur = Joueur.get(bestRange / this.dim);
-			Range ligneGagnante = sumsRanges.get(0).second;
+			int bestRange = sumsRows.get(0).first;
+			Player winner = Player.get(bestRange / this.dim);
+			Row winningRow = sumsRows.get(0).second;
 			
-			return new Pair<>(vainqueur, ligneGagnante);
+			return new Pair<>(winner, winningRow);
 		}
-		
-//		public Joueur finDePartie() 
-//		{
-//			List<Integer> sumsRanges = new ArrayList<>();
-//			for(int i = 0 ; i < this.dim ; ++i) 
-//			{
-//				List<Integer> sumLineCol = Arrays.asList(0, 0);
-//				for(int j = 0 ; j < this.dim ; ++j) 
-//				{
-//					sumLineCol.set(0, sumLineCol.get(0) + this.cases[i][j].getValue());
-//					sumLineCol.set(1, sumLineCol.get(1) + this.cases[j][i].getValue());
-//				}
-//				sumsRanges.addAll(sumLineCol);
-//			}
-//			List<Integer> sumDiags = Arrays.asList(0, 0);
-//			for(int i = 0 ; i < this.dim ; ++i)
-//			{
-//				sumDiags.set(0, sumDiags.get(0) + this.cases[i][i].getValue());
-//				sumDiags.set(1, sumDiags.get(1) + this.cases[i][this.dim - 1 - i].getValue());
-//			}
-//			sumsRanges.addAll(sumDiags);
-//			sumsRanges.sort((Integer i1, Integer i2) -> Math.square(i2).compareTo(Math.square(i1)));
-//			int bestRange = sumsRanges.get(0);
-//			return Joueur.get(bestRange / this.dim);
-//		}
 		
 		@Override
 		public String toString() {
@@ -160,7 +135,7 @@ public class Ent {
 			int j;
 			for(int i = 0 ; i < this.dim ; ++i)
 				for(j = 0 ; j < this.dim ; ++j)
-					res.append(this.cases[i][j].getValue() + ",");
+					res.append(this.squares[i][j].getValue() + ",");
 			res.deleteCharAt(res.length() - 1);
 			return res.toString();
 		}

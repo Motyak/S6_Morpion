@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane minHeight="900.0" minWidth="305.0" style="-fx-border-color: black; -fx-border-width: 2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.Ihm$Menu">
+<GridPane minHeight="900.0" minWidth="305.0" style="-fx-border-color: black; -fx-border-width: 2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morpion.View$Menu">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -31,12 +31,12 @@
          <children>
             <VBox>
                <children>
-                  <ImageView fx:id="imgModeJeu0" fitHeight="120.0" fitWidth="238.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgGameMode0" fitHeight="120.0" fitWidth="238.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../res/pVsAi_pressed2_128.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="imgModeJeu1" fitHeight="120.0" fitWidth="238.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgGameMode1" fitHeight="120.0" fitWidth="238.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../res/pVsP_unpressed2_128.png" />
                      </image>
@@ -94,7 +94,7 @@
             </HBox>
             <HBox maxHeight="64.0" minHeight="64.0" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <children>
-                  <ImageView fx:id="imgRegles" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgRules" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
